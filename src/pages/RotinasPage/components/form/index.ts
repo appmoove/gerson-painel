@@ -2,7 +2,7 @@
 // Routine Form Components
 // ===========================
 
-export { RoutineErrorAlert } from './RoutineErrorAlert'
+export { RoutineErrorAlert } from './routine-error-alert'
 export {
     RoutineAgentField,
     RoutineNameField,
@@ -14,4 +14,4 @@ export {
     RoutineStartTimeField,
     RoutineEndTimeField,
     RoutineActiveField
-} from './RoutineFormFields'
+} from './routine-form-fields'

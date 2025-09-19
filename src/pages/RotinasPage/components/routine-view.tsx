@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
-import { RoutineStatusBadge } from "@/components/ui/routine-status-badge"
+import { RoutineStatusBadge } from "@/components/custom/routine-status-badge"
 import { Calendar, Clock, Phone, Settings, MessageSquare, BarChart3, AlertTriangle, GripVertical } from "lucide-react"
 import type { RoutineViewProps } from "../types"
 
@@ -152,7 +152,7 @@ const parseProcessingStack = (stack: any): ProcessingStackItem[] => {
 /**
  * Componente para visualizar detalhes completos de uma rotina
  */
-export function RotinesView({ routine, isLoading = false }: RoutineViewProps) {
+export function RoutineView({ routine, isLoading = false }: RoutineViewProps) {
     // Se estiver carregando ou não tiver rotina, mostra skeletons
     if (isLoading || !routine) {
         return (

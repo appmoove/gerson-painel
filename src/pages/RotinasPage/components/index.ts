@@ -2,6 +2,6 @@
 // Rotinas Page Components
 // ===========================
 
-export { RotinesList } from './RotinesList'
-export { RotinesForm } from './RotinesForm'
-export { RotinesView } from './RotinesView'
+export { RoutineList } from './routine-list'
+export { RoutineForm } from './routine-form'
+export { RoutineView } from './routine-view'

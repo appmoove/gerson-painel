@@ -1,4 +1,7 @@
 import type { AxiosInstance, AxiosError } from 'axios'
+
+import { createApiInstance, handleAxiosResponse, handleAxiosError } from './base-api'
+import type { ApiResponse } from '@/types/api'
 import type {
     CreateRoutineRequest,
     CreateRoutineResponse,
@@ -7,8 +10,6 @@ import type {
     ListRoutinesResponse,
     GetRoutineResponse
 } from '@/types/routine-api'
-import type { ApiResponse } from '@/types/api'
-import { createApiInstance, handleAxiosResponse, handleAxiosError } from './base-api'
 
 // ===========================
 // Routines API Class

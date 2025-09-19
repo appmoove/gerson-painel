@@ -2,14 +2,16 @@ import { useState, useEffect, useCallback } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useNavigate, useParams, useLocation } from "react-router-dom"
-import { useToast } from "@/hooks/use-toast"
+
 import { agentsApi } from "@/controllers/agents-api"
-import { agentSchema } from "./validation"
-import { AGENT_FORM_DEFAULTS } from "@/constants/agent"
 import { useAuth } from "@/stores/auth"
-import type { AgentFormData, AgentsPageState, AgentViewMode } from "./types"
+import { useToast } from "@/hooks/use-toast"
 import type { AgentDetails } from "@/types/agent"
-import type { Voice } from "@/types"
+import type { Voice } from "@/types/agent-api"
+import { AGENT_FORM_DEFAULTS } from "@/constants/agent"
+
+import { agentSchema } from "./validation"
+import type { AgentFormData, AgentsPageState, AgentViewMode } from "./types"
 
 // ===========================
 // Agentes List Hook

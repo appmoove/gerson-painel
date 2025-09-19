@@ -1,7 +1,7 @@
 import { useFormContext } from "react-hook-form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
-import { TextareaWithCounter } from "@/components/ui/textarea-with-counter"
+import { TextareaWithCounter } from "@/components/custom/textarea-with-counter"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Input } from "@/components/ui/input"

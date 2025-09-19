@@ -4,12 +4,12 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { DataTable } from "@/components/data-table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { RoutineStatusBadge } from "@/components/ui/routine-status-badge"
+import { RoutineStatusBadge } from "@/components/custom/routine-status-badge"
 import { stringLimit } from "@/utils/string"
 
 import type { ColumnDef } from "@tanstack/react-table"
 import type { RoutineDetails } from "@/types/routine"
-import type { RotinasListProps } from "../types"
+import type { RoutineListProps } from "../types"
 
 // ===========================
 // Helper Functions
@@ -52,7 +52,7 @@ const formatDateTime = (dateString: string | null | undefined) => {
 /**
  * Componente para exibir lista de rotinas em formato de tabela
  */
-export function RotinesList({ rotinas, isLoading, onView, onEdit }: RotinasListProps) {
+export function RoutineList({ rotinas, isLoading, onView, onEdit }: RoutineListProps) {
     const columns: ColumnDef<RoutineDetails>[] = [
         {
             accessorKey: "name",

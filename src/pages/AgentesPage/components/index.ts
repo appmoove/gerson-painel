@@ -2,6 +2,6 @@
 // Agentes Page Components
 // ===========================
 
-export { AgentsList } from './AgentsList'
-export { AgentForm } from './AgentForm'
-export { AgentView } from './AgentView'
+export { AgentsList } from './agents-list'
+export { AgentForm } from './agent-form'
+export { AgentView } from './agent-view'

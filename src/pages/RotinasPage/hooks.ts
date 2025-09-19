@@ -3,14 +3,16 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useNavigate, useParams, useLocation } from "react-router-dom"
 import { toast } from "sonner"
+
 import { routinesApi } from "@/controllers/routines-api"
 import { agentsApi } from "@/controllers/agents-api"
-import { routineSchema } from "./validation"
-import { ROUTINE_FORM_DEFAULTS } from "@/constants/routine"
 import { useAuth } from "@/stores/auth"
-import type { RoutineFormData, RotinasPageState, RoutineViewMode } from "./types"
 import type { RoutineDetails } from "@/types/routine"
 import type { AgentDetails } from "@/types/agent"
+import { ROUTINE_FORM_DEFAULTS } from "@/constants/routine"
+
+import { routineSchema } from "./validation"
+import type { RoutineFormData, RotinasPageState, RoutineViewMode } from "./types"
 
 // ===========================
 // Agents Hook for Routines

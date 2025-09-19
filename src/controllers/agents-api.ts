@@ -1,5 +1,8 @@
-import type { AxiosInstance } from 'axios';
 import { AxiosError } from 'axios';
+import type { AxiosInstance } from 'axios';
+
+import { createApiInstance, handleAxiosResponse, handleAxiosError } from './base-api';
+import type { ApiResponse } from '../types/api';
 import type {
     CreateAgentRequest,
     CreateAgentResponse,
@@ -9,8 +12,6 @@ import type {
     GetAgentResponse,
     ListVoicesResponse
 } from '../types/agent-api';
-import type { ApiResponse } from '../types/api';
-import { createApiInstance, handleAxiosResponse, handleAxiosError } from './base-api';
 
 // ===========================
 // Agents API Class

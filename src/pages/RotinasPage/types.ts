@@ -53,7 +53,7 @@ export type RoutineViewMode = 'list' | 'create' | 'view' | 'edit'
 /**
  * Props do componente de listagem
  */
-export interface RotinasListProps {
+export interface RoutineListProps {
     /** Lista de rotinas */
     rotinas: RoutineDetails[]
     /** Estado de carregamento */

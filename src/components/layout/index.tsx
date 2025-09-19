@@ -3,7 +3,7 @@ import { motion } from "framer-motion"
 import ProfileModal from "@/components/layout/profile-modal"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Sidebar } from "@/components/layout/sidebar/Sidebar"
+import { Sidebar } from "@/components/layout/sidebar/sidebar"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
 

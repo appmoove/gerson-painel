@@ -1,6 +1,6 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
-import { Textarea } from "./textarea"
+import { Textarea } from "@/components/ui/textarea"
 
 export interface TextareaWithCounterProps
     extends React.ComponentProps<"textarea"> {

@@ -2,7 +2,7 @@
 // Agent Form Components
 // ===========================
 
-export { AgentErrorAlert } from './AgentErrorAlert'
+export { AgentErrorAlert } from './agent-error-alert'
 export {
     AgentNameField,
     AgentDescriptionField,
@@ -11,4 +11,4 @@ export {
     AgentVoiceField,
     AgentPresentationField,
     AgentActiveField
-} from './AgentFormFields'
+} from './agent-form-fields'

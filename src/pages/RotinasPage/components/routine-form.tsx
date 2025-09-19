@@ -26,7 +26,7 @@ import { Separator } from "@/components/ui/separator"
  * Formulário para criação e edição de rotinas
  * Usa react-hook-form com validação Zod
  */
-export function RotinesForm({ routine, onSuccess, onCancel }: RoutineFormProps) {
+export function RoutineForm({ routine, onSuccess, onCancel }: RoutineFormProps) {
     const { form, isSubmitting, submitError, onSubmit, clearError } = useRoutineForm(routine)
     const { agents, isLoading: agentsLoading } = useRoutineAgents()
     const isEditing = Boolean(routine?.id)

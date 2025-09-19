@@ -9,9 +9,25 @@ export * from './auth'
 export * from './api'
 
 // Agent Types
-export * from './agent'
-export * from './agent-api'
+export type { AgentDetails } from './agent'
+export type {
+    CreateAgentRequest,
+    CreateAgentResponse as CreateAgentApiResponse,
+    UpdateAgentRequest,
+    UpdateAgentResponse,
+    ListAgentsResponse,
+    GetAgentResponse,
+    ListVoicesResponse,
+    Voice
+} from './agent-api'
 
 // Routine Types
-export * from './routine'
-export * from './routine-api'
+export type { RoutineDetails, RoutineStatus } from './routine'
+export type {
+    CreateRoutineRequest,
+    CreateRoutineResponse as CreateRoutineApiResponse,
+    UpdateRoutineRequest,
+    UpdateRoutineResponse,
+    ListRoutinesResponse,
+    GetRoutineResponse
+} from './routine-api'

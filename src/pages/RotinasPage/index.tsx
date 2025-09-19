@@ -3,7 +3,7 @@ import { PageContainer } from "@/components/layout/page-container"
 import { Button } from "@/components/ui/button"
 import { Plus, Edit, Calendar, Loader2 } from "lucide-react"
 import { useRotinas } from "./hooks"
-import { RotinesList, RotinesForm, RotinesView } from "./components"
+import { RoutineList, RoutineForm, RoutineView } from "./components"
 
 // ===========================
 // RotinasPage Component
@@ -17,7 +17,6 @@ export default function RotinasPage() {
     const {
         // Navigation
         mode,
-        routineId,
         goToList,
         goToCreate,
         goToView,
@@ -139,7 +138,7 @@ export default function RotinasPage() {
                 breadcrumbs={getBreadcrumbs()}
                 extra={getPageExtra()}
             >
-                <RotinesList
+                <RoutineList
                     rotinas={rotinas}
                     isLoading={isLoading}
                     onView={goToView}
@@ -156,7 +155,7 @@ export default function RotinasPage() {
                 subtitle={pageInfo.subtitle}
                 breadcrumbs={getBreadcrumbs()}
             >
-                <RotinesForm onSuccess={() => goToList()} />
+                <RoutineForm onSuccess={() => goToList()} />
             </PageContainer>
         )
     }
@@ -202,7 +201,7 @@ export default function RotinasPage() {
                 breadcrumbs={getBreadcrumbs()}
                 extra={getPageExtra()}
             >
-                <RotinesView routine={currentRoutine} isLoading={isLoading} />
+                <RoutineView routine={currentRoutine} isLoading={isLoading} />
             </PageContainer>
         )
     }
@@ -247,7 +246,7 @@ export default function RotinasPage() {
                 subtitle={pageInfo.subtitle}
                 breadcrumbs={getBreadcrumbs()}
             >
-                <RotinesForm
+                <RoutineForm
                     routine={currentRoutine}
                     onSuccess={() => goToView(currentRoutine.id)}
                 />
