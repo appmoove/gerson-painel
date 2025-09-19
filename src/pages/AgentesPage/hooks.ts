@@ -79,7 +79,7 @@ export function useAgentsList() {
 
     useEffect(() => {
         fetchAgentes()
-    }, [fetchAgentes])
+    }, [])
 
     return {
         ...state,
@@ -214,7 +214,7 @@ export function useAgentForm(agent?: AgentDetails) {
                 setIsSubmitting(false)
                 return { success: false, error: errorMessage }
             })
-    }, [agent, form, user?.company_id])
+    }, [agent, form, user?.company_id, toast])
 
     return {
         form,

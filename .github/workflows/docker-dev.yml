@@ -1,0 +1,44 @@
+name: Build/Push DEV image
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [staging]
+    tags:
+      - "*.*.*-dev"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: Development
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: "${{ secrets.DOCKER_USER }}/${{ github.event.repository.name }}"
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            API_WEBSERVICE=${{secrets.API_WEBSERVICE}}
+            API_BACKEND=${{secrets.API_BACKEND}}
+            TOKEN_MAPBOX=${{secrets.TOKEN_MAPBOX}}
+            SECMOB_PAINEL=${{secrets.SECMOB_PAINEL}}
+            NODE_ENV=development
+            WEBPACK_MODE=development
+          
