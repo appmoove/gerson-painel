@@ -44,20 +44,45 @@ export const [type]Api = new [Type]Api();
 
 ### 4. **Métodos da API**
 
+**PADRÃO OBRIGATÓRIO: Promise como encapsulamento com await interno**
+
 ```typescript
 /**
  * [Descrição do que faz]
  */
-async [methodName](params: [Type]Request): Promise<ApiResponse<[Type]Response>> {
-    try {
-        const response = await this.axiosInstance.[httpMethod]<[Type]Response>(
-            '/[endpoint]',
-            [data/params]
-        );
-        return handleAxiosResponse(response);
-    } catch (error) {
-        return handleAxiosError(error as AxiosError);
-    }
+[methodName](params: [Type]Request): Promise<ApiResponse<[Type]Response>> {
+    // Extrações de params/body ANTES do return
+    const { field1, field2 } = params;
+    const processedData = { ...params, extraField: 'value' };
+
+    return this.axiosInstance.[httpMethod]<[Type]Response>('/[endpoint]', processedData)
+        .then(response => handleAxiosResponse(response))
+        .catch(error => handleAxiosError(error as AxiosError));
+}
+```
+
+**ALTERNATIVA com Promise wrapper (se precisar de lógica complexa):**
+
+```typescript
+/**
+ * [Descrição do que faz]
+ */
+[methodName](params: [Type]Request): Promise<ApiResponse<[Type]Response>> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // Processamento antes da requisição
+            const { field1, field2 } = params;
+            const processedData = await somePreProcessing(params);
+
+            const response = await this.axiosInstance.[httpMethod]<[Type]Response>(
+                '/[endpoint]',
+                processedData
+            );
+            resolve(handleAxiosResponse(response));
+        } catch (error) {
+            resolve(handleAxiosError(error as AxiosError));
+        }
+    });
 }
 ```
 

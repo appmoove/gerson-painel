@@ -1,0 +1,211 @@
+---
+description: Regras de organização de imports em todos os arquivos TypeScript/React
+alwaysApply: true
+---
+
+# 📦 Regras de Organização de Imports
+
+## 🎯 **APLICAÇÃO OBRIGATÓRIA**
+
+Esta regra **SEMPRE** deve ser aplicada em todos os arquivos `.ts`, `.tsx`, `.js`, `.jsx` do projeto.
+
+## 📋 **Ordem Obrigatória de Imports**
+
+### **1. Externos (Third-party libraries)**
+```typescript
+// React e React-related SEMPRE primeiro
+import React, { useState, useEffect, useCallback } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+
+// Outras bibliotecas externas
+import { toast } from "sonner";
+import { Loader2, Plus, Edit, Calendar } from "lucide-react";
+import * as z from "zod";
+```
+
+### **2. Internos do projeto (com @/ alias)**
+```typescript
+// UI Components
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { PageContainer } from "@/components/layout/page-container";
+
+// Controllers/APIs
+import { agentsApi } from "@/controllers/agents-api";
+import { routinesApi } from "@/controllers/routines-api";
+
+// Stores/Hooks globais
+import { useAuth } from "@/stores/auth";
+import { useToast } from "@/hooks/use-toast";
+
+// Types globais
+import type { ApiResponse } from "@/types/api";
+import type { AgentDetails } from "@/types/agent";
+
+// Constants
+import { AGENT_FORM_DEFAULTS } from "@/constants/agent";
+import { APP_CONFIG } from "@/constants/app";
+```
+
+### **3. Locais da página/componente (SEMPRE por último)**
+```typescript
+// Hooks locais
+import { useLogin } from "./hooks";
+import { useAgentForm, useAgentsList } from "./hooks";
+
+// Types locais
+import type { LoginFormData } from "./types";
+import type { AgentFormProps, AgentViewMode } from "./types";
+
+// Validações locais
+import { loginSchema } from "./validation";
+import { agentSchema } from "./validation";
+
+// Components locais
+import { LoginHeader, LoginFooter, ErrorAlert } from "./components";
+import { AgentsList, AgentForm, AgentView } from "./components";
+```
+
+## 🚫 **REGRAS DE SEPARAÇÃO**
+
+### **SEMPRE separar grupos com linha em branco:**
+```typescript
+import React from "react";           // ← Externos
+import { useForm } from "react-hook-form";
+
+import { Button } from "@/components/ui/button";    // ← Internos
+import { useAuth } from "@/stores/auth";
+
+import { useLogin } from "./hooks";   // ← Locais
+import { LoginHeader } from "./components";
+```
+
+### **NUNCA misturar grupos:**
+```typescript
+// ❌ ERRADO - tipos misturados
+import React from "react";
+import { useLogin } from "./hooks";  // ← Local misturado com externo
+import { Button } from "@/components/ui/button";
+
+// ✅ CORRETO - grupos separados
+import React from "react";
+
+import { Button } from "@/components/ui/button";
+
+import { useLogin } from "./hooks";
+```
+
+## 📝 **REGRAS ESPECÍFICAS**
+
+### **1. Types sempre após imports normais**
+```typescript
+// ✅ CORRETO
+import { agentsApi } from "@/controllers/agents-api";
+import type { AgentDetails } from "@/types/agent";
+
+// ❌ ERRADO
+import type { AgentDetails } from "@/types/agent";
+import { agentsApi } from "@/controllers/agents-api";
+```
+
+### **2. React imports sempre primeiro nos externos**
+```typescript
+// ✅ CORRETO
+import React, { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+
+// ❌ ERRADO
+import { useForm } from "react-hook-form";
+import React, { useState, useEffect } from "react";
+```
+
+### **3. Destructuring ordenado alfabeticamente**
+```typescript
+// ✅ CORRETO
+import { useCallback, useEffect, useState } from "react";
+import { Button, Calendar, Loader2, Plus } from "lucide-react";
+
+// ❌ ERRADO
+import { useState, useEffect, useCallback } from "react";
+import { Plus, Button, Loader2, Calendar } from "lucide-react";
+```
+
+### **4. Imports de pasta local sempre usar ./relative**
+```typescript
+// ✅ CORRETO
+import { useLogin } from "./hooks";
+import { LoginHeader } from "./components";
+
+// ❌ ERRADO
+import { useLogin } from "../LoginPage/hooks";
+import { LoginHeader } from "@/pages/LoginPage/components/LoginHeader";
+```
+
+## 🔍 **EXEMPLOS COMPLETOS**
+
+### **Arquivo de Page (index.tsx)**
+```typescript
+import React, { useEffect } from "react";
+import { Loader2, Plus, Edit } from "lucide-react";
+
+import { PageContainer } from "@/components/layout/page-container";
+import { Button } from "@/components/ui/button";
+
+import { useAgentes } from "./hooks";
+import type { AgentViewMode } from "./types";
+import { AgentsList, AgentForm, AgentView } from "./components";
+```
+
+### **Arquivo de Hook**
+```typescript
+import { useState, useEffect, useCallback } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
+
+import { agentsApi } from "@/controllers/agents-api";
+import { useAuth } from "@/stores/auth";
+import type { ApiResponse } from "@/types/api";
+import type { AgentDetails } from "@/types/agent";
+import { AGENT_FORM_DEFAULTS } from "@/constants/agent";
+
+import { agentSchema } from "./validation";
+import type { AgentFormData, AgentsPageState } from "./types";
+```
+
+### **Arquivo de Component**
+```typescript
+import React from "react";
+import { Save, X, Bot } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
+import { Card, CardContent } from "@/components/ui/card";
+
+import { useAgentForm } from "../hooks";
+import type { AgentFormProps } from "../types";
+import { AgentErrorAlert, AgentNameField } from "./form";
+```
+
+## ✅ **CHECKLIST DE VALIDAÇÃO**
+
+Antes de considerar o arquivo correto, verificar:
+
+- [ ] React imports estão primeiro nos externos?
+- [ ] Grupos estão separados por linha em branco?
+- [ ] Types estão após imports normais em cada grupo?
+- [ ] Destructuring está ordenado alfabeticamente?
+- [ ] Imports locais usam "./relative" paths?
+- [ ] Não há mistura entre grupos?
+- [ ] Ordem: Externos → Internos (@/) → Locais (./)
+
+## 🎯 **OBJETIVO**
+
+Manter **consistência absoluta** na organização de imports em todo o projeto, facilitando:
+- Leitura e navegação do código
+- Identificação rápida de dependências
+- Manutenção e refatoração
+- Onboarding de novos desenvolvedores

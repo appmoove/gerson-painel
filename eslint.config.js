@@ -19,5 +19,8 @@ export default tseslint.config([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    rules: {
+      'filename-rules/match': [2, 'kebab-case'],
+    },
   },
 ])

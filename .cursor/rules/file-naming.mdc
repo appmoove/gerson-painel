@@ -1,0 +1,213 @@
+---
+description: Regras de nomenclatura de arquivos - SEMPRE kebab-case
+alwaysApply: true
+---
+
+# 🏷️ Regras de Nomenclatura de Arquivos
+
+## 🎯 **APLICAÇÃO OBRIGATÓRIA**
+
+Esta regra **SEMPRE** deve ser aplicada em todos os arquivos do projeto, exceto aqueles especificados nas exceções.
+
+## 📋 **PADRÃO OBRIGATÓRIO: kebab-case**
+
+### **✅ SEMPRE USAR kebab-case**
+
+Todos os arquivos devem seguir o padrão `kebab-case` (palavras separadas por hífen, tudo minúsculo):
+
+```
+✅ CORRETO:
+- login-header.tsx
+- error-alert.tsx
+- agent-form.tsx
+- user-profile.tsx
+- data-table.tsx
+- auth-api.ts
+- base-api.ts
+- agents-api.ts
+- login-schema.ts
+- form-validation.ts
+- use-auth.ts
+- use-agents.ts
+```
+
+### **❌ NUNCA USAR PascalCase/camelCase**
+
+```
+❌ INCORRETO:
+- LoginHeader.tsx
+- ErrorAlert.tsx
+- AgentForm.tsx
+- UserProfile.tsx
+- DataTable.tsx
+- authApi.ts
+- baseApi.ts
+- agentsApi.ts
+- loginSchema.ts
+- formValidation.ts
+- useAuth.ts
+- useAgents.ts
+```
+
+## 🚫 **EXCEÇÕES**
+
+### **Arquivos que NÃO seguem kebab-case:**
+
+1. **Arquivos de configuração do projeto:**
+   - `package.json`
+   - `tsconfig.json`
+   - `vite.config.ts`
+   - `tailwind.config.ts`
+   - `eslint.config.js`
+   - `README.md`
+
+2. **Arquivos especiais do framework:**
+   - `App.tsx` (componente raiz)
+   - `main.tsx` (entry point)
+
+3. **Arquivos de tipo/interface globais:**
+   - `index.ts` (barrel exports)
+
+4. **Pastas:**
+   - Pastas podem usar PascalCase quando representam páginas: `LoginPage/`, `AgentesPage/`
+   - Pastas de componentes UI: `components/ui/`
+
+## 📁 **EXEMPLOS POR CATEGORIA**
+
+### **Componentes React (.tsx)**
+```
+✅ CORRETO:
+- login-header.tsx
+- error-alert.tsx
+- agent-form.tsx
+- data-table.tsx
+- loading-spinner.tsx
+- profile-modal.tsx
+
+❌ INCORRETO:
+- LoginHeader.tsx
+- ErrorAlert.tsx
+- AgentForm.tsx
+- DataTable.tsx
+- LoadingSpinner.tsx
+- ProfileModal.tsx
+```
+
+### **Hooks (.ts)**
+```
+✅ CORRETO:
+- use-auth.ts
+- use-agents.ts
+- use-login.ts
+- use-mobile.ts
+- use-toast.ts
+
+❌ INCORRETO:
+- useAuth.ts
+- useAgents.ts
+- useLogin.ts
+- useMobile.ts
+- useToast.ts
+```
+
+### **APIs e Controllers (.ts)**
+```
+✅ CORRETO:
+- auth-api.ts
+- agents-api.ts
+- routines-api.ts
+- base-api.ts
+
+❌ INCORRETO:
+- authApi.ts
+- agentsApi.ts
+- routinesApi.ts
+- baseApi.ts
+```
+
+### **Types e Interfaces (.ts)**
+```
+✅ CORRETO:
+- agent-api.ts
+- routine-api.ts
+- auth-types.ts
+- api-types.ts
+
+❌ INCORRETO:
+- agentApi.ts
+- routineApi.ts
+- authTypes.ts
+- apiTypes.ts
+```
+
+### **Validações (.ts)**
+```
+✅ CORRETO:
+- login-schema.ts
+- agent-validation.ts
+- form-schemas.ts
+
+❌ INCORRETO:
+- loginSchema.ts
+- agentValidation.ts
+- formSchemas.ts
+```
+
+### **Utilitários (.ts)**
+```
+✅ CORRETO:
+- string-utils.ts
+- date-helpers.ts
+- form-utils.ts
+- api-helpers.ts
+
+❌ INCORRETO:
+- stringUtils.ts
+- dateHelpers.ts
+- formUtils.ts
+- apiHelpers.ts
+```
+
+## 🔍 **COMO IDENTIFICAR PROBLEMAS**
+
+### **Sinais de Nomenclatura Incorreta:**
+- Arquivo contém letras maiúsculas (exceto exceções)
+- Usa underscores (_) em vez de hífens (-)
+- Usa camelCase ou PascalCase
+- Espaços ou caracteres especiais no nome
+
+### **Padrões para Reconhecer:**
+- **kebab-case correto:** `user-profile.tsx`, `api-client.ts`
+- **PascalCase incorreto:** `UserProfile.tsx`, `ApiClient.ts`
+- **camelCase incorreto:** `userProfile.tsx`, `apiClient.ts`
+- **snake_case incorreto:** `user_profile.tsx`, `api_client.ts`
+
+## 📝 **CHECKLIST DE VALIDAÇÃO**
+
+Antes de criar/renomear um arquivo:
+
+- [ ] O nome usa apenas letras minúsculas?
+- [ ] Palavras são separadas por hífen (-)?
+- [ ] Não há underscores (_) ou camelCase?
+- [ ] Não há espaços ou caracteres especiais?
+- [ ] O arquivo não está na lista de exceções?
+
+## 🎯 **OBJETIVO**
+
+Manter **consistência absoluta** na nomenclatura de arquivos em todo o projeto, facilitando:
+- Navegação e busca de arquivos
+- Compatibilidade entre sistemas operacionais
+- Automação e scripts de build
+- Onboarding de novos desenvolvedores
+- Manutenção do código
+
+## 💡 **DICAS**
+
+1. **Use nomes descritivos:** `user-profile-modal.tsx` > `modal.tsx`
+2. **Seja consistente:** Se usa `auth-api.ts`, use `users-api.ts`
+3. **Evite abreviações:** `authentication.ts` > `auth.ts` (quando possível)
+4. **Agrupe relacionados:** `form-validation.ts`, `form-utils.ts`, `form-types.ts`
+
+---
+
+**Esta regra é OBRIGATÓRIA e deve ser aplicada em 100% dos novos arquivos criados.**
