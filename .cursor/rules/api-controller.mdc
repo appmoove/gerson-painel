@@ -1,0 +1,248 @@
+---
+description: Regras para criação e estruturação de controllers de API no frontend
+alwaysApply: false
+---
+# 🚀 Regras para Controllers de API
+
+## 📋 Estrutura Padrão
+
+Todos os controllers de API devem seguir EXATAMENTE esta estrutura, baseada nos padrões estabelecidos em `agentApi.ts` e `authApi.ts`:
+
+### 1. **Imports Padrão**
+
+```typescript
+import { AxiosInstance, AxiosError } from 'axios';
+import { [Type]Request, [Type]Response, [Type]Details, [Type]ListParams, [Type]ListResponse } from '../types/[type]';
+import { ApiResponse } from '../types/auth';
+import { createApiInstance, handleAxiosResponse, handleAxiosError } from './baseApi';
+```
+
+### 2. **Organização das Seções**
+
+```typescript
+// ===========================
+// [Type] API Class
+// ===========================
+
+class [Type]Api {
+    // ... implementação
+}
+
+// ===========================
+// Instância e Exports
+// ===========================
+
+export const [type]Api = new [Type]Api();
+```
+
+### 3. **Classe do Controller**
+
+- ✅ **SEMPRE** usar `class` (não `export class`)
+- ✅ **SEMPRE** ter `private axiosInstance: AxiosInstance`
+- ✅ **SEMPRE** usar `createApiInstance()` no construtor
+- ✅ **SEMPRE** usar `handleAxiosResponse()` e `handleAxiosError()`
+
+### 4. **Métodos da API**
+
+```typescript
+/**
+ * [Descrição do que faz]
+ */
+async [methodName](params: [Type]Request): Promise<ApiResponse<[Type]Response>> {
+    try {
+        const response = await this.axiosInstance.[httpMethod]<[Type]Response>(
+            '/[endpoint]',
+            [data/params]
+        );
+        return handleAxiosResponse(response);
+    } catch (error) {
+        return handleAxiosError(error as AxiosError);
+    }
+}
+```
+
+### 5. **Exports no index.ts**
+
+```typescript
+// [Type] Controller
+export { [type]Api } from './[type]Api';
+```
+
+## 🎯 **REGRAS PARA TIPAGENS (@types/)**
+
+### **1. Estrutura de Arquivo de Tipos**
+
+```typescript
+// ===========================
+// [Type] API Types
+// ===========================
+
+/**
+ * [Descrição do tipo/enum]
+ */
+export type [Type]Status = 'active' | 'inactive' | 'pending';
+
+/**
+ * [Descrição da interface]
+ */
+export interface [Type]Request {
+    /** [Descrição do campo] */
+    field: string;
+    /** [Descrição do campo opcional] */
+    optional_field?: string;
+}
+
+/**
+ * [Descrição da interface de resposta]
+ */
+export interface [Type]Response {
+    /** [Descrição do campo] */
+    id: string;
+    /** [Descrição do campo] */
+    name: string;
+    /** [Descrição do campo] */
+    created_at: string;
+}
+
+/**
+ * [Descrição da interface completa]
+ */
+export interface [Type]Details extends [Type]Response {
+    /** [Descrição do campo adicional] */
+    additional_field: string;
+}
+
+/**
+ * [Descrição dos filtros]
+ */
+export interface [Type]Filters {
+    /** [Descrição do filtro] */
+    status?: [Type]Status;
+    /** [Descrição do filtro] */
+    company_id?: string;
+}
+
+/**
+ * [Descrição dos parâmetros de listagem]
+ */
+export interface [Type]ListParams {
+    /** [Descrição do parâmetro] */
+    page?: number;
+    /** [Descrição do parâmetro] */
+    limit?: number;
+    /** [Descrição do parâmetro] */
+    filters?: [Type]Filters;
+}
+
+/**
+ * [Descrição da resposta de listagem]
+ */
+export interface [Type]ListResponse {
+    /** [Descrição do campo] */
+    data: [Type]Details[];
+    /** [Descrição do campo] */
+    total: number;
+    /** [Descrição do campo] */
+    page: number;
+    /** [Descrição do campo] */
+    limit: number;
+}
+```
+
+### **2. Convenções de Nomenclatura**
+
+- ✅ **SEMPRE** usar `[Type]Request` para dados de entrada
+- ✅ **SEMPRE** usar `[Type]Response` para respostas básicas
+- ✅ **SEMPRE** usar `[Type]Details` para dados completos
+- ✅ **SEMPRE** usar `[Type]Filters` para filtros de busca
+- ✅ **SEMPRE** usar `[Type]ListParams` para parâmetros de listagem
+- ✅ **SEMPRE** usar `[Type]ListResponse` para respostas de listagem
+
+### **3. Documentação de Tipos**
+
+- ✅ **SEMPRE** usar JSDoc para interfaces principais
+- ✅ **SEMPRE** documentar campos obrigatórios vs opcionais
+- ✅ **SEMPRE** usar comentários `/** */` para campos importantes
+- ✅ **SEMPRE** explicar o propósito de cada interface
+
+### **4. Tipos Compartilhados**
+
+- ✅ **SEMPRE** usar `ApiResponse<T>` do `auth.ts` para respostas de API
+- ✅ **SEMPRE** usar tipos base como `string`, `number`, `boolean`
+- ✅ **SEMPRE** usar union types para status/enums (`'active' | 'inactive'`)
+- ✅ **SEMPRE** usar `extends` para herança de tipos
+
+## 🚫 **NUNCA FAZER**
+
+- ❌ Não usar `export class` - sempre `class` + export da instância
+- ❌ Não criar configurações customizadas de Axios
+- ❌ Não implementar interceptors customizados
+- ❌ Não criar funções de conveniência separadas
+- ❌ Não usar `ApiConfig` ou configurações complexas
+- ❌ Não implementar métodos que não existem no backend
+- ❌ Não criar tipos sem documentação JSDoc
+- ❌ Não usar nomes genéricos como `Data`, `Info`, `Object`
+- ❌ Não criar interfaces sem campos obrigatórios definidos
+
+## ✅ **SEMPRE FAZER**
+
+- ✅ Usar `createApiInstance()` do baseApi
+- ✅ Usar `handleAxiosResponse()` e `handleAxiosError()`
+- ✅ Seguir exatamente a estrutura de seções com `// ===========================`
+- ✅ Usar `ApiResponse<T>` para tipagem de retorno
+- ✅ Implementar apenas endpoints que existem no backend
+- ✅ Usar nomes de métodos descritivos e claros
+- ✅ Documentar todos os tipos com JSDoc
+- ✅ Seguir convenções de nomenclatura padronizadas
+- ✅ Usar tipos específicos e descritivos
+
+## 🔧 **Exemplo de Implementação**
+
+```typescript
+// ===========================
+// User API Class
+// ===========================
+
+class UserApi {
+  private axiosInstance: AxiosInstance;
+
+  constructor() {
+    this.axiosInstance = createApiInstance();
+  }
+
+  async createUser(userData: CreateUserRequest): Promise<ApiResponse<CreateUserResponse>> {
+    try {
+      const response = await this.axiosInstance.post<CreateUserResponse>('/user/create', userData);
+      return handleAxiosResponse(response);
+    } catch (error) {
+      return handleAxiosError(error as AxiosError);
+    }
+  }
+}
+
+// ===========================
+// Instância e Exports
+// ===========================
+
+export const userApi = new UserApi();
+```
+
+## 📝 **Checklist de Validação**
+
+Antes de considerar um controller completo, verificar se:
+
+- [ ] Segue exatamente a estrutura de seções
+- [ ] Usa `class` (não `export class`)
+- [ ] Usa `createApiInstance()` no construtor
+- [ ] Usa `handleAxiosResponse()` e `handleAxiosError()`
+- [ ] Exporta apenas a instância (`export const [type]Api`)
+- [ ] Está registrado no `index.ts`
+- [ ] Endpoints correspondem ao backend
+- [ ] Tipagem usa `ApiResponse<T>`
+- [ ] Tipos estão documentados com JSDoc
+- [ ] Convenções de nomenclatura seguidas
+- [ ] Interfaces seguem padrão Request/Response/Details/Filters
+
+## 🎯 **Objetivo**
+
+Manter **consistência absoluta** entre todos os controllers e tipos, facilitando manutenção, debugging e onboarding de novos desenvolvedores.

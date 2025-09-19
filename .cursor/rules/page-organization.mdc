@@ -1,0 +1,619 @@
+---
+description: Padrão de criação e organização de páginas, componentes e hooks.
+alwaysApply: false
+---
+
+# 📁 Padrão de Organização de Páginas e Componentes
+
+## 🎯 **Visão Geral**
+
+Este documento estabelece o padrão de organização para páginas e componentes complexos no frontend, baseado na implementação bem-sucedida da `LoginPage`. O objetivo é manter **separação de responsabilidades**, **reutilização de código** e **facilidade de manutenção**.
+
+## 📋 **Estrutura Padrão de Página**
+
+Para páginas complexas (com mais de 100 linhas ou lógica significativa), use a seguinte estrutura:
+
+```
+PageName/
+├── index.tsx           # Componente principal (apenas JSX e composição)
+├── types.ts           # Interfaces e tipos específicos da página
+├── validation.ts      # Schemas de validação (Zod)
+├── hooks.ts          # Lógica customizada (custom hooks)
+└── components/       # Componentes auxiliares específicos
+    ├── Component1.tsx
+    ├── Component2.tsx
+    └── index.ts       # Barrel export
+```
+
+## 🔧 **Exemplo Real: LoginPage**
+
+### **Estrutura Implementada:**
+```
+LoginPage/
+├── index.tsx           # 126 linhas (antes: 201 linhas)
+├── types.ts           # LoginFormData, LoginPageState
+├── validation.ts      # loginSchema (Zod)
+├── hooks.ts          # useLogin hook
+└── components/
+    ├── LoginHeader.tsx    # Logo + título + descrição
+    ├── LoginFooter.tsx    # Copyright
+    ├── ErrorAlert.tsx     # Alert de erro padronizado
+    └── index.ts          # Exports
+```
+
+## 📝 **Quando e Como Usar Cada Arquivo**
+
+### **1. types.ts - Interfaces e Tipos**
+
+**Quando criar:**
+- ✅ Página tem interfaces específicas (FormData, State, Props)
+- ✅ Mais de 2-3 tipos/interfaces relacionados
+- ✅ Tipos que serão reutilizados entre arquivos da página
+
+**Como estruturar:**
+```typescript
+/**
+ * Dados do formulário de [página]
+ */
+export interface [Page]FormData {
+    /** Campo obrigatório */
+    field: string;
+    /** Campo opcional */
+    optionalField?: string;
+}
+
+/**
+ * Estado da página de [página]
+ */
+export interface [Page]PageState {
+    isLoading: boolean;
+    error: string | null;
+}
+```
+
+**NÃO criar quando:**
+- ❌ Página simples com 1-2 interfaces básicas
+- ❌ Tipos já existem globalmente
+
+### **2. validation.ts - Schemas de Validação**
+
+**Quando criar:**
+- ✅ Formulários com validação complexa
+- ✅ Múltiplos campos com regras específicas
+- ✅ Usa bibliotecas como Zod, Yup, etc.
+
+**Como estruturar:**
+```typescript
+import * as z from "zod";
+import { VALIDATION_CONSTANTS } from "@/constants/[module]";
+
+/**
+ * Schema de validação para [funcionalidade]
+ * Usa constantes para mensagens consistentes
+ */
+export const [page]Schema = z.object({
+    email: z
+        .string()
+        .min(1, VALIDATION_CONSTANTS.EMAIL.REQUIRED)
+        .email(VALIDATION_CONSTANTS.EMAIL.INVALID),
+    // outros campos...
+});
+```
+
+**NÃO criar quando:**
+- ❌ Formulários simples sem validação
+- ❌ Validação básica que cabe no próprio componente
+
+### **3. hooks.ts - Lógica Customizada**
+
+**Quando criar:**
+- ✅ Lógica de estado complexa (loading, error, data)
+- ✅ Múltiplas operações relacionadas (CRUD, API calls)
+- ✅ Estado que será testado isoladamente
+- ✅ Lógica reutilizável entre componentes da página
+
+**Como estruturar:**
+```typescript
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+// imports...
+
+/**
+ * Hook customizado para [funcionalidade]
+ * Encapsula estado, validação e operações
+ */
+export function use[Page]() {
+    // Estados
+    const [isLoading, setIsLoading] = useState(false);
+
+    // Form (se aplicável)
+    const form = useForm<FormData>({ ... });
+
+    // Operações
+    const onSubmit = (data: FormData) => { ... };
+
+    return {
+        // State
+        isLoading,
+        form,
+        // Actions
+        onSubmit,
+        // Helpers
+        clearError: () => setError(null),
+    };
+}
+```
+
+**NÃO criar quando:**
+- ❌ Componente tem só useState simples
+- ❌ Lógica trivial que não será reutilizada
+
+### **4. components/ - Componentes Auxiliares**
+
+**Quando criar componentes separados:**
+- ✅ Bloco JSX com mais de 15-20 linhas
+- ✅ Lógica visual reutilizável
+- ✅ Responsabilidade específica bem definida
+- ✅ Pode ser testado isoladamente
+
+**Como estruturar:**
+```typescript
+interface ComponentProps {
+    /** Prop obrigatória */
+    data: string;
+    /** Prop opcional */
+    variant?: 'default' | 'secondary';
+}
+
+/**
+ * Componente para [responsabilidade específica]
+ * [Descrição do que faz]
+ */
+export function ComponentName({ data, variant = 'default' }: ComponentProps) {
+    return (
+        <div className={`base-styles ${variant-styles}`}>
+            {/* JSX */}
+        </div>
+    );
+}
+```
+
+**Sempre criar index.ts para barrel exports:**
+```typescript
+// components/index.ts
+export { Component1 } from './Component1';
+export { Component2 } from './Component2';
+```
+
+**NÃO criar componente quando:**
+- ❌ JSX pequeno (< 10 linhas)
+- ❌ Usado apenas uma vez
+- ❌ Sem lógica própria
+
+## ✅ **Checklist de Decisão**
+
+Antes de organizar uma página, pergunte:
+
+### **Devo criar types.ts?**
+- [ ] Tenho 3+ interfaces relacionadas?
+- [ ] Tipos serão reutilizados entre arquivos?
+- [ ] Interfaces são específicas desta página?
+
+### **Devo criar validation.ts?**
+- [ ] Tenho formulário com validação?
+- [ ] Uso biblioteca de validação (Zod)?
+- [ ] Múltiplas regras de validação?
+
+### **Devo criar hooks.ts?**
+- [ ] Lógica de estado complexa?
+- [ ] Múltiplas operações relacionadas?
+- [ ] Preciso testar lógica isoladamente?
+
+### **Devo criar components/?**
+- [ ] Tenho blocos JSX > 15 linhas?
+- [ ] Componentes reutilizáveis?
+- [ ] Responsabilidades específicas?
+
+## 🎨 **Padrões de Nomenclatura**
+
+### **Arquivos:**
+- `index.tsx` - Componente principal
+- `types.ts` - Sempre singular
+- `validation.ts` - Sempre singular
+- `hooks.ts` - Sempre singular
+- `components/` - Sempre plural
+
+### **Exports:**
+- Interfaces: `[Page]FormData`, `[Page]State`
+- Schemas: `[page]Schema` (camelCase)
+- Hooks: `use[Page]()` (camelCase)
+- Components: `[Page][Purpose]` (PascalCase)
+
+### **Imports no index.tsx:**
+```typescript
+// Externos primeiro
+import { ... } from "react";
+import { ... } from "library";
+
+// Internos do projeto
+import { ... } from "@/components/ui/...";
+
+// Locais da página (sempre por último)
+import { useLogin } from "./hooks";
+import { LoginHeader, LoginFooter } from "./components";
+```
+
+## 🚀 **Benefícios Alcançados**
+
+### **Separação de Responsabilidades:**
+- **UI pura** → `index.tsx` (apenas JSX e composição)
+- **Lógica de negócio** → `hooks.ts`
+- **Validações** → `validation.ts`
+- **Tipos** → `types.ts`
+
+### **Testabilidade:**
+- Hooks podem ter testes unitários isolados
+- Componentes pequenos são facilmente testáveis
+- Schemas de validação testáveis separadamente
+
+### **Reutilização:**
+- Componentes auxiliares reutilizáveis
+- Hooks customizados reutilizáveis
+- Tipos compartilháveis
+
+### **Manutenibilidade:**
+- Mudanças têm escopo limitado
+- Código mais legível e organizado
+- Onboarding mais fácil
+
+## 🎯 **Exemplo de Uso no index.tsx Final**
+
+```typescript
+import { ExternalLib } from "external-lib";
+import { UIComponent } from "@/components/ui/component";
+
+// Imports locais
+import { usePageLogic } from "./hooks";
+import { PageHeader, PageFooter } from "./components";
+
+export default function PageName() {
+    const { state, actions } = usePageLogic();
+
+    return (
+        <div>
+            <PageHeader />
+            {/* Lógica de renderização limpa */}
+            <PageFooter />
+        </div>
+    );
+}
+```
+
+## 📋 **Casos Especiais**
+
+### **Páginas Simples (< 50 linhas):**
+- Use apenas `index.tsx`
+- Não force a organização
+
+### **Páginas Médias (50-100 linhas):**
+- Considere apenas `components/` se houver blocos reutilizáveis
+- Mantenha types e validation no próprio arquivo
+
+### **Páginas Complexas (> 100 linhas):**
+- **SEMPRE** use a estrutura completa
+- Priorize separação de responsabilidades
+
+---
+
+## 🎯 **Objetivo Final**
+
+Manter **consistência**, **reutilização** e **manutenibilidade** em todas as páginas complexas do projeto, facilitando o desenvolvimento, teste e onboarding de novos desenvolvedores.
+
+**Esta estrutura é obrigatória para páginas com mais de 100 linhas ou lógica significativa.**
+# 📁 Padrão de Organização de Páginas e Componentes
+
+## 🎯 **Visão Geral**
+
+Este documento estabelece o padrão de organização para páginas e componentes complexos no frontend, baseado na implementação bem-sucedida da `LoginPage`. O objetivo é manter **separação de responsabilidades**, **reutilização de código** e **facilidade de manutenção**.
+
+## 📋 **Estrutura Padrão de Página**
+
+Para páginas complexas (com mais de 100 linhas ou lógica significativa), use a seguinte estrutura:
+
+```
+PageName/
+├── index.tsx           # Componente principal (apenas JSX e composição)
+├── types.ts           # Interfaces e tipos específicos da página
+├── validation.ts      # Schemas de validação (Zod)
+├── hooks.ts          # Lógica customizada (custom hooks)
+└── components/       # Componentes auxiliares específicos
+    ├── Component1.tsx
+    ├── Component2.tsx
+    └── index.ts       # Barrel export
+```
+
+## 🔧 **Exemplo Real: LoginPage**
+
+### **Estrutura Implementada:**
+```
+LoginPage/
+├── index.tsx           # 126 linhas (antes: 201 linhas)
+├── types.ts           # LoginFormData, LoginPageState
+├── validation.ts      # loginSchema (Zod)
+├── hooks.ts          # useLogin hook
+└── components/
+    ├── LoginHeader.tsx    # Logo + título + descrição
+    ├── LoginFooter.tsx    # Copyright
+    ├── ErrorAlert.tsx     # Alert de erro padronizado
+    └── index.ts          # Exports
+```
+
+## 📝 **Quando e Como Usar Cada Arquivo**
+
+### **1. types.ts - Interfaces e Tipos**
+
+**Quando criar:**
+- ✅ Página tem interfaces específicas (FormData, State, Props)
+- ✅ Mais de 2-3 tipos/interfaces relacionados
+- ✅ Tipos que serão reutilizados entre arquivos da página
+
+**Como estruturar:**
+```typescript
+/**
+ * Dados do formulário de [página]
+ */
+export interface [Page]FormData {
+    /** Campo obrigatório */
+    field: string;
+    /** Campo opcional */
+    optionalField?: string;
+}
+
+/**
+ * Estado da página de [página]
+ */
+export interface [Page]PageState {
+    isLoading: boolean;
+    error: string | null;
+}
+```
+
+**NÃO criar quando:**
+- ❌ Página simples com 1-2 interfaces básicas
+- ❌ Tipos já existem globalmente
+
+### **2. validation.ts - Schemas de Validação**
+
+**Quando criar:**
+- ✅ Formulários com validação complexa
+- ✅ Múltiplos campos com regras específicas
+- ✅ Usa bibliotecas como Zod, Yup, etc.
+
+**Como estruturar:**
+```typescript
+import * as z from "zod";
+import { VALIDATION_CONSTANTS } from "@/constants/[module]";
+
+/**
+ * Schema de validação para [funcionalidade]
+ * Usa constantes para mensagens consistentes
+ */
+export const [page]Schema = z.object({
+    email: z
+        .string()
+        .min(1, VALIDATION_CONSTANTS.EMAIL.REQUIRED)
+        .email(VALIDATION_CONSTANTS.EMAIL.INVALID),
+    // outros campos...
+});
+```
+
+**NÃO criar quando:**
+- ❌ Formulários simples sem validação
+- ❌ Validação básica que cabe no próprio componente
+
+### **3. hooks.ts - Lógica Customizada**
+
+**Quando criar:**
+- ✅ Lógica de estado complexa (loading, error, data)
+- ✅ Múltiplas operações relacionadas (CRUD, API calls)
+- ✅ Estado que será testado isoladamente
+- ✅ Lógica reutilizável entre componentes da página
+
+**Como estruturar:**
+```typescript
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+// imports...
+
+/**
+ * Hook customizado para [funcionalidade]
+ * Encapsula estado, validação e operações
+ */
+export function use[Page]() {
+    // Estados
+    const [isLoading, setIsLoading] = useState(false);
+
+    // Form (se aplicável)
+    const form = useForm<FormData>({ ... });
+
+    // Operações
+    const onSubmit = (data: FormData) => { ... };
+
+    return {
+        // State
+        isLoading,
+        form,
+        // Actions
+        onSubmit,
+        // Helpers
+        clearError: () => setError(null),
+    };
+}
+```
+
+**NÃO criar quando:**
+- ❌ Componente tem só useState simples
+- ❌ Lógica trivial que não será reutilizada
+
+### **4. components/ - Componentes Auxiliares**
+
+**Quando criar componentes separados:**
+- ✅ Bloco JSX com mais de 15-20 linhas
+- ✅ Lógica visual reutilizável
+- ✅ Responsabilidade específica bem definida
+- ✅ Pode ser testado isoladamente
+
+**Como estruturar:**
+```typescript
+interface ComponentProps {
+    /** Prop obrigatória */
+    data: string;
+    /** Prop opcional */
+    variant?: 'default' | 'secondary';
+}
+
+/**
+ * Componente para [responsabilidade específica]
+ * [Descrição do que faz]
+ */
+export function ComponentName({ data, variant = 'default' }: ComponentProps) {
+    return (
+        <div className={`base-styles ${variant-styles}`}>
+            {/* JSX */}
+        </div>
+    );
+}
+```
+
+**Sempre criar index.ts para barrel exports:**
+```typescript
+// components/index.ts
+export { Component1 } from './Component1';
+export { Component2 } from './Component2';
+```
+
+**NÃO criar componente quando:**
+- ❌ JSX pequeno (< 10 linhas)
+- ❌ Usado apenas uma vez
+- ❌ Sem lógica própria
+
+## ✅ **Checklist de Decisão**
+
+Antes de organizar uma página, pergunte:
+
+### **Devo criar types.ts?**
+- [ ] Tenho 3+ interfaces relacionadas?
+- [ ] Tipos serão reutilizados entre arquivos?
+- [ ] Interfaces são específicas desta página?
+
+### **Devo criar validation.ts?**
+- [ ] Tenho formulário com validação?
+- [ ] Uso biblioteca de validação (Zod)?
+- [ ] Múltiplas regras de validação?
+
+### **Devo criar hooks.ts?**
+- [ ] Lógica de estado complexa?
+- [ ] Múltiplas operações relacionadas?
+- [ ] Preciso testar lógica isoladamente?
+
+### **Devo criar components/?**
+- [ ] Tenho blocos JSX > 15 linhas?
+- [ ] Componentes reutilizáveis?
+- [ ] Responsabilidades específicas?
+
+## 🎨 **Padrões de Nomenclatura**
+
+### **Arquivos:**
+- `index.tsx` - Componente principal
+- `types.ts` - Sempre singular
+- `validation.ts` - Sempre singular
+- `hooks.ts` - Sempre singular
+- `components/` - Sempre plural
+
+### **Exports:**
+- Interfaces: `[Page]FormData`, `[Page]State`
+- Schemas: `[page]Schema` (camelCase)
+- Hooks: `use[Page]()` (camelCase)
+- Components: `[Page][Purpose]` (PascalCase)
+
+### **Imports no index.tsx:**
+```typescript
+// Externos primeiro
+import { ... } from "react";
+import { ... } from "library";
+
+// Internos do projeto
+import { ... } from "@/components/ui/...";
+
+// Locais da página (sempre por último)
+import { useLogin } from "./hooks";
+import { LoginHeader, LoginFooter } from "./components";
+```
+
+## 🚀 **Benefícios Alcançados**
+
+### **Separação de Responsabilidades:**
+- **UI pura** → `index.tsx` (apenas JSX e composição)
+- **Lógica de negócio** → `hooks.ts`
+- **Validações** → `validation.ts`
+- **Tipos** → `types.ts`
+
+### **Testabilidade:**
+- Hooks podem ter testes unitários isolados
+- Componentes pequenos são facilmente testáveis
+- Schemas de validação testáveis separadamente
+
+### **Reutilização:**
+- Componentes auxiliares reutilizáveis
+- Hooks customizados reutilizáveis
+- Tipos compartilháveis
+
+### **Manutenibilidade:**
+- Mudanças têm escopo limitado
+- Código mais legível e organizado
+- Onboarding mais fácil
+
+## 🎯 **Exemplo de Uso no index.tsx Final**
+
+```typescript
+import { ExternalLib } from "external-lib";
+import { UIComponent } from "@/components/ui/component";
+
+// Imports locais
+import { usePageLogic } from "./hooks";
+import { PageHeader, PageFooter } from "./components";
+
+export default function PageName() {
+    const { state, actions } = usePageLogic();
+
+    return (
+        <div>
+            <PageHeader />
+            {/* Lógica de renderização limpa */}
+            <PageFooter />
+        </div>
+    );
+}
+```
+
+## 📋 **Casos Especiais**
+
+### **Páginas Simples (< 50 linhas):**
+- Use apenas `index.tsx`
+- Não force a organização
+
+### **Páginas Médias (50-100 linhas):**
+- Considere apenas `components/` se houver blocos reutilizáveis
+- Mantenha types e validation no próprio arquivo
+
+### **Páginas Complexas (> 100 linhas):**
+- **SEMPRE** use a estrutura completa
+- Priorize separação de responsabilidades
+
+---
+
+## 🎯 **Objetivo Final**
+
+Manter **consistência**, **reutilização** e **manutenibilidade** em todas as páginas complexas do projeto, facilitando o desenvolvimento, teste e onboarding de novos desenvolvedores.
+
+**Esta estrutura é obrigatória para páginas com mais de 100 linhas ou lógica significativa.**
