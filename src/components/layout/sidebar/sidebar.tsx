@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom"
-import { Brain, ChevronDown, LogOut, Moon, Sun, User } from "lucide-react"
+import { ChevronDown, LogOut, Moon, Sun, User, PanelLeftClose, PanelLeftOpen } from "lucide-react"
 import { sidebarItems, type SidebarItem } from "./sidebar-config"
 import {
     Sidebar as SidebarPrimitive,
@@ -22,15 +22,18 @@ import {
 } from "@/components/ui/collapsible"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import { useAuth } from "@/stores/auth"
 import { cn } from "@/lib/utils"
 import { useTheme } from "@/components/theme-provider"
+import { useSidebarToggle } from "@/hooks/use-sidebar-toggle"
 
 export function Sidebar() {
     const location = useLocation()
     const navigate = useNavigate()
     const { theme, setTheme } = useTheme()
     const { user: currentUser, logout, setProfileModalOpen } = useAuth()
+    const { isCollapsed, toggleSidebar } = useSidebarToggle()
 
     const isActive = (item: SidebarItem) => {
         if (!item.href) return false
@@ -60,6 +63,10 @@ export function Sidebar() {
         const Icon = item.icon
 
         if (item.isGroup && item.children) {
+            if (isCollapsed) {
+                return null
+            }
+            
             return (
                 <Collapsible key={item.id} defaultOpen className="group/collapsible">
                     <SidebarMenuItem>
@@ -93,9 +100,12 @@ export function Sidebar() {
             return (
                 <SidebarMenuItem key={item.id}>
                     <SidebarMenuButton asChild isActive={isActive(item)}>
-                        <Link to={item.href}>
+                        <Link to={item.href} className={cn(
+                            "flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted/50",
+                            isCollapsed ? "justify-center" : "justify-start"
+                        )}>
                             <Icon />
-                            <span>{item.title}</span>
+                            {!isCollapsed && <span>{item.title}</span>}
                         </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -107,35 +117,52 @@ export function Sidebar() {
 
     return (
         <>
-            <SidebarPrimitive className="select-none">
-                {/* Header com Logo e Nome */}
-                <SidebarHeader className="border-b border-border">
-                    <div className="flex items-center gap-3 px-2 py-0.5">
-                        <Brain className="w-6 h-6 flex-shrink-0" color="var(--primary)" />
-                        <div className="flex-1 min-w-0">
-                            <h2 className="text-md font-semibold text-foreground">
-                                Gerson
-                            </h2>
-                            <p className="text-xs text-muted-foreground">
-                                Call Center IA
-                            </p>
-                        </div>
+            <SidebarPrimitive 
+                className={cn(
+                    "select-none transition-all duration-300 ease-in-out pt-16 flex flex-col h-screen",
+                    isCollapsed ? "w-16" : "w-64"
+                )}
+            >
+                {/* Header com Botão de Toggle */}
+                <SidebarHeader className="border-b border-border flex-shrink-0">
+                    <div className="flex items-center justify-center px-2 py-2">
+                        {/* Botão de toggle centralizado */}
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={toggleSidebar}
+                            className="h-8 px-3 gap-2 hover:bg-muted"
+                        >
+                            {isCollapsed ? (
+                                <PanelLeftOpen className="h-4 w-4" />
+                            ) : (
+                                <>
+                                    <PanelLeftClose className="h-4 w-4" />
+                                    <span className="text-xs">Recolher</span>
+                                </>
+                            )}
+                            <span className="sr-only">
+                                {isCollapsed ? "Expandir sidebar" : "Recolher sidebar"}
+                            </span>
+                        </Button>
                     </div>
                 </SidebarHeader>
 
                 {/* Conteudo do Sidebar */}
-                <SidebarContent>
-                    <SidebarGroup>
-                        <SidebarGroupContent>
-                            <SidebarMenu>
-                                {sidebarItems.map(item => renderSidebarItem(item))}
-                            </SidebarMenu>
-                        </SidebarGroupContent>
-                    </SidebarGroup>
-                </SidebarContent>
+                <div className="flex-1 overflow-hidden">
+                    <SidebarContent>
+                        <SidebarGroup>
+                            <SidebarGroupContent>
+                                <SidebarMenu>
+                                    {sidebarItems.map(item => renderSidebarItem(item))}
+                                </SidebarMenu>
+                            </SidebarGroupContent>
+                        </SidebarGroup>
+                    </SidebarContent>
+                </div>
 
                 {/* Footer do Sidebar */}
-                <SidebarFooter className="border-t border-border w-full">
+                <SidebarFooter className="border-t border-border w-full flex-shrink-0">
                     <SidebarContent>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -152,14 +179,16 @@ export function Sidebar() {
                                         </AvatarFallback>
                                     </Avatar>
 
-                                    <div className="flex-1 min-w-0 text-left">
-                                        <p className="text-md text-foreground truncate">
-                                            {currentUser?.name || ''}
-                                        </p>
-                                        <p className="text-xs text-muted-foreground truncate">
-                                            {currentUser?.role === 'admin' ? 'Administrador' : 'Usuário'}
-                                        </p>
-                                    </div>
+                                    {!isCollapsed && (
+                                        <div className="flex-1 min-w-0 text-left">
+                                            <p className="text-md text-foreground truncate">
+                                                {currentUser?.name || ''}
+                                            </p>
+                                            <p className="text-xs text-muted-foreground truncate">
+                                                {currentUser?.role === 'admin' ? 'Administrador' : 'Usuário'}
+                                            </p>
+                                        </div>
+                                    )}
                                 </SidebarMenuButton>
                             </DropdownMenuTrigger>
 
