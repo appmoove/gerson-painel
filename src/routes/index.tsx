@@ -10,10 +10,10 @@ import RotinasPage from "@/pages/RotinasPage"
 function ProtectedRoute() {
     const { isAuthenticated } = useAuth()
 
-    // // Se não estiver autenticado, redireciona para login
-    // if (!isAuthenticated()) {
-    //     return <Navigate to="/login" replace />
-    // }
+    // Se não estiver autenticado, redireciona para login
+    if (!isAuthenticated()) {
+        return <Navigate to="/login" replace />
+    }
 
     return (
         <Layout>
