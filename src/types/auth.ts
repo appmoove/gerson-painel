@@ -15,22 +15,26 @@ export interface LoginRequest {
  * Dados do usuário retornados pela API de login
  */
 export interface LoginUserData {
-    id: string;
-    name: string;
-    email: string;
-    role: string;
-    company_id: string;
-    company_name: string;
+    user: {
+        id: string;
+        name: string;
+        email: string;
+        role: string;
+    },
+    organization: {
+        id: string;
+        name: string;
+    },
+    permissions: string[];
     lastLogin: string | null;
 }
-
 
 /**
  * Resposta de sucesso da API de login
  */
 export interface LoginResponse {
     token: string;
-    user: LoginUserData;
+    payload: LoginUserData;
 }
 
 

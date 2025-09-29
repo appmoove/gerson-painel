@@ -45,10 +45,11 @@ export function useLogin() {
         })
             .then(({ data: responseData, error: responseError }) => {
                 if (responseData) {
-                    const { token, user } = responseData
+
+                    const { token, payload } = responseData
 
                     // Salvar token no store (com remember me)
-                    login(token, user, data.remember);
+                    login(token, payload, data.remember);
 
                     // Navegar para home
                     navigate("/");

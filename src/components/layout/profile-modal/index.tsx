@@ -167,7 +167,7 @@ export default function ProfileModal() {
                                     <p className="text-sm font-medium text-foreground">Empresa</p>
                                 </div>
                                 <p className="text-sm text-muted-foreground truncate">
-                                    {currentUser.company_name || 'Não informado'}
+                                    {currentUser.organization_name || 'Não informado'}
                                 </p>
                             </div>
                         </CardContent>

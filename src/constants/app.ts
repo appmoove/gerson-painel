@@ -3,7 +3,6 @@ export const APP_CONFIG = {
     version: '1.0.0',
     description: 'Sistema de Call Center Automatizado',
     api: {
-        baseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3100',
-        timeout: 10000, // 10 segundos
+        baseUrl: import.meta.env.VITE_ORGANIZATION_API_URL || 'https://gerson-organization-api.hackaton.appmoove.com.br',
     },
 } as const;

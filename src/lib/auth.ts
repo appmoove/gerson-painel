@@ -56,19 +56,21 @@ export function isTokenExpired(token: string, bufferSeconds = 300): boolean {
  */
 export function saveAuthData(data: StoredAuthData, rememberMe = false): void {
     try {
+        const { token, ...payload } = data;
+
         if (rememberMe) {
             // localStorage para "lembrar de mim"
-            localStorage.setItem(AUTH_STORAGE_KEYS.TOKEN, data.token);
-            localStorage.setItem(AUTH_STORAGE_KEYS.USER, JSON.stringify(data.user));
+            localStorage.setItem(AUTH_STORAGE_KEYS.TOKEN, token);
+            localStorage.setItem(AUTH_STORAGE_KEYS.USER, JSON.stringify(payload));
             localStorage.setItem(AUTH_STORAGE_KEYS.REMEMBER_ME, 'true');
 
-            if (data.expiresAt) {
-                localStorage.setItem(AUTH_STORAGE_KEYS.EXPIRES_AT, data.expiresAt.toString());
+            if (payload.expiresAt) {
+                localStorage.setItem(AUTH_STORAGE_KEYS.EXPIRES_AT, payload.expiresAt.toString());
             }
         } else {
             // sessionStorage para sessão temporária
-            sessionStorage.setItem(AUTH_STORAGE_KEYS.TOKEN, data.token);
-            sessionStorage.setItem(AUTH_STORAGE_KEYS.USER, JSON.stringify(data.user));
+            sessionStorage.setItem(AUTH_STORAGE_KEYS.TOKEN, token);
+            sessionStorage.setItem(AUTH_STORAGE_KEYS.USER, JSON.stringify(payload));
 
             // Remove dados antigos do localStorage se existirem
             localStorage.removeItem(AUTH_STORAGE_KEYS.TOKEN);
@@ -138,7 +140,7 @@ export function loadAuthData(): StoredAuthData | null {
 
         return {
             token,
-            user,
+            user: user.user,
             expiresAt: expiresAt ? parseInt(expiresAt) : undefined,
         };
     } catch (error) {

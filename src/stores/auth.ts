@@ -1,6 +1,7 @@
 import { create } from "zustand"
 import { saveAuthData, loadAuthData, removeAuthData } from "@/lib/auth"
 import type { LoginUserData } from "@/types/auth"
+import moment from "moment"
 
 export type User = {
     id: string
@@ -8,9 +9,10 @@ export type User = {
     role?: string
     name?: string
     avatar?: string
-    company_id?: string
-    company_name?: string
+    organization_id?: string
+    organization_name?: string
     lastLogin?: string | null
+    permissions?: string[]
 }
 
 type AuthState = {
@@ -35,13 +37,14 @@ export const useAuth = create<AuthState>((set) => ({
 
         // Converte LoginUserData para User
         const user: User = {
-            id: apiUser.id,
-            email: apiUser.email,
-            name: apiUser.name,
-            role: apiUser.role,
-            company_id: apiUser.company_id,
-            company_name: apiUser.company_name,
-            lastLogin: apiUser.lastLogin ? apiUser.lastLogin : null
+            id: apiUser.user.id,
+            email: apiUser.user.email,
+            name: apiUser.user.name,
+            role: apiUser.user.role,
+            organization_id: apiUser.organization.id,
+            organization_name: apiUser.organization.name,
+            permissions: apiUser.permissions,
+            lastLogin: moment().format('YYYY-MM-DD HH:mm:ss')
         }
 
         // Calcula expiração (24h para remember=true)
