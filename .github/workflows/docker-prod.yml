@@ -34,9 +34,4 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            API_WEBSERVICE=${{secrets.API_WEBSERVICE}}
-            API_BACKEND=${{secrets.API_BACKEND}}
-            TOKEN_MAPBOX=${{secrets.TOKEN_MAPBOX}}
-            SECMOB_PAINEL=${{secrets.SECMOB_PAINEL}}
             NODE_ENV=production
-            WEBPACK_MODE=production
