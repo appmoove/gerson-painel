@@ -12,7 +12,6 @@ import {
     SidebarMenuSub,
     SidebarMenuSubButton,
     SidebarMenuSubItem,
-    SidebarHeader,
     SidebarFooter,
 } from "@/components/ui/sidebar"
 import {
@@ -60,19 +59,22 @@ export function Sidebar() {
     }
 
     const renderSidebarItem = (item: SidebarItem) => {
-        const Icon = item.icon
+        let Icon: React.ElementType | null = null
+        if (item.icon) {
+            Icon = item.icon
+        }
 
         if (item.isGroup && item.children) {
             if (isCollapsed) {
                 return null
             }
-            
+
             return (
                 <Collapsible key={item.id} defaultOpen className="group/collapsible">
                     <SidebarMenuItem>
                         <CollapsibleTrigger asChild>
                             <SidebarMenuButton>
-                                <Icon />
+                                {Icon && <Icon />}
                                 <span>{item.title}</span>
                                 <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
                             </SidebarMenuButton>
@@ -83,7 +85,7 @@ export function Sidebar() {
                                     <SidebarMenuSubItem key={child.id}>
                                         <SidebarMenuSubButton asChild>
                                             <Link to={child.href || "#"}>
-                                                <child.icon />
+                                                {child.icon && <child.icon />}
                                                 <span>{child.title}</span>
                                             </Link>
                                         </SidebarMenuSubButton>
@@ -104,7 +106,7 @@ export function Sidebar() {
                             "flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted/50",
                             isCollapsed ? "justify-center" : "justify-start"
                         )}>
-                            <Icon />
+                            {Icon && <Icon />}
                             {!isCollapsed && <span>{item.title}</span>}
                         </Link>
                     </SidebarMenuButton>
@@ -117,13 +119,13 @@ export function Sidebar() {
 
     return (
         <>
-            <SidebarPrimitive 
+            <SidebarPrimitive
                 className={cn(
                     "select-none transition-all duration-300 ease-in-out pt-16 flex flex-col h-screen",
                     isCollapsed ? "w-16" : "w-64"
                 )}
             >
-            
+
 
                 {/* Conteudo do Sidebar */}
                 <div className="flex-1 overflow-hidden">
@@ -138,26 +140,26 @@ export function Sidebar() {
                     </SidebarContent>
                 </div>
 
-                    <div className="flex items-center justify-center px-2 py-2">
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={toggleSidebar}
-                            className="h-8 px-3 gap-2 hover:bg-muted"
-                        >
-                            {isCollapsed ? (
-                                <PanelLeftOpen className="h-4 w-4" />
-                            ) : (
-                                <>
-                                    <PanelLeftClose className="h-4 w-4" />
-                                    <span className="text-xs">Recolher</span>
-                                </>
-                            )}
-                            <span className="sr-only">
-                                {isCollapsed ? "Expandir sidebar" : "Recolher sidebar"}
-                            </span>
-                        </Button>
-                    </div>
+                <div className="flex items-center justify-center px-2 py-2">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={toggleSidebar}
+                        className="h-8 px-3 gap-2 hover:bg-muted"
+                    >
+                        {isCollapsed ? (
+                            <PanelLeftOpen className="h-4 w-4" />
+                        ) : (
+                            <>
+                                <PanelLeftClose className="h-4 w-4" />
+                                <span className="text-xs">Recolher</span>
+                            </>
+                        )}
+                        <span className="sr-only">
+                            {isCollapsed ? "Expandir sidebar" : "Recolher sidebar"}
+                        </span>
+                    </Button>
+                </div>
 
                 {/* Footer do Sidebar */}
                 <SidebarFooter className="border-t border-border w-full flex-shrink-0">
