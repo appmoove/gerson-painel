@@ -123,10 +123,22 @@ export function Sidebar() {
                     isCollapsed ? "w-16" : "w-64"
                 )}
             >
-                {/* Header com Botão de Toggle */}
-                <SidebarHeader className="border-b border-border flex-shrink-0">
+            
+
+                {/* Conteudo do Sidebar */}
+                <div className="flex-1 overflow-hidden">
+                    <SidebarContent>
+                        <SidebarGroup>
+                            <SidebarGroupContent>
+                                <SidebarMenu>
+                                    {sidebarItems.map(item => renderSidebarItem(item))}
+                                </SidebarMenu>
+                            </SidebarGroupContent>
+                        </SidebarGroup>
+                    </SidebarContent>
+                </div>
+
                     <div className="flex items-center justify-center px-2 py-2">
-                        {/* Botão de toggle centralizado */}
                         <Button
                             variant="ghost"
                             size="sm"
@@ -146,20 +158,6 @@ export function Sidebar() {
                             </span>
                         </Button>
                     </div>
-                </SidebarHeader>
-
-                {/* Conteudo do Sidebar */}
-                <div className="flex-1 overflow-hidden">
-                    <SidebarContent>
-                        <SidebarGroup>
-                            <SidebarGroupContent>
-                                <SidebarMenu>
-                                    {sidebarItems.map(item => renderSidebarItem(item))}
-                                </SidebarMenu>
-                            </SidebarGroupContent>
-                        </SidebarGroup>
-                    </SidebarContent>
-                </div>
 
                 {/* Footer do Sidebar */}
                 <SidebarFooter className="border-t border-border w-full flex-shrink-0">
