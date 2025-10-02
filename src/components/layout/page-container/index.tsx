@@ -28,7 +28,7 @@ export function PageContainer({
     return (
         <div
             className={cn(
-                "mx-auto flex w-full max-w-4xl min-w-0 flex-1 flex-col gap-4 px-2 py-2 md:px-0",
+                "mx-auto flex w-full max-w-7xl min-w-0 flex-1 flex-col gap-4 px-4 py-2",
                 className,
             )}
         >
