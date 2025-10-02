@@ -2,18 +2,24 @@
 import {
     AlarmClock,
     AudioLines,
-    BarChart,
+    BadgeDollarSign,
     Bell,
     Bot,
     Building,
+    Cable,
     Calendar,
+    ChartCandlestick,
     Coins,
+    DollarSign,
     HandCoins,
+    Handshake,
     KeyRound,
     LayoutDashboard,
     Link,
+    Settings,
     Shield,
     ShieldUser,
+    SquaresExclude,
     Users2,
     UserStar,
     Webhook,
@@ -34,6 +40,7 @@ export const sidebarItems: SidebarItem[] = [
     {
         id: "principal",
         title: "Principal",
+        icon: SquaresExclude,
         isGroup: true,
         children: [
             {
@@ -46,7 +53,7 @@ export const sidebarItems: SidebarItem[] = [
             {
                 id: "analiticas",
                 title: "Analíticas",
-                icon: BarChart,
+                icon: ChartCandlestick,
                 href: "/analitics",
                 exact: true
             },
@@ -62,6 +69,7 @@ export const sidebarItems: SidebarItem[] = [
     {
         id: "vendas",
         title: "Vendas",
+        icon: BadgeDollarSign,
         isGroup: true,
         children: [
             {
@@ -97,6 +105,7 @@ export const sidebarItems: SidebarItem[] = [
     {
         id: "gestao",
         title: "Gestão",
+        icon: Handshake,
         isGroup: true,
         children: [
             {
@@ -125,6 +134,7 @@ export const sidebarItems: SidebarItem[] = [
     {
         id: "financeiro",
         title: "Financeiro",
+        icon: HandCoins,
         isGroup: true,
         children: [
             {
@@ -137,7 +147,7 @@ export const sidebarItems: SidebarItem[] = [
             {
                 id: "faturamento",
                 title: "Faturamento",
-                icon: HandCoins,
+                icon: DollarSign,
                 href: "/faturamento",
                 exact: true
             }
@@ -146,6 +156,7 @@ export const sidebarItems: SidebarItem[] = [
     {
         id: "integracoes",
         title: "Integrações",
+        icon: Cable,
         isGroup: true,
         children: [
             {
@@ -174,6 +185,7 @@ export const sidebarItems: SidebarItem[] = [
     {
         id: "sistema",
         title: "Sistema",
+        icon: Settings,
         isGroup: true,
         children: [
             {
