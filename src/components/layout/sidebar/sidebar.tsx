@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom"
-import { ChevronDown, LogOut, Moon, Sun, User, PanelLeftClose, PanelLeftOpen } from "lucide-react"
+import { ChevronDown, LogOut, Moon, SidebarClose, SidebarOpen, Sun, User, UserCircle2 } from "lucide-react"
 import { sidebarItems, type SidebarItem } from "./sidebar-config"
 import {
     Sidebar as SidebarPrimitive,
@@ -12,8 +12,9 @@ import {
     SidebarMenuSub,
     SidebarMenuSubButton,
     SidebarMenuSubItem,
-    SidebarHeader,
     SidebarFooter,
+    SidebarRail,
+    useSidebar,
 } from "@/components/ui/sidebar"
 import {
     Collapsible,
@@ -21,19 +22,18 @@ import {
     CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
 import { useAuth } from "@/stores/auth"
 import { cn } from "@/lib/utils"
 import { useTheme } from "@/components/theme-provider"
-import { useSidebarToggle } from "@/hooks/use-sidebar-toggle"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { motion } from "framer-motion"
 
 export function Sidebar() {
     const location = useLocation()
     const navigate = useNavigate()
     const { theme, setTheme } = useTheme()
     const { user: currentUser, logout, setProfileModalOpen } = useAuth()
-    const { isCollapsed, toggleSidebar } = useSidebarToggle()
+    const { open, setOpen } = useSidebar()
 
     const isActive = (item: SidebarItem) => {
         if (!item.href) return false
@@ -45,34 +45,24 @@ export function Sidebar() {
         return location.pathname.startsWith(item.href)
     }
 
-    const getUserInitials = (name: string) => {
-        return name
-            .split(' ')
-            .map(word => word[0])
-            .join('')
-            .toUpperCase()
-            .slice(0, 2)
-    }
-
     const handleLogout = () => {
         logout()
         navigate('/login')
     }
 
     const renderSidebarItem = (item: SidebarItem) => {
-        const Icon = item.icon
+        let Icon: React.ElementType | null = null
+        if (item.icon) {
+            Icon = item.icon
+        }
 
         if (item.isGroup && item.children) {
-            if (isCollapsed) {
-                return null
-            }
-            
             return (
                 <Collapsible key={item.id} defaultOpen className="group/collapsible">
                     <SidebarMenuItem>
                         <CollapsibleTrigger asChild>
                             <SidebarMenuButton>
-                                <Icon />
+                                {Icon && <Icon />}
                                 <span>{item.title}</span>
                                 <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
                             </SidebarMenuButton>
@@ -83,7 +73,7 @@ export function Sidebar() {
                                     <SidebarMenuSubItem key={child.id}>
                                         <SidebarMenuSubButton asChild>
                                             <Link to={child.href || "#"}>
-                                                <child.icon />
+                                                {child.icon && <child.icon />}
                                                 <span>{child.title}</span>
                                             </Link>
                                         </SidebarMenuSubButton>
@@ -102,10 +92,10 @@ export function Sidebar() {
                     <SidebarMenuButton asChild isActive={isActive(item)}>
                         <Link to={item.href} className={cn(
                             "flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted/50",
-                            isCollapsed ? "justify-center" : "justify-start"
+                            open ? "justify-start" : "justify-center"
                         )}>
-                            <Icon />
-                            {!isCollapsed && <span>{item.title}</span>}
+                            {Icon && <Icon />}
+                            {!open && <span>{item.title}</span>}
                         </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -116,68 +106,64 @@ export function Sidebar() {
     }
 
     return (
-        <>
-            <SidebarPrimitive 
-                className={cn(
-                    "select-none transition-all duration-300 ease-in-out pt-16 flex flex-col h-screen",
-                    isCollapsed ? "w-16" : "w-64"
-                )}
-            >
-            
+        <SidebarPrimitive
+            collapsible="icon"
 
-                {/* Conteudo do Sidebar */}
-                <div className="flex-1 overflow-hidden">
-                    <SidebarContent>
-                        <SidebarGroup>
-                            <SidebarGroupContent>
-                                <SidebarMenu>
-                                    {sidebarItems.map(item => renderSidebarItem(item))}
-                                </SidebarMenu>
-                            </SidebarGroupContent>
-                        </SidebarGroup>
-                    </SidebarContent>
-                </div>
+            className={cn(
+                "select-none transition-all duration-300 ease-in-out pt-16 flex flex-col",
+            )}
+        >
+            {/* Conteudo do Sidebar */}
+            <ScrollArea className="h-full overflow-hidden" >
+                <SidebarContent>
+                    <SidebarGroup>
+                        <SidebarGroupContent>
+                            <SidebarMenu>
+                                {sidebarItems.map(item => renderSidebarItem(item))}
+                            </SidebarMenu>
+                        </SidebarGroupContent>
+                    </SidebarGroup>
+                </SidebarContent>
+            </ScrollArea>
 
-                    <div className="flex items-center justify-center px-2 py-2">
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={toggleSidebar}
-                            className="h-8 px-3 gap-2 hover:bg-muted"
+            {/* Footer do Sidebar */}
+            <SidebarFooter>
+                <SidebarContent>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton
+                            className={cn(
+                                "w-full justify-start gap-3 h-12 px-3 rounded-lg",
+                                "hover:bg-muted/50 focus-visible:ring-2 focus-visible:none"
+                            )}
+                            onClick={() => setOpen(!open)}
                         >
-                            {isCollapsed ? (
-                                <PanelLeftOpen className="h-4 w-4" />
-                            ) : (
+                            {open && (
                                 <>
-                                    <PanelLeftClose className="h-4 w-4" />
-                                    <span className="text-xs">Recolher</span>
+                                    <SidebarClose className="w-4 h-4" size={24} />
+                                    <span>Fechar</span>
                                 </>
                             )}
-                            <span className="sr-only">
-                                {isCollapsed ? "Expandir sidebar" : "Recolher sidebar"}
-                            </span>
-                        </Button>
-                    </div>
+                            {!open && (
+                                <SidebarOpen className="w-4 h-4" size={24} />
+                            )}
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <SidebarMenuButton
+                                className={cn(
+                                    "w-full justify-start gap-3 h-12 px-3 rounded-lg hover:bg-muted/50",
+                                    "focus-visible:ring-2 focus-visible:ring-ring",
+                                )}
+                            >
+                                <UserCircle2 className="w-4 h-4" />
 
-                {/* Footer do Sidebar */}
-                <SidebarFooter className="border-t border-border w-full flex-shrink-0">
-                    <SidebarContent>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <SidebarMenuButton
-                                    className={cn(
-                                        "w-full justify-start gap-3 h-12 px-3 rounded-lg hover:bg-muted/50",
-                                        "focus-visible:ring-2 focus-visible:ring-ring",
-                                    )}
+                                <motion.div
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ duration: 0.2, ease: "easeIn" }}
                                 >
-                                    <Avatar className="w-8 h-8">
-                                        <AvatarImage src={currentUser?.avatar || ''} />
-                                        <AvatarFallback className="text-white gradient-primary font-medium">
-                                            {getUserInitials(currentUser?.name || '')}
-                                        </AvatarFallback>
-                                    </Avatar>
-
-                                    {!isCollapsed && (
+                                    {open && (
                                         <div className="flex-1 min-w-0 text-left">
                                             <p className="text-md text-foreground truncate">
                                                 {currentUser?.name || ''}
@@ -187,69 +173,71 @@ export function Sidebar() {
                                             </p>
                                         </div>
                                     )}
-                                </SidebarMenuButton>
-                            </DropdownMenuTrigger>
+                                </motion.div>
+                            </SidebarMenuButton>
+                        </DropdownMenuTrigger>
 
-                            <DropdownMenuContent
-                                align="end"
-                                side="right"
-                                className="w-56 bg-popover border-border"
-                                sideOffset={8}
+                        <DropdownMenuContent
+                            align="end"
+                            side="right"
+                            className="w-56 bg-popover border-border"
+                            sideOffset={8}
+                        >
+                            {/* User Info Header */}
+                            <div className="px-3 py-3">
+                                <p className="text-md font-semibold text-popover-foreground">
+                                    {currentUser?.name || ''}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                    {currentUser?.role === 'admin' ? 'Administrador' : 'Usuário'}
+                                </p>
+                            </div>
+
+                            <DropdownMenuSeparator className="bg-border" />
+
+                            {/* Profile Menu Item */}
+                            <DropdownMenuItem
+                                onClick={() => setProfileModalOpen(true)}
                             >
-                                {/* User Info Header */}
-                                <div className="px-3 py-3">
-                                    <p className="text-md font-semibold text-popover-foreground">
-                                        {currentUser?.name || ''}
-                                    </p>
-                                    <p className="text-xs text-muted-foreground">
-                                        {currentUser?.role === 'admin' ? 'Administrador' : 'Usuário'}
-                                    </p>
-                                </div>
+                                <User className="w-4 h-4 mr-2" />
+                                <span>Perfil</span>
+                            </DropdownMenuItem>
 
-                                <DropdownMenuSeparator className="bg-border" />
+                            {/* Dark Mode Toggle */}
+                            <DropdownMenuItem
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setTheme(theme === 'dark' ? 'light' : 'dark');
+                                }}
+                            >
+                                {theme === 'dark' ? (
+                                    <>
+                                        <Sun className="w-4 h-4 mr-2" />
+                                        <span>Modo Claro</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Moon className="w-4 h-4 mr-2" />
+                                        <span>Modo Escuro</span>
+                                    </>
+                                )}
+                            </DropdownMenuItem>
 
-                                {/* Profile Menu Item */}
-                                <DropdownMenuItem
-                                    onClick={() => setProfileModalOpen(true)}
-                                >
-                                    <User className="w-4 h-4 mr-2" />
-                                    <span>Perfil</span>
-                                </DropdownMenuItem>
+                            <DropdownMenuSeparator className="bg-border" />
 
-                                {/* Dark Mode Toggle */}
-                                <DropdownMenuItem
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        setTheme(theme === 'dark' ? 'light' : 'dark');
-                                    }}
-                                >
-                                    {theme === 'dark' ? (
-                                        <>
-                                            <Sun className="w-4 h-4 mr-2" />
-                                            <span>Modo Claro</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Moon className="w-4 h-4 mr-2" />
-                                            <span>Modo Escuro</span>
-                                        </>
-                                    )}
-                                </DropdownMenuItem>
+                            {/* Logout Menu Item */}
+                            <DropdownMenuItem
+                                onClick={handleLogout}
+                            >
+                                <LogOut className="w-4 h-4 mr-2" />
+                                <span>Sair</span>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </SidebarContent>
+            </SidebarFooter>
 
-                                <DropdownMenuSeparator className="bg-border" />
-
-                                {/* Logout Menu Item */}
-                                <DropdownMenuItem
-                                    onClick={handleLogout}
-                                >
-                                    <LogOut className="w-4 h-4 mr-2" />
-                                    <span>Sair</span>
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </SidebarContent>
-                </SidebarFooter>
-            </SidebarPrimitive>
-        </>
+            <SidebarRail />
+        </SidebarPrimitive>
     )
 }
