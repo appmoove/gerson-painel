@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { Users, TrendingUp, Calendar, Target, Languages, UserCheck, MessageSquare, Zap, CreditCard } from "lucide-react";
+import { Users, TrendingUp, Calendar, Target, Languages, UserCheck, MessageSquare, Zap, Eye, Edit, Trash2 } from "lucide-react";
+import { type ColumnDef } from "@tanstack/react-table";
 
 import { PageContainer } from "@/components/layout/page-container";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import { MetricsCard, ProgressCard } from "@/components/custom";
+import { DataTable } from "@/components/data-table";
 import { cn } from "@/lib/utils";
 
 export default function DashboardPage() {
@@ -93,6 +95,215 @@ export default function DashboardPage() {
         }
     ]
 
+    // Dados mockados para a tabela de exemplo
+    const tableData = [
+        {
+            id: "1",
+            name: "João Silva",
+            email: "joao.silva@empresa.com",
+            department: "Vendas",
+            status: "active",
+            lastLogin: "2024-01-20T10:30:00Z",
+            performance: 95,
+        },
+        {
+            id: "2", 
+            name: "Maria Santos",
+            email: "maria.santos@empresa.com",
+            department: "Marketing",
+            status: "active",
+            lastLogin: "2024-01-19T14:15:00Z",
+            performance: 87,
+        },
+        {
+            id: "3",
+            name: "Pedro Oliveira",
+            email: "pedro.oliveira@empresa.com",
+            department: "Desenvolvimento",
+            status: "inactive",
+            lastLogin: "2024-01-15T09:45:00Z",
+            performance: 92,
+        },
+        {
+            id: "4",
+            name: "Ana Costa",
+            email: "ana.costa@empresa.com",
+            department: "RH",
+            status: "active",
+            lastLogin: "2024-01-20T16:20:00Z",
+            performance: 78,
+        },
+        {
+            id: "5",
+            name: "Carlos Ferreira",
+            email: "carlos.ferreira@empresa.com",
+            department: "Financeiro",
+            status: "active",
+            lastLogin: "2024-01-18T11:10:00Z",
+            performance: 89,
+        },
+        {
+            id: "6",
+            name: "Lucia Rodrigues",
+            email: "lucia.rodrigues@empresa.com",
+            department: "Vendas",
+            status: "inactive",
+            lastLogin: "2024-01-12T13:30:00Z",
+            performance: 91,
+        },
+        {
+            id: "7",
+            name: "Roberto Alves",
+            email: "roberto.alves@empresa.com",
+            department: "Marketing",
+            status: "active",
+            lastLogin: "2024-01-20T08:45:00Z",
+            performance: 83,
+        },
+        {
+            id: "8",
+            name: "Fernanda Lima",
+            email: "fernanda.lima@empresa.com",
+            department: "Desenvolvimento",
+            status: "active",
+            lastLogin: "2024-01-19T15:25:00Z",
+            performance: 96,
+        },
+        {
+            id: "9",
+            name: "Marcos Souza",
+            email: "marcos.souza@empresa.com",
+            department: "RH",
+            status: "inactive",
+            lastLogin: "2024-01-14T12:00:00Z",
+            performance: 74,
+        },
+        {
+            id: "10",
+            name: "Patricia Gomes",
+            email: "patricia.gomes@empresa.com",
+            department: "Financeiro",
+            status: "active",
+            lastLogin: "2024-01-20T17:15:00Z",
+            performance: 88,
+        },
+        {
+            id: "11",
+            name: "Rafael Mendes",
+            email: "rafael.mendes@empresa.com",
+            department: "Vendas",
+            status: "active",
+            lastLogin: "2024-01-19T09:30:00Z",
+            performance: 93,
+        },
+        {
+            id: "12",
+            name: "Juliana Rocha",
+            email: "juliana.rocha@empresa.com",
+            department: "Marketing",
+            status: "active",
+            lastLogin: "2024-01-20T14:45:00Z",
+            performance: 85,
+        },
+    ];
+
+    // Definição das colunas da tabela
+    const tableColumns: ColumnDef<typeof tableData[0]>[] = [
+        {
+            accessorKey: "name",
+            header: "Nome",
+        },
+        {
+            accessorKey: "email",
+            header: "Email",
+        },
+        {
+            accessorKey: "department",
+            header: "Departamento",
+        },
+        {
+            accessorKey: "status",
+            header: "Status",
+            cell: ({ row }) => {
+                const status = row.getValue("status") as string;
+                return (
+                    <Badge variant={status === "active" ? "default" : "secondary"}>
+                        {status === "active" ? "Ativo" : "Inativo"}
+                    </Badge>
+                );
+            },
+        },
+        {
+            accessorKey: "lastLogin",
+            header: "Último Acesso",
+            cell: ({ row }) => {
+                const date = new Date(row.getValue("lastLogin"));
+                return date.toLocaleDateString("pt-BR", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                });
+            },
+        },
+        {
+            accessorKey: "performance",
+            header: "Performance",
+            cell: ({ row }) => {
+                const performance = row.getValue("performance") as number;
+                return (
+                    <div className="flex items-center gap-2">
+                        <div className="w-16 bg-gray-200 rounded-full h-2">
+                            <div 
+                                className={cn(
+                                    "h-2 rounded-full",
+                                    performance >= 90 ? "bg-green-500" :
+                                    performance >= 80 ? "bg-yellow-500" : "bg-red-500"
+                                )}
+                                style={{ width: `${performance}%` }}
+                            />
+                        </div>
+                        <span className="text-sm font-medium">{performance}%</span>
+                    </div>
+                );
+            },
+        },
+        {
+            id: "actions",
+            header: "Ações",
+            cell: ({ row }) => (
+                <div className="flex items-center gap-2">
+                    <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => console.log("View", row.original.id)}
+                        title="Visualizar"
+                    >
+                        <Eye className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => console.log("Edit", row.original.id)}
+                        title="Editar"
+                    >
+                        <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => console.log("Delete", row.original.id)}
+                        title="Excluir"
+                        className="text-destructive hover:text-destructive"
+                    >
+                        <Trash2 className="h-4 w-4" />
+                    </Button>
+                </div>
+            ),
+        },
+    ];
+
     const periodButtons = [
         { key: 'hoje', label: 'Hoje' },
         { key: '7d', label: '7 dias' },
@@ -162,7 +373,34 @@ export default function DashboardPage() {
                     ))}
                 </div>
 
-                
+                {/* Seção da tabela de exemplo */}
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h3 className="text-lg font-semibold">Usuários do Sistema</h3>
+                            <p className="text-sm text-muted-foreground">
+                                Demonstração da DataTable refatorada com paginação, filtros e sorting
+                            </p>
+                        </div>
+                        <Button>
+                            <Users className="h-4 w-4 mr-2" />
+                            Adicionar Usuário
+                        </Button>
+                    </div>
+
+                    <DataTable
+                        columns={tableColumns}
+                        data={tableData}
+                        isLoading={false}
+                        showPagination={true}
+                        showToolbar={true}
+                        showSorting={true}
+                        showFiltering={true}
+                        initialPageSize={5}
+                        pageSizeOptions={[5, 10, 20, 50]}
+                        toolbarPlaceholder="Filtrar usuários por nome, email ou departamento..."
+                    />
+                </div>
             </div>
         </PageContainer>
     )

@@ -1,10 +1,8 @@
+import React from "react";
 import {
     type ColumnDef,
     flexRender,
-    getCoreRowModel,
-    getPaginationRowModel,
-    useReactTable,
-} from "@tanstack/react-table"
+} from "@tanstack/react-table";
 
 import {
     Table,
@@ -13,37 +11,70 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 
-import { cn } from "@/lib/utils"
-import { ChevronLeftIcon, ChevronRightIcon, Loader2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Separator } from "../ui/separator"
+import { cn } from "@/lib/utils";
+import { Loader2, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+import { useDataTable } from "@/hooks/use-data-table";
+import { DataTablePagination, DataTableToolbar } from "./components";
 
 interface DataTableProps<TData, TValue> extends React.HTMLAttributes<HTMLDivElement> {
-    columns: ColumnDef<TData, TValue>[]
-    data: TData[]
-    isLoading?: boolean
-    showPagination?: boolean
+    columns: ColumnDef<TData, TValue>[];
+    data: TData[];
+    isLoading?: boolean;
+    showPagination?: boolean;
+    showToolbar?: boolean;
+    showSorting?: boolean;
+    showFiltering?: boolean;
+    initialPageSize?: number;
+    pageSizeOptions?: number[];
+    toolbarPlaceholder?: string;
+    enableColumnVisibility?: boolean;
 }
 
 export function DataTable<TData, TValue>({
     columns,
     data,
-    showPagination = false,
+    showPagination = true,
+    showToolbar = true,
+    showSorting = true,
+    showFiltering = true,
+    initialPageSize = 10,
+    pageSizeOptions = [5, 10, 20, 30, 40, 50],
+    toolbarPlaceholder = "Filtrar registros...",
+    enableColumnVisibility = true,
     className,
     isLoading,
     ...props
 }: DataTableProps<TData, TValue>) {
-    const table = useReactTable({
+    const {
+        table,
+        globalFilter,
+        setGlobalFilter,
+        resetAll,
+    } = useDataTable({
         data,
         columns,
-        getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
-    })
+        initialPageSize,
+        enableSorting: showSorting,
+        enableFiltering: showFiltering,
+        enableColumnVisibility,
+    });
 
     return (
-        <>
+        <div className="space-y-4">
+            {showToolbar && (
+                <DataTableToolbar
+                    table={table}
+                    globalFilter={globalFilter}
+                    setGlobalFilter={setGlobalFilter}
+                    placeholder={toolbarPlaceholder}
+                    onReset={resetAll}
+                />
+            )}
+            
             <div className={cn("overflow-hidden border rounded-md", className)} {...props}>
                 <Table className="w-full">
                     <TableHeader>
@@ -53,9 +84,28 @@ export function DataTable<TData, TValue>({
                                     <TableHead key={header.id}>
                                         {header.isPlaceholder
                                             ? null
-                                            : flexRender(
-                                                header.column.columnDef.header,
-                                                header.getContext()
+                                            : header.column.getCanSort() ? (
+                                                <Button
+                                                    variant="ghost"
+                                                    onClick={header.column.getToggleSortingHandler()}
+                                                    className="h-auto p-0 font-semibold hover:bg-transparent"
+                                                >
+                                                    {flexRender(
+                                                        header.column.columnDef.header,
+                                                        header.getContext()
+                                                    )}
+                                                    {{
+                                                        asc: <ArrowUp className="ml-2 h-4 w-4" />,
+                                                        desc: <ArrowDown className="ml-2 h-4 w-4" />,
+                                                    }[header.column.getIsSorted() as string] ?? (
+                                                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                                                    )}
+                                                </Button>
+                                            ) : (
+                                                flexRender(
+                                                    header.column.columnDef.header,
+                                                    header.getContext()
+                                                )
                                             )}
                                     </TableHead>
                                 )
@@ -99,41 +149,13 @@ export function DataTable<TData, TValue>({
                 </Table>
             </div>
 
-
             {showPagination && !isLoading && (
-                <>
-                    <div className="flex items-center justify-between space-x-2">
-                        <div className="text-sm">
-                            Total de {table.getRowModel().rows.length} registros
-                        </div>
-
-                        <div className="flex items-center space-x-2">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => table.previousPage()}
-                                disabled={!table.getCanPreviousPage()}
-                            >
-                                <ChevronLeftIcon className="w-4 h-4" />
-                            </Button>
-                            <span className="text-sm text-muted-foreground">
-                                {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
-                            </span>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => table.nextPage()}
-                                disabled={!table.getCanNextPage()}
-                            >
-                                <ChevronRightIcon className="w-4 h-4" />
-                            </Button>
-                        </div>
-                    </div>
-
-                    <Separator className="my-4" />
-                </>
+                <DataTablePagination
+                    table={table}
+                    showPageSizeSelector={true}
+                    pageSizeOptions={pageSizeOptions}
+                />
             )}
-
-        </>
+        </div>
     )
 }
