@@ -5,12 +5,45 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { PageContainer } from "@/components/layout/page-container";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MetricsCard, ProgressCard } from "@/components/custom";
-import { DataTable } from "@/components/data-table";
+import { DataTable, FilterFields, FilterControls } from "@/components/data-table";
 import { cn } from "@/lib/utils";
 
 export default function DashboardPage() {
     const [selectedPeriod, setSelectedPeriod] = useState<"hoje" | "7d" | "30d">("hoje")
+    
+    // Estados para demonstração da DataTable com filtros
+    const [isFiltersExpanded, setIsFiltersExpanded] = useState(false)
+    const [filters, setFilters] = useState({
+        name: "",
+        department: "all",
+        status: "all"
+    })
+    const [isLoadingTable, setIsLoadingTable] = useState(false)
+
+    // Funções para manipular filtros
+    const handleFilterChange = (newFilters: typeof filters) => {
+        setFilters(newFilters)
+        setIsLoadingTable(true)
+        // Simular carregamento
+        setTimeout(() => {
+            setIsLoadingTable(false)
+        }, 1000)
+    }
+
+    const handleClearFilters = () => {
+        setFilters({
+            name: "",
+            department: "all",
+            status: "all"
+        })
+    }
+
+    const toggleFiltersExpanded = () => {
+        setIsFiltersExpanded(!isFiltersExpanded)
+    }
 
     //apenas testes :)
     // Dados mockados para os cards de métricas
@@ -373,32 +406,96 @@ export default function DashboardPage() {
                     ))}
                 </div>
 
-                {/* Seção da tabela de exemplo */}
+
+                {/* Nova seção demonstrando DataTable com filtros */}
                 <div className="space-y-4">
                     <div className="flex items-center justify-between">
                         <div>
-                            <h3 className="text-lg font-semibold">Usuários do Sistema</h3>
+                            <h3 className="text-lg font-semibold">Usuários com Filtros Avançados</h3>
                             <p className="text-sm text-muted-foreground">
-                                Demonstração da DataTable refatorada com paginação, filtros e sorting
+                                Demonstração completa da DataTable com componentes de filtro
                             </p>
                         </div>
                         <Button>
                             <Users className="h-4 w-4 mr-2" />
-                            Adicionar Usuário
+                            Exportar Dados
                         </Button>
                     </div>
 
+                    {/* Controles de filtro */}
+                    <FilterControls
+                        currentFilters={filters}
+                        defaultFilters={{ name: "", department: "all", status: "all" }}
+                        onToggleExpanded={toggleFiltersExpanded}
+                        onClearFilters={handleClearFilters}
+                    />
+
+                    {/* Campos de filtro */}
+                    <FilterFields
+                        filters={filters}
+                        onFilterChange={handleFilterChange}
+                        isExpanded={isFiltersExpanded}
+                        isLoading={isLoadingTable}
+                        filterFields={
+                            <>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Nome</label>
+                                    <Input
+                                        placeholder="Filtrar por nome..."
+                                        value={filters.name}
+                                        onChange={(e) => setFilters(prev => ({ ...prev, name: e.target.value }))}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Departamento</label>
+                                    <Select
+                                        value={filters.department}
+                                        onValueChange={(value) => setFilters(prev => ({ ...prev, department: value }))}
+                                    >
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Selecione o departamento" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="all">Todos</SelectItem>
+                                            <SelectItem value="Vendas">Vendas</SelectItem>
+                                            <SelectItem value="Marketing">Marketing</SelectItem>
+                                            <SelectItem value="Desenvolvimento">Desenvolvimento</SelectItem>
+                                            <SelectItem value="RH">RH</SelectItem>
+                                            <SelectItem value="Financeiro">Financeiro</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Status</label>
+                                    <Select
+                                        value={filters.status}
+                                        onValueChange={(value) => setFilters(prev => ({ ...prev, status: value }))}
+                                    >
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Selecione o status" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="all">Todos</SelectItem>
+                                            <SelectItem value="active">Ativo</SelectItem>
+                                            <SelectItem value="inactive">Inativo</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </>
+                        }
+                    />
+
+                    {/* DataTable com filtros aplicados */}
                     <DataTable
                         columns={tableColumns}
-                        data={tableData}
-                        isLoading={false}
+                        data={tableData.filter(item => {
+                            const matchesName = !filters.name || item.name.toLowerCase().includes(filters.name.toLowerCase())
+                            const matchesDepartment = !filters.department || filters.department === "all" || item.department === filters.department
+                            const matchesStatus = !filters.status || filters.status === "all" || item.status === filters.status
+                            return matchesName && matchesDepartment && matchesStatus
+                        })}
+                        isLoading={isLoadingTable}
                         showPagination={true}
-                        showToolbar={true}
-                        showSorting={true}
-                        showFiltering={true}
-                        initialPageSize={5}
-                        pageSizeOptions={[5, 10, 20, 50]}
-                        toolbarPlaceholder="Filtrar usuários por nome, email ou departamento..."
                     />
                 </div>
             </div>
