@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Users, TrendingUp, Calendar, Target, Languages, UserCheck, MessageSquare, Zap, Eye, Edit, Trash2 } from "lucide-react";
+import { Users, TrendingUp, Calendar, Target, Languages, UserCheck, MessageSquare, Zap, Eye, Edit, Trash2, Filter } from "lucide-react";
 import { type ColumnDef } from "@tanstack/react-table";
 
 import { PageContainer } from "@/components/layout/page-container";
@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { MetricsCard, ProgressCard } from "@/components/custom";
-import { DataTable, FilterFields, FilterControls } from "@/components/data-table";
+import { DataTable, FilterFields } from "@/components/data-table";
 import { cn } from "@/lib/utils";
 
 export default function DashboardPage() {
@@ -31,14 +32,6 @@ export default function DashboardPage() {
         setTimeout(() => {
             setIsLoadingTable(false)
         }, 1000)
-    }
-
-    const handleClearFilters = () => {
-        setFilters({
-            name: "",
-            department: "all",
-            status: "all"
-        })
     }
 
     const toggleFiltersExpanded = () => {
@@ -307,31 +300,57 @@ export default function DashboardPage() {
             header: "Ações",
             cell: ({ row }) => (
                 <div className="flex items-center gap-2">
-                    <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={() => console.log("View", row.original.id)}
-                        title="Visualizar"
-                    >
-                        <Eye className="h-4 w-4" />
-                    </Button>
-                    <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={() => console.log("Edit", row.original.id)}
-                        title="Editar"
-                    >
-                        <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={() => console.log("Delete", row.original.id)}
-                        title="Excluir"
-                        className="text-destructive hover:text-destructive"
-                    >
-                        <Trash2 className="h-4 w-4" />
-                    </Button>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button 
+                                    variant="ghost" 
+                                    size="sm"
+                                    onClick={() => console.log("View", row.original.id)}
+                                >
+                                    <Eye className="h-4 w-4" />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Visualizar</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                    
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button 
+                                    variant="ghost" 
+                                    size="sm"
+                                    onClick={() => console.log("Edit", row.original.id)}
+                                >
+                                    <Edit className="h-4 w-4" />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Editar</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                    
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button 
+                                    variant="ghost" 
+                                    size="sm"
+                                    onClick={() => console.log("Delete", row.original.id)}
+                                    className="text-destructive hover:text-destructive"
+                                >
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Excluir</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
                 </div>
             ),
         },
@@ -416,19 +435,12 @@ export default function DashboardPage() {
                                 Demonstração completa da DataTable com componentes de filtro
                             </p>
                         </div>
-                        <Button>
-                            <Users className="h-4 w-4 mr-2" />
-                            Exportar Dados
+                        <Button onClick={toggleFiltersExpanded}>
+                            <Filter className="h-4 w-4 mr-2" />
+                            Filtros
                         </Button>
                     </div>
 
-                    {/* Controles de filtro */}
-                    <FilterControls
-                        currentFilters={filters}
-                        defaultFilters={{ name: "", department: "all", status: "all" }}
-                        onToggleExpanded={toggleFiltersExpanded}
-                        onClearFilters={handleClearFilters}
-                    />
 
                     {/* Campos de filtro */}
                     <FilterFields
