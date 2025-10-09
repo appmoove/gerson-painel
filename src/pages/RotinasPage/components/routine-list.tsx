@@ -1,7 +1,7 @@
 import { Eye, Edit, Clock, Phone } from "lucide-react"
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { DataTable } from "@/components/data-table/old-index"
+import { DataTable } from "@/components/data-table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { RoutineStatusBadge } from "@/components/custom/routine-status-badge"
