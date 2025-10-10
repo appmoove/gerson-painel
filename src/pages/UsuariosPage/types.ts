@@ -31,6 +31,7 @@ export interface UserFormProps {
     user?: UserDetails;
     onSuccess: () => void;
     isLoading?: boolean;
+    updateUsersList?: (result: { success: boolean; data: UserDetails; isUpdate: boolean }) => void;
 }
 
 export interface UserViewProps {

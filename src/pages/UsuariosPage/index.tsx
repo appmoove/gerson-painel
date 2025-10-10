@@ -29,7 +29,8 @@ export default function UsuariosPage() {
         users,
         isLoading,
         refreshUsers,
-        currentUser
+        currentUser,
+        updateUsersList
     } = useUsuarios();
 
     // Refresh na montagem
@@ -152,7 +153,7 @@ export default function UsuariosPage() {
                 subtitle={pageInfo.subtitle}
                 breadcrumbs={getBreadcrumbs()}
             >
-                <UserForm onSuccess={() => goToList()} />
+                <UserForm onSuccess={() => goToList()} updateUsersList={updateUsersList} />
             </PageContainer>
         );
     }
@@ -206,7 +207,7 @@ export default function UsuariosPage() {
                 subtitle={pageInfo.subtitle}
                 breadcrumbs={getBreadcrumbs()}
             >
-                <UserForm user={currentUser || undefined} onSuccess={() => goToView(currentUser!)} />
+                <UserForm user={currentUser || undefined} onSuccess={() => goToView(currentUser!)} updateUsersList={updateUsersList} />
             </PageContainer>
         );
     }

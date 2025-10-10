@@ -37,6 +37,7 @@ const userSchema = z.object({
 export function useUserForm(user?: UserDetails) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { user: authUser } = useAuth();
+    
     const organizationId = authUser?.organization_id;
 
     const form = useForm({
@@ -63,16 +64,56 @@ export function useUserForm(user?: UserDetails) {
             let response: ApiResponse<UserDetails>;
 
             if (user) {
-                // Atualizar usuário existente
-                const updateData: UpdateUserRequest = {
-                    organization_role_id: data.organization_role_id,
-                    name: data.name,
-                    email: data.email,
-                    document_number: data.document_number || undefined,
-                    phone_number: data.phone_number || undefined,
-                    image_url: data.image_url || undefined,
-                    extra_permissions: data.extra_permissions
-                };
+                // Atualizar usuário existente - enviar apenas campos alterados
+                const updateData: UpdateUserRequest = {};
+                
+                // Comparar e incluir apenas campos que foram alterados
+                if (data.organization_role_id !== user.organization_role_id) {
+                    updateData.organization_role_id = data.organization_role_id;
+                }
+                
+                if (data.name !== user.name) {
+                    updateData.name = data.name;
+                }
+                
+                if (data.email !== user.email) {
+                    updateData.email = data.email;
+                }
+                
+                if (data.document_number !== user.document_number) {
+                    updateData.document_number = data.document_number;
+                }
+                
+                if (data.phone_number !== user.phone_number) {
+                    updateData.phone_number = data.phone_number;
+                }
+                
+                if (data.image_url !== user.image_url) {
+                    updateData.image_url = data.image_url;
+                }
+                
+                // Para permissões, comparar arrays
+                const currentPermissions = user.extra_permissions || [];
+                const newPermissions = data.extra_permissions || [];
+                
+                // Verificar se há diferenças nas permissões
+                const permissionsChanged = 
+                    currentPermissions.length !== newPermissions.length ||
+                    !currentPermissions.every(perm => newPermissions.includes(perm));
+                
+                if (permissionsChanged) {
+                    // Calcular permissões a serem adicionadas e removidas
+                    const addPermissions = newPermissions.filter(perm => !currentPermissions.includes(perm));
+                    const removePermissions = currentPermissions.filter(perm => !newPermissions.includes(perm));
+                    
+                    if (addPermissions.length > 0) {
+                        updateData.add_permissions = addPermissions;
+                    }
+                    
+                    if (removePermissions.length > 0) {
+                        updateData.remove_permissions = removePermissions;
+                    }
+                }
 
                 response = await usersApi.updateUser(organizationId, user.id, updateData);
             } else {
@@ -94,8 +135,13 @@ export function useUserForm(user?: UserDetails) {
                 return;
             }
 
-            toast.success(user ? "Usuário atualizado com sucesso!" : "Usuário criado com sucesso!");
-            return response.data;
+            if (user) {
+                toast.success("Usuário atualizado com sucesso!");
+            } else {
+                toast.success("Usuário criado com sucesso!");
+            }
+            
+            return { success: true, data: response.data!, isUpdate: !!user };
         } catch (error) {
             console.error("Erro ao salvar usuário:", error);
             toast.error("Erro ao salvar usuário. Tente novamente.");
@@ -221,6 +267,26 @@ export function useUsuarios() {
 
     const navigation = useUsersNavigation();
     const userDetail = useUserDetail(navigation.userId);
+    
+    const userForm = useUserForm(userDetail.user || undefined);
+
+    // Função para atualizar a lista após criação/edição
+    const updateUsersList = useCallback((result: { success: boolean; data: UserDetails; isUpdate: boolean }) => {
+        if (!result.success || !result.data) return;
+        
+        if (result.isUpdate) {
+            // Atualização: remover usuário antigo da lista e adicionar o novo
+            setUsers((prevUsers: UserDetails[]) => {
+                const filteredUsers = prevUsers.filter((u: UserDetails) => u.id !== result.data.id);
+                return [...filteredUsers, result.data];
+            });
+        } else {
+            // Criação: adicionar novo usuário à lista
+            setUsers((prevUsers: UserDetails[]) => {
+                return [...prevUsers, result.data];
+            });
+        }
+    }, [setUsers]);
 
     const refreshUsers = useCallback(async () => {
         if (!organizationId) return;
@@ -254,6 +320,10 @@ export function useUsuarios() {
         isLoading: isLoading || userDetail.isLoading,
         error: error || userDetail.error,
         refreshUsers,
-        currentUser: userDetail.user
+        currentUser: userDetail.user,
+
+        // Form
+        ...userForm,
+        updateUsersList
     };
 }

@@ -49,7 +49,8 @@ export interface UpdateUserRequest {
     phone_number?: string;
     active?: boolean;
     image_url?: string;
-    extra_permissions?: string[];
+    add_permissions?: string[];
+    remove_permissions?: string[];
 }
 
 /**
