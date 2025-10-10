@@ -27,13 +27,15 @@ import { cn } from "@/lib/utils"
 import { useTheme } from "@/components/theme-provider"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { motion } from "framer-motion"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 export function Sidebar() {
     const location = useLocation()
     const navigate = useNavigate()
     const { theme, setTheme } = useTheme()
     const { user: currentUser, logout, setProfileModalOpen } = useAuth()
-    const { open, setOpen } = useSidebar()
+    const { open, setOpen, setOpenMobile } = useSidebar()
+    const isMobile = useIsMobile()
 
     const isActive = (item: SidebarItem) => {
         if (!item.href) return false
@@ -48,6 +50,14 @@ export function Sidebar() {
     const handleLogout = () => {
         logout()
         navigate('/login')
+    }
+
+    const handleToggleSidebar = () => {
+        if (isMobile) {
+            setOpenMobile(false)
+        } else {
+            setOpen(!open)
+        }
     }
 
     const renderSidebarItem = (item: SidebarItem) => {
@@ -135,7 +145,7 @@ export function Sidebar() {
                                 "w-full justify-start gap-3 h-12 px-3 rounded-lg",
                                 "hover:bg-muted/50 focus-visible:ring-2 focus-visible:none"
                             )}
-                            onClick={() => setOpen(!open)}
+                            onClick={handleToggleSidebar}
                         >
                             {open && (
                                 <>
