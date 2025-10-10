@@ -49,10 +49,7 @@ html {
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --gradient-primary: linear-gradient(135deg, #147B9D 0%, #2497F9 100%);
-  --gradient-secondary: linear-gradient(135deg, #29B9D8 0%, #2BC398 100%);
-  --gradient-surface: linear-gradient(135deg, #214055 0%, #46668A 100%);
-  --gradient-tertiary: linear-gradient(135deg, #296D98 0%, #2BC398 100%);
+  --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--ring) 100%);
 }
 
 :root {
