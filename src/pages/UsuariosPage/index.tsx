@@ -34,12 +34,10 @@ export default function UsuariosPage() {
         deleteUser
     } = useUsuarios();
 
-    // Refresh na montagem
+    // Refresh dos dados sempre que a página for acessada
     useEffect(() => {
-        if (mode === 'list') {
-            refreshUsers();
-        }
-    }, [mode, refreshUsers]);
+        refreshUsers();
+    }, [refreshUsers]);
 
     // Gerar breadcrumbs dinamicamente baseado no modo
     const getBreadcrumbs = () => {
@@ -209,7 +207,7 @@ export default function UsuariosPage() {
                 subtitle={pageInfo.subtitle}
                 breadcrumbs={getBreadcrumbs()}
             >
-                <UserForm user={currentUser || undefined} onSuccess={() => goToView(currentUser!)} updateUsersList={updateUsersList} />
+                <UserForm user={currentUser || undefined} onSuccess={() => goToList()} updateUsersList={updateUsersList} />
             </PageContainer>
         );
     }
