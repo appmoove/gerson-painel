@@ -15,6 +15,7 @@ import type {
     UserFormData,
     UserViewMode 
 } from "@/types/user-api";
+import type { DeleteUserModalState } from "./types";
 
 // ===========================
 // Validation Schemas
@@ -262,6 +263,11 @@ export function useUsuarios() {
     const [users, setUsers] = useState<UserDetails[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [deleteModal, setDeleteModal] = useState<DeleteUserModalState>({
+        isOpen: false,
+        userToDelete: null,
+        isDeleting: false
+    });
     const { user: authUser } = useAuth();
     const organizationId = authUser?.organization_id;
 
@@ -311,7 +317,54 @@ export function useUsuarios() {
         }
     }, [organizationId]);
 
-    // Função para excluir usuário
+    // Função para abrir modal de exclusão
+    const openDeleteModal = useCallback((user: UserDetails) => {
+        setDeleteModal({
+            isOpen: true,
+            userToDelete: user,
+            isDeleting: false
+        });
+    }, []);
+
+    // Função para fechar modal de exclusão
+    const closeDeleteModal = useCallback(() => {
+        setDeleteModal({
+            isOpen: false,
+            userToDelete: null,
+            isDeleting: false
+        });
+    }, []);
+
+    // Função para confirmar exclusão
+    const confirmDeleteUser = useCallback(async () => {
+        if (!organizationId || !deleteModal.userToDelete) return;
+
+        setDeleteModal(prev => ({ ...prev, isDeleting: true }));
+
+        try {
+            const response = await usersApi.deleteUser(organizationId, deleteModal.userToDelete.id);
+
+            if (response.error) {
+                toast.error(response.error.message as string);
+                return;
+            }
+
+            // Remover usuário da lista local
+            setUsers((prevUsers: UserDetails[]) => 
+                prevUsers.filter((user: UserDetails) => user.id !== deleteModal.userToDelete!.id)
+            );
+
+            toast.success("Usuário excluído com sucesso!");
+            closeDeleteModal();
+        } catch (error) {
+            console.error("Erro ao excluir usuário:", error);
+            toast.error("Erro ao excluir usuário. Tente novamente.");
+        } finally {
+            setDeleteModal(prev => ({ ...prev, isDeleting: false }));
+        }
+    }, [organizationId, deleteModal.userToDelete, closeDeleteModal]);
+
+    // Função para excluir usuário (mantida para compatibilidade)
     const deleteUser = useCallback(async (userId: string) => {
         if (!organizationId) return;
 
@@ -348,6 +401,12 @@ export function useUsuarios() {
         refreshUsers,
         currentUser: userDetail.user,
         deleteUser,
+
+        // Delete Modal
+        deleteModal,
+        openDeleteModal,
+        closeDeleteModal,
+        confirmDeleteUser,
 
         // Form
         ...userForm,

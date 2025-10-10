@@ -17,6 +17,18 @@ export interface UsuariosPageState {
 }
 
 /**
+ * Estado do modal de exclusão de usuário
+ */
+export interface DeleteUserModalState {
+    /** Se o modal está aberto */
+    isOpen: boolean;
+    /** Usuário selecionado para exclusão */
+    userToDelete: UserDetails | null;
+    /** Se está processando a exclusão */
+    isDeleting: boolean;
+}
+
+/**
  * Props para componentes de usuário
  */
 export interface UserListProps {

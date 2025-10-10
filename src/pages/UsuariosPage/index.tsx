@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, Edit, Loader2 } from "lucide-react";
 
 import { useUsuarios } from "./hooks";
-import { UsersList, UserForm, UserView } from "./components";
+import { UsersList, UserForm, UserView, DeleteUserModal } from "./components";
 import type { UserDetails } from "@/types/user-api";
 
 // ===========================
@@ -31,7 +31,13 @@ export default function UsuariosPage() {
         refreshUsers,
         currentUser,
         updateUsersList,
-        deleteUser
+        deleteUser,
+
+        // Delete Modal
+        deleteModal,
+        openDeleteModal,
+        closeDeleteModal,
+        confirmDeleteUser
     } = useUsuarios();
 
     // Refresh dos dados sempre que a página for acessada
@@ -140,7 +146,19 @@ export default function UsuariosPage() {
                     isLoading={isLoading}
                     onView={goToView}
                     onEdit={(user: UserDetails) => goToEdit(user.id)}
-                    onDelete={deleteUser}
+                    onDelete={(userId: string) => {
+                        const user = users.find(u => u.id === userId);
+                        if (user) openDeleteModal(user);
+                    }}
+                />
+                
+                {/* Modal de confirmação de exclusão */}
+                <DeleteUserModal
+                    user={deleteModal.userToDelete}
+                    isOpen={deleteModal.isOpen}
+                    isDeleting={deleteModal.isDeleting}
+                    onClose={closeDeleteModal}
+                    onConfirm={confirmDeleteUser}
                 />
             </PageContainer>
         );
