@@ -60,6 +60,12 @@ export function Sidebar() {
         }
     }
 
+    const handleNavigation = () => {
+        if (isMobile) {
+            setOpenMobile(false)
+        }
+    }
+
     const renderSidebarItem = (item: SidebarItem) => {
         let Icon: React.ElementType | null = null
         if (item.icon) {
@@ -82,7 +88,7 @@ export function Sidebar() {
                                 {item.children.map((child) => (
                                     <SidebarMenuSubItem key={child.id}>
                                         <SidebarMenuSubButton asChild>
-                                            <Link to={child.href || "#"}>
+                                            <Link to={child.href || "#"} onClick={handleNavigation}>
                                                 {child.icon && <child.icon />}
                                                 <span>{child.title}</span>
                                             </Link>
@@ -100,7 +106,7 @@ export function Sidebar() {
             return (
                 <SidebarMenuItem key={item.id}>
                     <SidebarMenuButton asChild isActive={isActive(item)}>
-                        <Link to={item.href} className={cn(
+                        <Link to={item.href} onClick={handleNavigation} className={cn(
                             "flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted/50",
                             open ? "justify-start" : "justify-center"
                         )}>
