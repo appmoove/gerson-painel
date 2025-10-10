@@ -77,20 +77,41 @@ export function Sidebar() {
                 <Collapsible key={item.id} defaultOpen className="group/collapsible">
                     <SidebarMenuItem>
                         <CollapsibleTrigger asChild>
-                            <SidebarMenuButton>
-                                {Icon && <Icon />}
-                                <span>{item.title}</span>
-                                <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                            <SidebarMenuButton className={cn(
+                                "gap-3 h-12 px-3",
+                                isMobile && "h-14 px-4"
+                            )}>
+                                {Icon && <Icon className={cn(
+                                    "w-4 h-4",
+                                    isMobile && "w-5 h-5"
+                                )} />}
+                                <span className={cn(
+                                    "text-sm font-medium",
+                                    isMobile && "text-base font-semibold"
+                                )}>{item.title}</span>
+                                <ChevronDown className={cn(
+                                    "ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180 w-4 h-4",
+                                    isMobile && "w-5 h-5"
+                                )} />
                             </SidebarMenuButton>
                         </CollapsibleTrigger>
                         <CollapsibleContent>
                             <SidebarMenuSub>
                                 {item.children.map((child) => (
                                     <SidebarMenuSubItem key={child.id}>
-                                        <SidebarMenuSubButton asChild>
-                                            <Link to={child.href || "#"} onClick={handleNavigation}>
-                                                {child.icon && <child.icon />}
-                                                <span>{child.title}</span>
+                                        <SidebarMenuSubButton asChild className={cn(
+                                            "gap-3 h-10 px-3",
+                                            isMobile && "h-12 px-4"
+                                        )}>
+                                            <Link to={child.href || "#"} onClick={handleNavigation} className="flex items-center gap-3 w-full">
+                                                {child.icon && <child.icon className={cn(
+                                                    "w-4 h-4",
+                                                    isMobile && "w-5 h-5"
+                                                )} />}
+                                                <span className={cn(
+                                                    "text-sm",
+                                                    isMobile && "text-base font-medium"
+                                                )}>{child.title}</span>
                                             </Link>
                                         </SidebarMenuSubButton>
                                     </SidebarMenuSubItem>
@@ -105,13 +126,23 @@ export function Sidebar() {
         if (item.href) {
             return (
                 <SidebarMenuItem key={item.id}>
-                    <SidebarMenuButton asChild isActive={isActive(item)}>
+                    <SidebarMenuButton asChild isActive={isActive(item)} className={cn(
+                        "gap-3 h-12 px-3",
+                        isMobile && "h-14 px-4"
+                    )}>
                         <Link to={item.href} onClick={handleNavigation} className={cn(
                             "flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted/50",
-                            open ? "justify-start" : "justify-center"
+                            open ? "justify-start" : "justify-center",
+                            isMobile && "px-4 py-3"
                         )}>
-                            {Icon && <Icon />}
-                            {!open && <span>{item.title}</span>}
+                            {Icon && <Icon className={cn(
+                                "w-4 h-4",
+                                isMobile && "w-5 h-5"
+                            )} />}
+                            {!open && <span className={cn(
+                                "text-sm font-medium",
+                                isMobile && "text-base font-semibold"
+                            )}>{item.title}</span>}
                         </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -149,18 +180,28 @@ export function Sidebar() {
                         <SidebarMenuButton
                             className={cn(
                                 "w-full justify-start gap-3 h-12 px-3 rounded-lg",
-                                "hover:bg-muted/50 focus-visible:ring-2 focus-visible:none"
+                                "hover:bg-muted/50 focus-visible:ring-2 focus-visible:none",
+                                isMobile && "h-14 px-4"
                             )}
                             onClick={handleToggleSidebar}
                         >
                             {open && (
                                 <>
-                                    <SidebarClose className="w-4 h-4" size={24} />
-                                    <span>Fechar</span>
+                                    <SidebarClose className={cn(
+                                        "w-4 h-4",
+                                        isMobile && "w-5 h-5"
+                                    )} />
+                                    <span className={cn(
+                                        "text-sm font-medium",
+                                        isMobile && "text-base font-semibold"
+                                    )}>Fechar</span>
                                 </>
                             )}
                             {!open && (
-                                <SidebarOpen className="w-4 h-4" size={24} />
+                                <SidebarOpen className={cn(
+                                    "w-4 h-4",
+                                    isMobile && "w-5 h-5"
+                                )} />
                             )}
                         </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -170,9 +211,13 @@ export function Sidebar() {
                                 className={cn(
                                     "w-full justify-start gap-3 h-12 px-3 rounded-lg hover:bg-muted/50",
                                     "focus-visible:ring-2 focus-visible:ring-ring",
+                                    isMobile && "h-14 px-4"
                                 )}
                             >
-                                <UserCircle2 className="w-4 h-4" />
+                                <UserCircle2 className={cn(
+                                    "w-4 h-4",
+                                    isMobile && "w-5 h-5"
+                                )} />
 
                                 <motion.div
                                     initial={{ opacity: 0, x: -10 }}
@@ -181,10 +226,16 @@ export function Sidebar() {
                                 >
                                     {open && (
                                         <div className="flex-1 min-w-0 text-left">
-                                            <p className="text-md text-foreground truncate">
+                                            <p className={cn(
+                                                "text-md text-foreground truncate",
+                                                isMobile && "text-lg font-semibold"
+                                            )}>
                                                 {currentUser?.name || ''}
                                             </p>
-                                            <p className="text-xs text-muted-foreground truncate">
+                                            <p className={cn(
+                                                "text-xs text-muted-foreground truncate",
+                                                isMobile && "text-sm"
+                                            )}>
                                                 {currentUser?.role === 'admin' ? 'Administrador' : 'Usuário'}
                                             </p>
                                         </div>
