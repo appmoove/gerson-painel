@@ -10,7 +10,8 @@ import type {
     UpdateUserResponse,
     ListUsersResponse,
     GetUserResponse
-} from '../types/user-api';
+} 
+from '../types/user-api';
 
 // ===========================
 // Users API Class
