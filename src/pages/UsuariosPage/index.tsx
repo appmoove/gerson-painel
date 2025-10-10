@@ -30,7 +30,8 @@ export default function UsuariosPage() {
         isLoading,
         refreshUsers,
         currentUser,
-        updateUsersList
+        updateUsersList,
+        deleteUser
     } = useUsuarios();
 
     // Refresh na montagem
@@ -141,6 +142,7 @@ export default function UsuariosPage() {
                     isLoading={isLoading}
                     onView={goToView}
                     onEdit={(user: UserDetails) => goToEdit(user.id)}
+                    onDelete={deleteUser}
                 />
             </PageContainer>
         );

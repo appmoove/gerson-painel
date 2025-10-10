@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Eye, Edit, User, Mail, Phone, Calendar } from "lucide-react";
+import { Eye, Edit, User, Mail, Phone, Calendar, Trash2 } from "lucide-react";
 
 import type { UserListProps } from "../types";
 
@@ -13,7 +13,7 @@ import type { UserListProps } from "../types";
 /**
  * Componente de listagem de usuários
  */
-export function UsersList({ users, isLoading, onView, onEdit }: UserListProps) {
+export function UsersList({ users, isLoading, onView, onEdit, onDelete }: UserListProps) {
     if (isLoading) {
         return <UsersListSkeleton />;
     }
@@ -40,6 +40,7 @@ export function UsersList({ users, isLoading, onView, onEdit }: UserListProps) {
                     user={user}
                     onView={() => onView(user)}
                     onEdit={() => onEdit(user)}
+                    onDelete={() => onDelete?.(user.id)}
                 />
             ))}
         </div>
@@ -61,9 +62,10 @@ interface UserCardProps {
     };
     onView: () => void;
     onEdit: () => void;
+    onDelete: () => void;
 }
 
-function UserCard({ user, onView, onEdit }: UserCardProps) {
+function UserCard({ user, onView, onEdit, onDelete }: UserCardProps) {
     const formatDate = (date: Date | null) => {
         if (!date) return "N/A";
         return new Date(date).toLocaleDateString("pt-BR");
@@ -129,6 +131,15 @@ function UserCard({ user, onView, onEdit }: UserCardProps) {
                     >
                         <Edit className="h-4 w-4 mr-2" />
                         Editar
+                    </Button>
+                    <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={onDelete}
+                        className="flex-1"
+                    >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Excluir
                     </Button>
                 </div>
             </CardContent>

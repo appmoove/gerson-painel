@@ -311,6 +311,32 @@ export function useUsuarios() {
         }
     }, [organizationId]);
 
+    // Função para excluir usuário
+    const deleteUser = useCallback(async (userId: string) => {
+        if (!organizationId) return;
+
+        try {
+            const response = await usersApi.deleteUser(organizationId, userId);
+
+            if (response.error) {
+                toast.error(response.error.message as string);
+                return false;
+            }
+
+            // Remover usuário da lista local
+            setUsers((prevUsers: UserDetails[]) => 
+                prevUsers.filter((user: UserDetails) => user.id !== userId)
+            );
+
+            toast.success("Usuário excluído com sucesso!");
+            return true;
+        } catch (error) {
+            console.error("Erro ao excluir usuário:", error);
+            toast.error("Erro ao excluir usuário. Tente novamente.");
+            return false;
+        }
+    }, [organizationId, setUsers]);
+
     return {
         // Navigation
         ...navigation,
@@ -321,6 +347,7 @@ export function useUsuarios() {
         error: error || userDetail.error,
         refreshUsers,
         currentUser: userDetail.user,
+        deleteUser,
 
         // Form
         ...userForm,

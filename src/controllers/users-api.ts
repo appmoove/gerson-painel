@@ -132,7 +132,7 @@ class UsersApi {
      */
     deleteUser(organizationId: string, userId: string): Promise<ApiResponse<{ success: boolean }>> {
         return this.axiosInstance
-            .delete(`/organizations/${organizationId}/users/${userId}`)
+            .delete(`/organizations/${organizationId}/users/${userId}/delete`)
             .then(handleAxiosResponse)
             .catch((error: AxiosError) => handleAxiosError(error));
     }
