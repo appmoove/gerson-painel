@@ -110,9 +110,13 @@ export interface Voice {
     /** Nome da voz */
     name: string
     /** Gênero da voz (male/female) */
-    gender: 'male' | 'female'
+    gender: 'MALE' | 'FEMALE' | 'NON_BINARY'
     /** Descrição da voz */
     description: string
+    /** Data de criação */
+    created_at: string
+    /** Data de atualização */
+    updated_at: string
 }
 
 /**
