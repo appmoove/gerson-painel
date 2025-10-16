@@ -1,7 +1,6 @@
 // import { LayoutDashboard, AlarmClock, Bot, Users, ShieldUser } from "lucide-react"
 import {
     AlarmClock,
-    AudioLines,
     BadgeDollarSign,
     Bell,
     Bot,
@@ -19,6 +18,7 @@ import {
     Settings,
     Shield,
     ShieldUser,
+    Speech,
     SquaresExclude,
     Users2,
     UserStar,
@@ -191,7 +191,7 @@ export const sidebarItems: SidebarItem[] = [
             {
                 id: "vozes",
                 title: "Vozes",
-                icon: AudioLines,
+                icon: Speech,
                 href: "/vozes",
                 exact: true
             },
