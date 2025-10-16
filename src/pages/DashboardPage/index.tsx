@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 
 export default function DashboardPage() {
     const [selectedPeriod, setSelectedPeriod] = useState<"hoje" | "7d" | "30d">("hoje")
-    
+
     // Estados para demonstração da DataTable com filtros
     const [isFiltersExpanded, setIsFiltersExpanded] = useState(false)
     const [filters, setFilters] = useState({
@@ -50,7 +50,7 @@ export default function DashboardPage() {
             iconColor: "text-blue-600",
             tooltipContent: "Número total de novos leads captados nos últimos 30 dias através de todos os canais de aquisição (site, redes sociais, campanhas pagas, etc.)"
         },
-       
+
         {
             icon: TrendingUp,
             title: "Taxa de conversão",
@@ -133,7 +133,7 @@ export default function DashboardPage() {
             performance: 95,
         },
         {
-            id: "2", 
+            id: "2",
             name: "Maria Santos",
             email: "maria.santos@empresa.com",
             department: "Marketing",
@@ -281,11 +281,11 @@ export default function DashboardPage() {
                 return (
                     <div className="flex items-center gap-2">
                         <div className="w-16 bg-gray-200 rounded-full h-2">
-                            <div 
+                            <div
                                 className={cn(
                                     "h-2 rounded-full",
                                     performance >= 90 ? "bg-green-500" :
-                                    performance >= 80 ? "bg-yellow-500" : "bg-red-500"
+                                        performance >= 80 ? "bg-yellow-500" : "bg-red-500"
                                 )}
                                 style={{ width: `${performance}%` }}
                             />
@@ -303,8 +303,8 @@ export default function DashboardPage() {
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <Button 
-                                    variant="ghost" 
+                                <Button
+                                    variant="ghost"
                                     size="sm"
                                     onClick={() => console.log("View", row.original.id)}
                                 >
@@ -316,12 +316,12 @@ export default function DashboardPage() {
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
-                    
+
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <Button 
-                                    variant="ghost" 
+                                <Button
+                                    variant="ghost"
                                     size="sm"
                                     onClick={() => console.log("Edit", row.original.id)}
                                 >
@@ -333,12 +333,12 @@ export default function DashboardPage() {
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
-                    
+
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <Button 
-                                    variant="ghost" 
+                                <Button
+                                    variant="ghost"
                                     size="sm"
                                     onClick={() => console.log("Delete", row.original.id)}
                                     className="text-destructive hover:text-destructive"
@@ -383,7 +383,7 @@ export default function DashboardPage() {
     )
 
     return (
-        
+
         <PageContainer
             title="Dashboard"
             subtitle="Visão geral do desempenho do sistema"
@@ -440,7 +440,6 @@ export default function DashboardPage() {
                             Filtros
                         </Button>
                     </div>
-
 
                     {/* Campos de filtro */}
                     <FilterFields
