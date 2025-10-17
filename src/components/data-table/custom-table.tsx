@@ -213,13 +213,17 @@ export function DataTable<TData, TValue>({
                 className="hover:bg-muted/80 transition-all duration-200 cursor-default"
                 data-state={row.getIsSelected() && "selected"}
             >
-                {row.getVisibleCells().map((cell) => (
+                {row.getVisibleCells().map((cell, cellIndex) => (
                     <TableCell
                         key={cell.id}
                         className={cn(
                             "py-1",
-                            cell.column.id === columns[0].id ? "pl-4" : undefined
+                            cellIndex === 0 ? "pl-4" : undefined
                         )}
+                        style={{
+                            width: cell.column.getSize(),
+                            maxWidth: cell.column.columnDef.maxSize,
+                        }}
                     >
                         <motion.div
                             initial={{ opacity: 0 }}
@@ -254,7 +258,7 @@ export function DataTable<TData, TValue>({
                                         delay: index * 0.1,
                                     }}
                                 >
-                                    {headerGroup.headers.map((header) => {
+                                    {headerGroup.headers.map((header, headerIndex) => {
                                         const canSort = header.column.getCanSort();
                                         const isSorted = header.column.getIsSorted();
 
@@ -264,8 +268,12 @@ export function DataTable<TData, TValue>({
                                                 className={cn(
                                                     "h-10 text-left align-middle hover:bg-muted transition-colors",
                                                     canSort && "cursor-pointer",
-                                                    header.column.id === columns[0].id ? "pl-4" : undefined
+                                                    headerIndex === 0 ? "pl-4" : undefined
                                                 )}
+                                                style={{
+                                                    width: header.getSize(),
+                                                    maxWidth: header.column.columnDef.maxSize,
+                                                }}
                                             >
                                                 {header.isPlaceholder ? null : (
                                                     <Tooltip>

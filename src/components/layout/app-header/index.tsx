@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Search, Bell, Settings, User, Brain } from "lucide-react";
+import { Search, Bell, Brain } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { useNavigate } from "react-router-dom";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 
 export interface AppHeaderProps {
@@ -23,8 +23,7 @@ export function AppHeader({
 }: AppHeaderProps) {
     const [searchQuery, setSearchQuery] = useState("");
     const [isSearchFocused, setIsSearchFocused] = useState(false);
-    
-    const navigate = useNavigate();
+
 
     const handleSearchSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -38,10 +37,8 @@ export function AppHeader({
         setSearchQuery(value);
     };
 
-
-   
     return (
-        <header 
+        <header
             className={cn(
                 "fixed top-0 left-0 right-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
                 className
@@ -82,35 +79,40 @@ export function AppHeader({
                     </form>
                 </div>
 
-                {/* Lado direito - Notificações e usuário */}
+                {/* Lado direito - Acesso rápido */}
                 <div className="flex items-center gap-2">
                     {/* Notificações */}
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-10 w-10 relative hover:bg-muted"
-                    >
-                        <Bell className="h-4 w-4" />
-                        <Badge 
-                            variant="destructive" 
-                            className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
-                        >
-                            3
-                        </Badge>
-                        <span className="sr-only">Notificações</span>
-                    </Button>
-
-                    {/* Configurações */}
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-10 w-10 hover:bg-muted"
-                    >
-                        <Settings className="h-4 w-4" />
-                        <span className="sr-only">Configurações</span>
-                    </Button>                          
+                    <DropdownMenu modal={false}>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-10 w-10 relative hover:bg-muted cursor-pointer transition-all duration-200 focus-visible:ring-2 focus-visible:ring-ring"
+                            >
+                                <Bell className="h-4 w-4" />
+                                <Badge
+                                    variant="destructive"
+                                    className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                                >
+                                    3
+                                </Badge>
+                                <span className="sr-only">Notificações</span>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            <DropdownMenuItem>
+                                <p>Notificação 1</p>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <p>Notificação 2</p>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <p>Notificação 3</p>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
-            </div>
-        </header>
+            </div >
+        </header >
     );
 }

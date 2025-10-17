@@ -1,4 +1,5 @@
 import { Routes, Route, Outlet, Navigate } from "react-router-dom"
+
 import { Layout } from "@/components/layout"
 import { useAuth } from "@/stores/auth"
 
@@ -6,6 +7,7 @@ import LoginPage from "@/pages/LoginPage"
 import DashboardPage from "@/pages/DashboardPage"
 import AgentesPage from "@/pages/AgentesPage"
 import RotinasPage from "@/pages/RotinasPage"
+import VozesOrganizacaoPage from "@/pages/OrganizationVoicesPage/voices-list"
 
 function ProtectedRoute() {
     const { isAuthenticated } = useAuth()
@@ -45,6 +47,9 @@ export default function AppRoutes() {
                 <Route path="/rotinas/nova" element={<RotinasPage />} />
                 <Route path="/rotinas/:id" element={<RotinasPage />} />
                 <Route path="/rotinas/:id/editar" element={<RotinasPage />} />
+
+                {/* Rotas de Vozes */}
+                <Route path="/vozes" element={<VozesOrganizacaoPage />} />
             </Route>
             <Route path="*" element={<RedirectToDashboard />} />
         </Routes>
