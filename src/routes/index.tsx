@@ -7,7 +7,7 @@ import LoginPage from "@/pages/LoginPage"
 import DashboardPage from "@/pages/DashboardPage"
 import AgentesPage from "@/pages/AgentesPage"
 import RotinasPage from "@/pages/RotinasPage"
-import VozesOrganizacaoPage from "@/pages/VozesOrganizacao"
+import VozesOrganizacaoPage from "@/pages/OrganizationVoicesPage/voices-list"
 
 function ProtectedRoute() {
     const { isAuthenticated } = useAuth()
