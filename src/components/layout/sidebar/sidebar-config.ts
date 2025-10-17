@@ -112,6 +112,7 @@ export const sidebarItems: SidebarItem[] = [
         title: "Gestão",
         icon: Handshake,
         isGroup: true,
+        disabled: true,
         children: [
             {
                 id: "usuarios",
@@ -144,6 +145,7 @@ export const sidebarItems: SidebarItem[] = [
         title: "Financeiro",
         icon: HandCoins,
         isGroup: true,
+        disabled: true,
         children: [
             {
                 id: "creditos",
@@ -168,6 +170,7 @@ export const sidebarItems: SidebarItem[] = [
         title: "Integrações",
         icon: Cable,
         isGroup: true,
+        disabled: true,
         children: [
             {
                 id: "integracoes",
