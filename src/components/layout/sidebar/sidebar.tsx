@@ -65,7 +65,7 @@ export function Sidebar() {
                 <Collapsible key={item.id} defaultOpen className="group/collapsible">
                     <SidebarMenuItem>
                         <CollapsibleTrigger asChild>
-                            <SidebarMenuButton isActive={isActive(item, item.children)}>
+                            <SidebarMenuButton isActive={isActive(item, item.children)} disabled={item.disabled}>
                                 {Icon && <Icon />}
                                 <span>{item.title}</span>
                                 <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
@@ -75,7 +75,7 @@ export function Sidebar() {
                             <SidebarMenuSub>
                                 {item.children.map((child) => (
                                     <SidebarMenuSubItem key={child.id}>
-                                        <SidebarMenuSubButton asChild isActive={isActive(child)}>
+                                        <SidebarMenuSubButton asChild isActive={isActive(child)} disabled={child.disabled}>
                                             <Link to={child.href || "#"}>
                                                 {child.icon && <child.icon />}
                                                 <span>{child.title}</span>

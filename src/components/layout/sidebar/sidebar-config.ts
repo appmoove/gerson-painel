@@ -23,7 +23,7 @@ import {
     Users2,
     UserStar,
     Webhook,
- } from "lucide-react"
+} from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
 export interface SidebarItem {
@@ -34,6 +34,7 @@ export interface SidebarItem {
     isGroup?: boolean
     children?: SidebarItem[]
     exact?: boolean
+    disabled?: boolean
 }
 
 export const sidebarItems: SidebarItem[] = [
@@ -55,14 +56,16 @@ export const sidebarItems: SidebarItem[] = [
                 title: "Analíticas",
                 icon: ChartCandlestick,
                 href: "/analitics",
-                exact: true
+                exact: true,
+                disabled: true,
             },
             {
                 id: "notificacoes",
                 title: "Notificações",
                 icon: Bell,
                 href: "/notifications",
-                exact: true
+                exact: true,
+                disabled: true,
             },
         ]
     },
@@ -77,7 +80,8 @@ export const sidebarItems: SidebarItem[] = [
                 title: "Leads",
                 icon: UserStar,
                 href: "/leads",
-                exact: true
+                exact: true,
+                disabled: true,
             },
             {
                 id: "agentes",
@@ -98,7 +102,8 @@ export const sidebarItems: SidebarItem[] = [
                 title: "Agenda",
                 icon: Calendar,
                 href: "/agenda",
-                exact: true
+                exact: true,
+                disabled: true,
             }
         ],
     },
@@ -113,21 +118,24 @@ export const sidebarItems: SidebarItem[] = [
                 title: "Usuários",
                 icon: Users2,
                 href: "/usuarios",
-                exact: true
+                exact: true,
+                disabled: true,
             },
             {
                 id: "permissoes",
                 title: "Permissões",
                 icon: ShieldUser,
                 href: "/permissoes",
-                exact: true
+                exact: true,
+                disabled: true,
             },
             {
                 id: "organizacao",
                 title: "Organização",
                 icon: Building,
                 href: "/organizacao",
-                exact: true
+                exact: true,
+                disabled: true,
             }
         ]
     },
@@ -142,14 +150,16 @@ export const sidebarItems: SidebarItem[] = [
                 title: "Créditos",
                 icon: Coins,
                 href: "/creditos",
-                exact: true
+                exact: true,
+                disabled: true,
             },
             {
                 id: "faturamento",
                 title: "Faturamento",
                 icon: DollarSign,
                 href: "/faturamento",
-                exact: true
+                exact: true,
+                disabled: true,
             }
         ]
     },
@@ -164,21 +174,24 @@ export const sidebarItems: SidebarItem[] = [
                 title: "Integrações",
                 icon: Link,
                 href: "/integracoes",
-                exact: true
+                exact: true,
+                disabled: true,
             },
             {
                 id: "webhooks",
                 title: "Webhooks",
                 icon: Webhook,
                 href: "/webhooks",
-                exact: true
+                exact: true,
+                disabled: true,
             },
             {
                 id: "api",
                 title: "API Keys",
                 icon: KeyRound,
                 href: "/api-keys",
-                exact: true
+                exact: true,
+                disabled: true,
             },
         ]
     },
@@ -200,7 +213,8 @@ export const sidebarItems: SidebarItem[] = [
                 title: "Segurança",
                 icon: Shield,
                 href: "/seguranca",
-                exact: true
+                exact: true,
+                disabled: true,
             }
         ]
     }
