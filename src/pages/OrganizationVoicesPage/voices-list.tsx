@@ -1,6 +1,5 @@
 import { PageContainer } from "@/components/layout/page-container";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { AudioLines } from "lucide-react";
 import VoicesList from "./components/voices-list";
 
@@ -12,17 +11,10 @@ export default function VozesOrganizacaoPage() {
     ]
 
     const getPageExtra = () => (
-        <Tooltip>
-            <TooltipTrigger asChild>
-                <Button disabled>
-                    <AudioLines />
-                    Treinar Voz
-                </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-                <p>Treinar Voz</p>
-            </TooltipContent>
-        </Tooltip>
+        <Button disabled>
+            <AudioLines />
+            Treinar Voz
+        </Button>
     );
 
     return (
