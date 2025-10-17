@@ -6,6 +6,7 @@ import { useAudioPlayback } from "@/contexts/audio-player-context";
 import { cn } from "@/lib/utils";
 
 import type { Voice } from "@/types";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface AudioPlayerProps {
     voice: Voice;
@@ -249,20 +250,26 @@ export function AudioPlayer({ voice, waveform, seekable = true, className = '' }
             )}
 
             {/* Botão Play/Pause */}
-            <Button
-                variant="ghost"
-                size="sm"
-                onClick={togglePlayPause}
-                disabled={!hasSample}
-                className="h-8 w-8 p-0 flex-shrink-0"
-                title={hasSample ? (isThisPlaying ? "Pausar" : "Reproduzir") : "Preview indisponível"}
-            >
-                {isThisPlaying ? (
-                    <Pause className="h-4 w-4" />
-                ) : (
-                    <Play className="h-4 w-4" />
-                )}
-            </Button>
+            <Tooltip>
+                <TooltipTrigger>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={togglePlayPause}
+                        disabled={!hasSample}
+                        className="h-8 w-8 p-0 flex-shrink-0 cursor-pointer"
+                    >
+                        {isThisPlaying ? (
+                            <Pause className="h-4 w-4" />
+                        ) : (
+                            <Play className="h-4 w-4" />
+                        )}
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                    {hasSample ? (isThisPlaying ? "Pausar prévia" : "Reproduzir prévia") : "Prévia indisponível"}
+                </TooltipContent>
+            </Tooltip>
 
             {/* Audiolines */}
             <div
