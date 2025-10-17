@@ -1,13 +1,20 @@
-import { DataTable } from "@/components/data-table";
-import { Button } from "@/components/ui/button";
-import type { Voice } from "@/types";
+import { AudioLines, Edit, Eye, Trash } from "lucide-react";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Edit, Eye, Trash } from "lucide-react";
-import { useTableData } from "@/hooks/use-table-data";
-import { voicesApi } from "@/controllers/voices-api";
-import { formatDateTimeUTCToLocal } from "@/utils/string";
+
+import { DataTable } from "@/components/data-table";
+import { AudioPlayer } from "@/components/custom";
 import { Badge } from "@/components/ui/badge";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { voicesApi } from "@/controllers/voices-api";
+import { useTableData } from "@/hooks/use-table-data";
+import { cn } from "@/lib/utils";
+import { formatDateTimeUTCToLocal } from "@/utils/string";
+
+import type { Voice } from "@/types";
 
 export default function VoicesList() {
 
@@ -21,7 +28,13 @@ export default function VoicesList() {
         autoFetch: true,
     });
 
-    const getVoiceGenderLabel = (gender: string) => {
+    const getVoiceGenderLabel = ({
+        gender,
+        className,
+    }: {
+        gender: 'MALE' | 'FEMALE' | 'NON_BINARY'
+        className?: string
+    }) => {
         let colorClass = 'gray';
         let label = 'Não binário';
 
@@ -41,7 +54,13 @@ export default function VoicesList() {
         }
 
         return (
-            <Badge variant="outline" className={`bg-${colorClass}-50 text-${colorClass}-700 border-${colorClass}-200 hover:bg-${colorClass}-100 dark:bg-${colorClass}-900/50 dark:text-${colorClass}-200 dark:border-${colorClass}-700 dark:hover:bg-${colorClass}-900/70`}>
+            <Badge
+                variant="outline"
+                className={cn(
+                    `bg-${colorClass}-50 text-${colorClass}-700 border-${colorClass}-200 hover:bg-${colorClass}-100`,
+                    `dark:bg-${colorClass}-900/50 dark:text-${colorClass}-200 dark:border-${colorClass}-700 dark:hover:bg-${colorClass}-900/70`,
+                    className
+                )}>
                 {label}
             </Badge>
         )
@@ -86,7 +105,7 @@ export default function VoicesList() {
         {
             header: "Gênero",
             accessorKey: "gender",
-            cell: ({ row }) => getVoiceGenderLabel(row.original.gender),
+            cell: ({ row }) => getVoiceGenderLabel({ gender: row.original.gender }),
         },
         {
             header: "Criado em",
@@ -103,6 +122,75 @@ export default function VoicesList() {
         }
     ];
 
+    const getCharacteristicBadge = ({ key, value, className }: { key: string, value: string, className?: React.HTMLAttributes<HTMLDivElement>['className'] }) => {
+        let colorClass = 'muted-foreground';
+        let label = value;
+
+        switch (key) {
+            case 'age':
+                colorClass = 'yellow';
+                label = `${value} anos`;
+                break;
+            case 'accent':
+                if (value === 'Brazilian') {
+                    colorClass = 'blue';
+                    label = 'Brasileiro';
+                }
+                if (value === 'American') {
+                    colorClass = 'blue';
+                    label = 'Americano';
+                }
+                if (value === 'Mexican') {
+                    colorClass = 'blue';
+                    label = 'Mexicano';
+                }
+                break;
+            default:
+                colorClass = 'muted-foreground';
+                label = value;
+                break;
+        }
+
+        return (
+            <Badge
+                variant="outline"
+                className={cn(
+                    `bg-${colorClass}-50 text-${colorClass}-700 border-${colorClass}-200 hover:bg-${colorClass}-100`,
+                    `dark:bg-${colorClass}-900/50 dark:text-${colorClass}-200 dark:border-${colorClass}-700 dark:hover:bg-${colorClass}-900/70`,
+                    className
+                )}>
+                {label}
+            </Badge>
+        )
+    }
+
+    const getVoiceCard = (voice: Voice) => {
+        return (
+            <Card className="gap-2">
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                        {/* Default Icon */}
+                        <AudioLines className="h-5 w-5 text-muted-foreground" />
+                        <span className="text-sm font-medium">{voice.description}</span>
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    {/* Gender and Characteristics */}
+                    <div className="block items-center">
+                        {getVoiceGenderLabel({ gender: voice.gender, className: 'mt-2 mr-1' })}
+                        {Object.entries(voice.characteristics).map(([key, value]) => (
+                            getCharacteristicBadge({ key, value, className: 'mt-2 mr-1' })
+                        ))}
+                    </div>
+                    {/* Audio Preview */}
+                    <div className="mt-4">
+                        <AudioPlayer voice={voice} />
+                    </div>
+                </CardContent>
+            </Card>
+        )
+    }
+
     return (
         <>
             <DataTable
@@ -111,6 +199,15 @@ export default function VoicesList() {
                 isLoading={isLoading}
                 showPagination
             />
+            <Separator className="my-4" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {isLoading ? (
+
+                    <Skeleton className="h-36 w-full" />
+                ) : (
+                    data?.map((voice) => getVoiceCard(voice))
+                )}
+            </div>
         </>
     )
 }
