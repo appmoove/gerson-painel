@@ -10,7 +10,41 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { USER_ROLES } from "@/constants";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import z from "zod";
+import { validateCNPJ, validateCPF } from "@/utils/string";
 
+const formUtils = {
+    userSchema: z.object({
+        organization_role_id: z.uuid("Selecione um cargo válido"),
+        name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
+        email: z.email("Email inválido"),
+        document_number: z.string()
+            .refine((val) => {
+                const cleaned = val.replace(/\D/g, '');
+                return cleaned.length === 11 || cleaned.length === 14;
+            }, {
+                message: "Documento deve ser um CPF (11 dígitos) ou CNPJ (14 dígitos)"
+            })
+            // Valida CPF ou CNPJ básico
+            .refine(val => {
+                const cleaned = val.replace(/\D/g, '');
+                // Verifica o tamanho e aplica validações específicas
+                if (cleaned.length === 11) {
+                    return validateCPF(cleaned);
+                }
+
+                if (cleaned.length === 14) {
+                    return validateCNPJ(cleaned);
+                }
+
+                return false;
+            }, {
+                message: "Documento inválido"
+            }),
+        phone_number: z.string().min(10, "Telefone deve ter pelo menos 10 dígitos"),
+        image_url: z.string().optional(),
+    })
+}
 
 export function UserForm() {
 
@@ -61,9 +95,9 @@ export function UserForm() {
                                 name="name"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Nome Completo *</FormLabel>
+                                        <FormLabel>Nome Completo <span className='text-destructive'>*</span></FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Digite o nome completo" {...field} />
+                                            <Input placeholder="Digite o nome completo" {...field} required />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
