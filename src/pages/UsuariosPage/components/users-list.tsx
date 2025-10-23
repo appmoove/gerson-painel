@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { CheckCircle, Eye, PenBox, Plus, Users } from "lucide-react";
 import { toast } from "sonner";
+import { CheckCircle, Eye, PenBox, Plus, Users } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -111,11 +111,8 @@ export function UsersList() {
 
     const getExtraButton = () => {
         return (
-            <Link
-                to="/usuarios/novo"
-                className="cursor-pointer"
-            >
-                <Button>
+            <Link to="/usuarios/novo" className="cursor-pointer">
+                <Button className="cursor-pointer">
                     Novo Usuário
                     <Plus className="h-4 w-4" />
                 </Button>
@@ -135,7 +132,7 @@ export function UsersList() {
             extra={getExtraButton()}
             breadcrumbs={breadcrumbs}
         >
-            <div className="grid gap-6 mb-4 lg:grid-cols-2">
+            <div className="grid gap-4 mb-4 lg:grid-cols-2">
                 <MetricsCard
                     icon={Users}
                     iconColor="text-blue-500"
@@ -143,6 +140,7 @@ export function UsersList() {
                     value={users ? users.length.toString() : '0'}
                     loading={isLoading}
                     tooltipContent="Total de usuários registrados na organização."
+                    className="bg-transparent"
                 />
                 <MetricsCard
                     icon={CheckCircle}
@@ -151,14 +149,14 @@ export function UsersList() {
                     value={users ? users.filter(user => user.active).length.toString() : '0'}
                     loading={isLoading}
                     tooltipContent="Total de usuários ativos na organização."
+                    className="bg-transparent"
                 />
             </div>
             <DataTable
                 data={users}
                 columns={columns}
                 isLoading={isLoading}
-                className="bg-card"
             />
-        </PageContainer >
+        </PageContainer>
     );
 }
