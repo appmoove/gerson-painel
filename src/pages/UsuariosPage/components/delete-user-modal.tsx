@@ -49,7 +49,7 @@ export function DeleteUserModal({
     if (!user) return null;
 
     return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
+        <Dialog open={isOpen} onOpenChange={onClose} modal={true}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
@@ -68,7 +68,7 @@ export function DeleteUserModal({
                         <div className="space-y-1 text-sm">
                             <p><span className="font-medium">Nome:</span> {user.name || "Não informado"}</p>
                             <p><span className="font-medium">Email:</span> {user.email || "Não informado"}</p>
-                            <p><span className="font-medium">Status:</span> 
+                            <p><span className="font-medium">Status:</span>
                                 <span className={`ml-1 ${user.active ? 'text-green-600' : 'text-red-600'}`}>
                                     {user.active ? 'Ativo' : 'Inativo'}
                                 </span>
@@ -80,7 +80,7 @@ export function DeleteUserModal({
                     <Alert variant="destructive">
                         <AlertTriangle className="h-4 w-4" />
                         <AlertDescription>
-                            <strong>Atenção:</strong> Todos os dados relacionados a este usuário serão perdidos permanentemente, 
+                            <strong>Atenção:</strong> Todos os dados relacionados a este usuário serão perdidos permanentemente,
                             incluindo histórico de atividades e permissões.
                         </AlertDescription>
                     </Alert>
