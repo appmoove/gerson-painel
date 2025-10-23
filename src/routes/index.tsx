@@ -7,6 +7,7 @@ import DashboardPage from "@/pages/DashboardPage"
 import AgentesPage from "@/pages/AgentesPage"
 import RotinasPage from "@/pages/RotinasPage"
 import UsuariosPage from "@/pages/UsuariosPage"
+import { UsuariosList } from "@/pages/UsuariosPage/components/usuarios-list"
 
 function ProtectedRoute() {
     const { isAuthenticated } = useAuth()
@@ -48,7 +49,7 @@ export default function AppRoutes() {
                 <Route path="/rotinas/:id/editar" element={<RotinasPage />} />
 
                 {/* Rotas de Usuários */}
-                <Route path="/usuarios" element={<UsuariosPage />} />
+                <Route path="/usuarios" element={<UsuariosList />} />
                 <Route path="/usuarios/novo" element={<UsuariosPage />} />
                 <Route path="/usuarios/:id" element={<UsuariosPage />} />
                 <Route path="/usuarios/:id/editar" element={<UsuariosPage />} />
