@@ -8,6 +8,7 @@ import DashboardPage from "@/pages/DashboardPage"
 import AgentesPage from "@/pages/AgentesPage"
 import RotinasPage from "@/pages/RotinasPage"
 import VozesOrganizacaoPage from "@/pages/OrganizationVoicesPage/voices-list"
+import LeadsPage from "@/pages/LeadsPage"
 
 function ProtectedRoute() {
     const { isAuthenticated } = useAuth()
@@ -50,6 +51,12 @@ export default function AppRoutes() {
 
                 {/* Rotas de Vozes */}
                 <Route path="/vozes" element={<VozesOrganizacaoPage />} />
+
+                {/* Rotas de Leads */}
+                <Route path="/leads" element={<LeadsPage />} />
+                <Route path="/leads/create" element={<LeadsPage />} />
+                <Route path="/leads/:leadId" element={<LeadsPage />} />
+                <Route path="/leads/:leadId/edit" element={<LeadsPage />} />
             </Route>
             <Route path="*" element={<RedirectToDashboard />} />
         </Routes>
