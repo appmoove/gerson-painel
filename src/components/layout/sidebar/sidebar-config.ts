@@ -81,7 +81,7 @@ export const sidebarItems: SidebarItem[] = [
                 icon: UserStar,
                 href: "/leads",
                 exact: true,
-                disabled: true,
+                disabled: false,
             },
             {
                 id: "agentes",
