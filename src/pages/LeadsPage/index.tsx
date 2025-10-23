@@ -150,7 +150,10 @@ export default function LeadsPage() {
                 subtitle={pageInfo.subtitle}
                 breadcrumbs={getBreadcrumbs()}
             >
-                <LeadForm onSuccess={() => goToList()} />
+                <LeadForm 
+                    onSuccess={() => goToList()} 
+                    onCancel={() => goToList()} 
+                />
             </PageContainer>
         );
     }
