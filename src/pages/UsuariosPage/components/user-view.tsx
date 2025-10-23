@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Calendar, CheckCircle, Edit, ImageIcon, Mail, Phone, Shield, User, XCircle } from "lucide-react";
+import { Calendar, CheckCircle, Edit, ImageIcon, Mail, Phone, Shield, Trash2, User, XCircle } from "lucide-react";
 import { toast } from "sonner";
 
 import { UserViewSkeletonCards } from "./user-view-skeleton-cards";
@@ -16,10 +16,13 @@ import { usersApi } from "@/controllers";
 import { formatCpfCnpj, formatPhoneNumber } from "@/utils/string";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { DeleteUserModal } from "./delete-user-modal";
 
 export function UserView() {
     const [user, setUser] = useState<UserDetails>();
     const [loading, setLoading] = useState<boolean>(true);
+    const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
+    const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
@@ -53,6 +56,23 @@ export function UserView() {
         }
     }
 
+    const deleteUser = async () => {
+        if (!user) return;
+
+        try {
+            setIsDeleting(true);
+            await usersApi.deleteUser(user.id);
+            toast.success("Usuário excluído com sucesso.");
+            navigate(-1);
+        } catch (error: any) {
+            toast.error("Erro ao excluir usuário", {
+                description: error.message || 'Erro desconhecido.'
+            });
+        } finally {
+            setIsDeleting(false);
+        }
+    }
+
     const formatDate = (date: Date | null) => {
         if (!date) return "N/A";
         return new Date(date).toLocaleDateString("pt-BR", {
@@ -77,18 +97,24 @@ export function UserView() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 
-    const getExtraButton = () => (
-        <Link to={`/usuarios/${user?.id}/editar`}>
-            <Button>
-                <Edit className="h-4 w-4 mr-2" />
-                Editar
+    const getExtra = () => (
+        <>
+            <Link to={`/usuarios/${user?.id}/editar`}>
+                <Button className="cursor-pointer">
+                    <Edit className="h-4 w-4 mr-2" />
+                    Editar
+                </Button>
+            </Link>
+            <Button variant="destructive" className="ml-2 cursor-pointer" onClick={() => setDeleteModalOpen(true)}>
+                <Trash2 className="h-4 w-4 mr-2" />
+                Excluir
             </Button>
-        </Link>
+        </>
     )
 
     const breadcrumbs = [
-        { label: 'Dashboard', href: '/' },
-        { label: 'Usuários', href: '/usuarios' },
+        { label: 'Dashboard', to: '/' },
+        { label: 'Usuários', to: '/usuarios' },
         { label: 'Detalhes' },
     ];
 
@@ -97,7 +123,7 @@ export function UserView() {
             title="Detalhes do Usuário"
             subtitle="Visualize e edite as informações do usuário."
             breadcrumbs={breadcrumbs}
-            extra={getExtraButton()}
+            extra={getExtra()}
         >
             {loading && <UserViewSkeletonCards />}
             {!loading && user && (
@@ -282,6 +308,15 @@ export function UserView() {
                         </CardContent>
                     </Card>
                 </motion.div>
+            )}
+            {user && (
+                <DeleteUserModal
+                    user={user}
+                    isOpen={deleteModalOpen}
+                    isDeleting={isDeleting}
+                    onClose={() => setDeleteModalOpen(false)}
+                    onConfirm={deleteUser}
+                />
             )}
         </PageContainer>
     )
