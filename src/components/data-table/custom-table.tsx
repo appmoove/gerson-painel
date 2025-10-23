@@ -45,6 +45,9 @@ interface DataTableProps<TData, TValue> extends React.HTMLAttributes<HTMLDivElem
     manualSorting?: boolean
     sorting?: SortingState
     onSortingChange?: (sorting: SortingState) => void
+
+    // Props decorativos
+    className?: React.HTMLAttributes<HTMLDivElement>['className'];
 }
 
 export function DataTable<TData, TValue>({

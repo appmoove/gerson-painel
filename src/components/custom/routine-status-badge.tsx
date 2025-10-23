@@ -5,7 +5,7 @@ type RoutineStatus = keyof typeof ROUTINE_STATUS_BADGE_CONFIG
 
 interface RoutineStatusBadgeProps {
     status: RoutineStatus | string | null | undefined
-    className?: string
+    className?: React.HTMLAttributes<HTMLDivElement>['className']
 }
 
 /**
