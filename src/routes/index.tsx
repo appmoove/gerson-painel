@@ -8,6 +8,7 @@ import AgentesPage from "@/pages/AgentesPage"
 import RotinasPage from "@/pages/RotinasPage"
 import UsuariosPage from "@/pages/UsuariosPage"
 import { UsersList } from "@/pages/UsuariosPage/components/users-list"
+import { UserView } from "@/pages/UsuariosPage/components"
 
 function ProtectedRoute() {
     const { isAuthenticated } = useAuth()
@@ -51,7 +52,7 @@ export default function AppRoutes() {
                 {/* Rotas de Usuários */}
                 <Route path="/usuarios" element={<UsersList />} />
                 <Route path="/usuarios/novo" element={<UsuariosPage />} />
-                <Route path="/usuarios/:id" element={<UsuariosPage />} />
+                <Route path="/usuarios/:id" element={<UserView />} />
                 <Route path="/usuarios/:id/editar" element={<UsuariosPage />} />
             </Route>
             <Route path="*" element={<RedirectToDashboard />} />

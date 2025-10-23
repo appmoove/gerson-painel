@@ -1,44 +1,56 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Calendar, CheckCircle, Edit, ImageIcon, Mail, Phone, Shield, User, XCircle } from "lucide-react";
+import { toast } from "sonner";
+
+import { UserViewSkeletonCards } from "./user-view-skeleton-cards";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { 
-    User, 
-    Mail, 
-    Phone, 
-    Calendar, 
-    Shield, 
-    Image as ImageIcon,
-    CheckCircle,
-    XCircle
-} from "lucide-react";
+import { PageContainer } from "@/components/layout/page-container";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { UserDetails } from "@/types";
+import { motion } from "framer-motion";
 
-import type { UserViewProps } from "../types";
-import { USER_ROLES } from "@/constants/user";
+import { USER_ROLES } from "@/constants";
+import { usersApi } from "@/controllers";
+import { formatCpfCnpj, formatPhoneNumber } from "@/utils/string";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
-// ===========================
-// UserView Component
-// ===========================
+export function UserView() {
+    const [user, setUser] = useState<UserDetails>();
+    const [loading, setLoading] = useState<boolean>(true);
 
-/**
- * Componente de visualização detalhada de usuário
- */
-export function UserView({ user, isLoading }: UserViewProps) {
-    if (isLoading) {
-        return <UserViewSkeleton />;
-    }
+    const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
 
-    if (!user) {
-        return (
-            <Card>
-                <CardContent className="flex flex-col items-center justify-center py-12">
-                    <User className="h-12 w-12 text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">Usuário não encontrado</h3>
-                    <p className="text-muted-foreground text-center">
-                        O usuário solicitado não foi encontrado ou não existe.
-                    </p>
-                </CardContent>
-            </Card>
-        );
+    const getUserData = async (userId: string) => {
+        if (!userId) {
+            setUser(undefined);
+            return;
+        }
+
+        try {
+            setLoading(true);
+            const { data } = await usersApi.getUser(userId);
+
+            if (!data || !data.id) {
+                toast.error("Usuário não encontrado.");
+                setUser(undefined);
+                navigate(-1);
+                return;
+            }
+
+            setUser(data);
+        } catch (error: any) {
+            toast.error("Erro ao carregar dados do usuário", {
+                description: error.message || 'Erro desconhecido.'
+            });
+            setUser(undefined);
+            navigate(-1);
+        } finally {
+            setLoading(false);
+        }
     }
 
     const formatDate = (date: Date | null) => {
@@ -58,246 +70,219 @@ export function UserView({ user, isLoading }: UserViewProps) {
         return role ? role.name : "Cargo não encontrado";
     };
 
+    useEffect(() => {
+        if (id) {
+            getUserData(id);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [id]);
+
+    const getExtraButton = () => (
+        <Link to={`/usuarios/${user?.id}/editar`}>
+            <Button>
+                <Edit className="h-4 w-4 mr-2" />
+                Editar
+            </Button>
+        </Link>
+    )
+
+    const breadcrumbs = [
+        { label: 'Dashboard', href: '/' },
+        { label: 'Usuários', href: '/usuarios' },
+        { label: 'Detalhes' },
+    ];
+
     return (
-        <div className="space-y-6">
-            {/* Informações Principais */}
-            <Card>
-                <CardHeader>
-                    <div className="flex items-center gap-4">
-                        <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
-                            {user.image_url ? (
-                                <img 
-                                    src={user.image_url} 
-                                    alt={user.name || "Usuário"} 
-                                    className="h-16 w-16 rounded-full object-cover"
-                                />
-                            ) : (
-                                <User className="h-8 w-8 text-primary" />
-                            )}
-                        </div>
-                        <div>
-                            <CardTitle className="text-2xl">
-                                {user.name || "Nome não informado"}
-                            </CardTitle>
-                            <div className="flex items-center gap-2 mt-2">
-                                <Badge variant={user.active ? "default" : "secondary"}>
-                                    {user.active ? (
-                                        <>
-                                            <CheckCircle className="h-3 w-3 mr-1" />
-                                            Ativo
-                                        </>
+        <PageContainer
+            title="Detalhes do Usuário"
+            subtitle="Visualize e edite as informações do usuário."
+            breadcrumbs={breadcrumbs}
+            extra={getExtraButton()}
+        >
+            {loading && <UserViewSkeletonCards />}
+            {!loading && user && (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="space-y-4"
+                >
+                    {/* Dados principais */}
+                    <Card>
+                        <CardHeader>
+                            <div className="flex items-center gap-4">
+                                <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
+                                    {user.image_url ? (
+                                        <img
+                                            src={user.image_url}
+                                            alt={user.name || "Usuário"}
+                                            className="h-16 w-16 rounded-full object-cover"
+                                        />
                                     ) : (
-                                        <>
-                                            <XCircle className="h-3 w-3 mr-1" />
-                                            Inativo
-                                        </>
+                                        <User className="h-8 w-8 text-primary" />
                                     )}
-                                </Badge>
+                                </div>
+                                <div>
+                                    <CardTitle className="text-xl">
+                                        {user.name || "Nome não informado"}
+                                    </CardTitle>
+                                    <div className="flex items-center gap-2 mt-2">
+                                        <Badge variant={user.active ? "default" : "secondary"}>
+                                            {user.active ? (
+                                                <>
+                                                    <CheckCircle className="h-3 w-3 mr-1" />
+                                                    Ativo
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <XCircle className="h-3 w-3 mr-1" />
+                                                    Inativo
+                                                </>
+                                            )}
+                                        </Badge>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </CardHeader>
-            </Card>
+                        </CardHeader>
+                    </Card>
 
-            {/* Informações de Contato */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Mail className="h-5 w-5" />
-                        Informações de Contato
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="flex items-center gap-3">
-                            <Mail className="h-4 w-4 text-muted-foreground" />
-                            <div>
-                                <p className="text-sm font-medium">Email</p>
-                                <p className="text-sm text-muted-foreground">
-                                    {user.email || "Não informado"}
-                                </p>
+                    {/* Informações de Contato */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Mail className="h-5 w-5" />
+                                Informações de Contato
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="flex items-center gap-3">
+                                    <Mail className="h-4 w-4 text-muted-foreground" />
+                                    <div>
+                                        <p className="text-sm font-medium">Email</p>
+                                        <p className="text-sm text-muted-foreground">
+                                            {user.email || "Não informado"}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-3">
+                                    <Phone className="h-4 w-4 text-muted-foreground" />
+                                    <div>
+                                        <p className="text-sm font-medium">Telefone</p>
+                                        <p className="text-sm text-muted-foreground">
+                                            {formatPhoneNumber(user.phone_number)}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="flex items-center gap-3">
-                            <Phone className="h-4 w-4 text-muted-foreground" />
-                            <div>
-                                <p className="text-sm font-medium">Telefone</p>
-                                <p className="text-sm text-muted-foreground">
-                                    {user.phone_number || "Não informado"}
-                                </p>
+                            {user.document_number && (
+                                <div className="flex items-center gap-3">
+                                    <Shield className="h-4 w-4 text-muted-foreground" />
+                                    <div>
+                                        <p className="text-sm font-medium">Documento</p>
+                                        <p className="text-sm text-muted-foreground">
+                                            {formatCpfCnpj(user.document_number)}
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+
+                    {/* Informações do Sistema */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Shield className="h-5 w-5" />
+                                Informações do Sistema
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="flex items-center gap-3">
+                                    <Shield className="h-4 w-4 text-muted-foreground" />
+                                    <div>
+                                        <p className="text-sm font-medium">Cargo</p>
+                                        <p className="text-sm text-muted-foreground">
+                                            {getRoleName(user.organization_role_id)}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-3">
+                                    <ImageIcon className="h-4 w-4 text-muted-foreground" />
+                                    <div>
+                                        <p className="text-sm font-medium">Imagem</p>
+                                        <p className="text-sm text-muted-foreground">
+                                            {user.image_url ? "Definida" : "Não definida"}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
 
-                    {user.document_number && (
-                        <div className="flex items-center gap-3">
-                            <Shield className="h-4 w-4 text-muted-foreground" />
-                            <div>
-                                <p className="text-sm font-medium">Documento</p>
-                                <p className="text-sm text-muted-foreground">
-                                    {user.document_number}
-                                </p>
+                            {user.extra_permissions && user.extra_permissions.length > 0 && (
+                                <div>
+                                    <p className="text-sm font-medium mb-2">Permissões Extras</p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {user.extra_permissions?.map((permission: string, index: number) => (
+                                            <Badge key={index} variant="outline">
+                                                {permission}
+                                            </Badge>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+
+                    {/* Informações de Data */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Calendar className="h-5 w-5" />
+                                Datas
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="flex items-center gap-3">
+                                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                                    <div>
+                                        <p className="text-sm font-medium">Criado em</p>
+                                        <p className="text-sm text-muted-foreground">
+                                            {formatDate(user.created_at)}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-3">
+                                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                                    <div>
+                                        <p className="text-sm font-medium">Atualizado em</p>
+                                        <p className="text-sm text-muted-foreground">
+                                            {formatDate(user.updated_at)}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
 
-            {/* Informações do Sistema */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Shield className="h-5 w-5" />
-                        Informações do Sistema
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="flex items-center gap-3">
-                            <Shield className="h-4 w-4 text-muted-foreground" />
-                            <div>
-                                <p className="text-sm font-medium">Cargo</p>
-                                <p className="text-sm text-muted-foreground">
-                                    {getRoleName(user.organization_role_id)}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                            <ImageIcon className="h-4 w-4 text-muted-foreground" />
-                            <div>
-                                <p className="text-sm font-medium">Imagem</p>
-                                <p className="text-sm text-muted-foreground">
-                                    {user.image_url ? "Definida" : "Não definida"}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {user.extra_permissions && user.extra_permissions.length > 0 && (
-                        <div>
-                            <p className="text-sm font-medium mb-2">Permissões Extras</p>
-                            <div className="flex flex-wrap gap-2">
-                                {user.extra_permissions?.map((permission: string, index: number) => (
-                                    <Badge key={index} variant="outline">
-                                        {permission}
-                                    </Badge>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
-
-            {/* Informações de Data */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Calendar className="h-5 w-5" />
-                        Datas
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="flex items-center gap-3">
-                            <Calendar className="h-4 w-4 text-muted-foreground" />
-                            <div>
-                                <p className="text-sm font-medium">Criado em</p>
-                                <p className="text-sm text-muted-foreground">
-                                    {formatDate(user.created_at)}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                            <Calendar className="h-4 w-4 text-muted-foreground" />
-                            <div>
-                                <p className="text-sm font-medium">Atualizado em</p>
-                                <p className="text-sm text-muted-foreground">
-                                    {formatDate(user.updated_at)}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {user.deleted_at && (
-                        <div className="flex items-center gap-3">
-                            <XCircle className="h-4 w-4 text-destructive" />
-                            <div>
-                                <p className="text-sm font-medium text-destructive">Excluído em</p>
-                                <p className="text-sm text-destructive">
-                                    {formatDate(user.deleted_at)}
-                                </p>
-                            </div>
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
-        </div>
-    );
-}
-
-// ===========================
-// UserViewSkeleton Component
-// ===========================
-
-function UserViewSkeleton() {
-    return (
-        <div className="space-y-6">
-            {/* Informações Principais */}
-            <Card>
-                <CardHeader>
-                    <div className="flex items-center gap-4">
-                        <Skeleton className="h-16 w-16 rounded-full" />
-                        <div>
-                            <Skeleton className="h-6 w-48 mb-2" />
-                            <Skeleton className="h-5 w-20" />
-                        </div>
-                    </div>
-                </CardHeader>
-            </Card>
-
-            {/* Informações de Contato */}
-            <Card>
-                <CardHeader>
-                    <Skeleton className="h-6 w-48" />
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <Skeleton className="h-16 w-full" />
-                        <Skeleton className="h-16 w-full" />
-                    </div>
-                    <Skeleton className="h-16 w-full" />
-                </CardContent>
-            </Card>
-
-            {/* Informações do Sistema */}
-            <Card>
-                <CardHeader>
-                    <Skeleton className="h-6 w-48" />
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <Skeleton className="h-16 w-full" />
-                        <Skeleton className="h-16 w-full" />
-                    </div>
-                    <Skeleton className="h-20 w-full" />
-                </CardContent>
-            </Card>
-
-            {/* Informações de Data */}
-            <Card>
-                <CardHeader>
-                    <Skeleton className="h-6 w-32" />
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <Skeleton className="h-16 w-full" />
-                        <Skeleton className="h-16 w-full" />
-                    </div>
-                </CardContent>
-            </Card>
-        </div>
-    );
+                            {user.deleted_at && (
+                                <div className="flex items-center gap-3">
+                                    <XCircle className="h-4 w-4 text-destructive" />
+                                    <div>
+                                        <p className="text-sm font-medium text-destructive">Excluído em</p>
+                                        <p className="text-sm text-destructive">
+                                            {formatDate(user.deleted_at)}
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                </motion.div>
+            )}
+        </PageContainer>
+    )
 }
