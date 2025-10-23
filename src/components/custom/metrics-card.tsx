@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { Skeleton } from "../ui/skeleton";
 
 interface MetricsCardProps {
   /** Ícone do card */
@@ -18,11 +19,13 @@ interface MetricsCardProps {
   /** Valor da variação percentual */
   percentageChange?: number;
   /** Cor do ícone */
-  iconColor?: string;
+  iconColor?: React.HTMLAttributes<HTMLDivElement>['className'];
+  /** Indicador de carregamento */
+  loading?: boolean;
   /** Informações detalhadas para o tooltip */
   tooltipContent?: string;
   /** Classe CSS adicional */
-  className?: string;
+  className?: React.HTMLAttributes<HTMLDivElement>['className'];
 }
 
 export function MetricsCard({
@@ -32,6 +35,7 @@ export function MetricsCard({
   comparisonText,
   percentageChange,
   iconColor = "text-muted-foreground",
+  loading = false,
   tooltipContent,
   className
 }: MetricsCardProps) {
@@ -41,7 +45,7 @@ export function MetricsCard({
   return (
     <TooltipProvider>
       <Card className={cn("relative overflow-hidden", className)}>
-        <CardContent className="p-4">
+        <CardContent>
           <div className="flex items-start justify-between gap-2">
             {/* Conteúdo principal: Ícone, título, valor e comparação */}
             <div className="flex items-start gap-2 flex-1 min-w-0">
@@ -52,10 +56,16 @@ export function MetricsCard({
                 <p className="text-xs font-medium text-muted-foreground mb-0.5 break-words">
                   {title}
                 </p>
-                <div className="text-xl font-bold text-foreground mb-1 break-words">
-                  {value}
-                </div>
-                
+                {loading ? (
+                  <div className="text-xl font-bold text-foreground mb-1 break-words">
+                    <Skeleton className="h-6 w-24" />
+                  </div>
+                ) : (
+                  <div className="text-xl font-bold text-foreground mb-1 break-words">
+                    {value}
+                  </div>
+                )}
+
                 {/* Badge de variação e texto de comparação embaixo do valor */}
                 {(percentageChange !== undefined || comparisonText) && (
                   <div className="flex flex-wrap items-center gap-1">
@@ -73,9 +83,9 @@ export function MetricsCard({
                       </Badge>
                     )}
                     {comparisonText && (
-                      <span 
+                      <span
                         className="text-[10px] text-muted-foreground break-all overflow-wrap-anywhere"
-                        style={{ 
+                        style={{
                           wordBreak: 'break-all',
                           overflowWrap: 'anywhere',
                           hyphens: 'auto'
@@ -105,8 +115,8 @@ export function MetricsCard({
               </div>
             )}
           </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
     </TooltipProvider>
   );
 }
