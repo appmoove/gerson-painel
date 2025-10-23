@@ -109,16 +109,14 @@ export function UsersList() {
         }
     ];
 
-    const getExtraButton = () => {
-        return (
-            <Link to="/usuarios/novo" className="cursor-pointer">
-                <Button className="cursor-pointer">
-                    Novo Usuário
-                    <Plus className="h-4 w-4" />
-                </Button>
-            </Link>
-        )
-    }
+    const getExtraButton = () => (
+        <Link to="/usuarios/novo" className="cursor-pointer">
+            <Button className="cursor-pointer">
+                Novo Usuário
+                <Plus className="h-4 w-4" />
+            </Button>
+        </Link>
+    )
 
     const breadcrumbs = [
         { label: 'Dashboard', href: '/' },
