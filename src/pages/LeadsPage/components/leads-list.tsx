@@ -1,7 +1,15 @@
-import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
+import { Card, CardContent } from "../../../components/ui/card";
 import { Button } from "../../../components/ui/button";
 import { Badge } from "../../../components/ui/badge";
 import { Skeleton } from "../../../components/ui/skeleton";
+import { 
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../../../components/ui/table";
 import { 
   Eye, 
   Edit, 
@@ -16,8 +24,8 @@ import {
 import type { LeadsListProps } from "../types";
 
 /**
- * Componente de lista de leads
- * Exibe cards com informações dos leads e ações disponíveis
+ * Componente de lista de leads em formato de tabela
+ * Exibe informações dos leads em uma tabela organizada
  */
 export function LeadsList({ 
   leads, 
@@ -27,7 +35,7 @@ export function LeadsList({
   onDelete 
 }: LeadsListProps) {
   if (isLoading) {
-    return <LeadsListSkeleton />;
+    return <LeadsTableSkeleton />;
   }
 
   if (leads.length === 0) {
@@ -35,24 +43,40 @@ export function LeadsList({
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {leads.map((lead) => (
-        <LeadCard
-          key={lead.id}
-          lead={lead}
-          onView={() => onView(lead)}
-          onEdit={() => onEdit(lead.id)}
-          onDelete={() => onDelete(lead.id)}
-        />
-      ))}
-    </div>
+    <Card>
+      <CardContent className="p-0">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[200px]">Nome</TableHead>
+              <TableHead className="w-[250px]">Email</TableHead>
+              <TableHead className="w-[150px]">Telefone</TableHead>
+              <TableHead className="w-[200px]">Grupos</TableHead>
+              <TableHead className="w-[120px]">Criado em</TableHead>
+              <TableHead className="w-[120px] text-right">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {leads.map((lead) => (
+              <LeadTableRow
+                key={lead.id}
+                lead={lead}
+                onView={() => onView(lead)}
+                onEdit={() => onEdit(lead.id)}
+                onDelete={() => onDelete(lead.id)}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
   );
 }
 
 /**
- * Card individual de lead
+ * Linha da tabela para cada lead
  */
-function LeadCard({ 
+function LeadTableRow({ 
   lead, 
   onView, 
   onEdit, 
@@ -68,7 +92,7 @@ function LeadCard({
   };
 
   const formatPhone = (phone: string | null) => {
-    if (!phone) return null;
+    if (!phone) return '-';
     // Formata telefone brasileiro
     const cleaned = phone.replace(/\D/g, '');
     if (cleaned.length === 11) {
@@ -81,65 +105,45 @@ function LeadCard({
   };
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-2">
-            <User className="h-4 w-4 text-muted-foreground" />
-            <CardTitle className="text-lg">
-              {lead.name || 'Nome não informado'}
-            </CardTitle>
-          </div>
-          <div className="flex gap-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onView}
-              title="Visualizar"
-            >
-              <Eye className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onEdit}
-              title="Editar"
-            >
-              <Edit className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onDelete}
-              title="Excluir"
-              className="text-destructive hover:text-destructive"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </div>
+    <TableRow>
+      {/* Nome */}
+      <TableCell>
+        <div className="flex items-center gap-2">
+          <User className="h-4 w-4 text-muted-foreground" />
+          <span className="font-medium">
+            {lead.name || 'Nome não informado'}
+          </span>
         </div>
-      </CardHeader>
-      
-      <CardContent className="space-y-3">
-        {/* Email */}
-        {lead.email && (
-          <div className="flex items-center gap-2 text-sm">
+      </TableCell>
+
+      {/* Email */}
+      <TableCell>
+        {lead.email ? (
+          <div className="flex items-center gap-2">
             <Mail className="h-4 w-4 text-muted-foreground" />
             <span className="truncate">{lead.email}</span>
           </div>
+        ) : (
+          <span className="text-muted-foreground">-</span>
         )}
+      </TableCell>
 
-        {/* Telefone */}
-        {lead.phone && (
-          <div className="flex items-center gap-2 text-sm">
+      {/* Telefone */}
+      <TableCell>
+        {lead.phone ? (
+          <div className="flex items-center gap-2">
             <Phone className="h-4 w-4 text-muted-foreground" />
             <span>{formatPhone(lead.phone)}</span>
           </div>
+        ) : (
+          <span className="text-muted-foreground">-</span>
         )}
+      </TableCell>
 
-        {/* Grupos */}
-        {lead.groups && lead.groups.length > 0 && (
-          <div className="flex items-center gap-2 text-sm">
+      {/* Grupos */}
+      <TableCell>
+        {lead.groups && lead.groups.length > 0 ? (
+          <div className="flex items-center gap-1">
             <Users className="h-4 w-4 text-muted-foreground" />
             <div className="flex flex-wrap gap-1">
               {lead.groups.map((group: any) => (
@@ -149,40 +153,114 @@ function LeadCard({
               ))}
             </div>
           </div>
+        ) : (
+          <span className="text-muted-foreground">-</span>
         )}
+      </TableCell>
 
-        {/* Data de criação */}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Calendar className="h-4 w-4" />
-          <span>Criado em {formatDate(lead.created_at)}</span>
+      {/* Data de criação */}
+      <TableCell>
+        <div className="flex items-center gap-2">
+          <Calendar className="h-4 w-4 text-muted-foreground" />
+          <span className="text-sm">{formatDate(lead.created_at)}</span>
         </div>
-      </CardContent>
-    </Card>
+      </TableCell>
+
+      {/* Ações */}
+      <TableCell className="text-right">
+        <div className="flex items-center justify-end gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onView}
+            title="Visualizar"
+          >
+            <Eye className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onEdit}
+            title="Editar"
+          >
+            <Edit className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onDelete}
+            title="Excluir"
+            className="text-destructive hover:text-destructive"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
+      </TableCell>
+    </TableRow>
   );
 }
 
 /**
- * Estado de carregamento da lista
+ * Estado de carregamento da tabela
  */
-function LeadsListSkeleton() {
+function LeadsTableSkeleton() {
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {Array.from({ length: 6 }).map((_, index) => (
-        <Card key={index}>
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <Skeleton className="h-4 w-4" />
-              <Skeleton className="h-5 w-32" />
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-4 w-1/2" />
-          </CardContent>
-        </Card>
-      ))}
-    </div>
+    <Card>
+      <CardContent className="p-0">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[200px]">Nome</TableHead>
+              <TableHead className="w-[250px]">Email</TableHead>
+              <TableHead className="w-[150px]">Telefone</TableHead>
+              <TableHead className="w-[200px]">Grupos</TableHead>
+              <TableHead className="w-[120px]">Criado em</TableHead>
+              <TableHead className="w-[120px] text-right">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {Array.from({ length: 5 }).map((_, index) => (
+              <TableRow key={index}>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="h-4 w-4" />
+                    <Skeleton className="h-4 w-32" />
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="h-4 w-4" />
+                    <Skeleton className="h-4 w-40" />
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="h-4 w-4" />
+                    <Skeleton className="h-4 w-24" />
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-6 w-20" />
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="h-4 w-4" />
+                    <Skeleton className="h-4 w-16" />
+                  </div>
+                </TableCell>
+                <TableCell className="text-right">
+                  <div className="flex items-center justify-end gap-1">
+                    <Skeleton className="h-8 w-8" />
+                    <Skeleton className="h-8 w-8" />
+                    <Skeleton className="h-8 w-8" />
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
   );
 }
 
