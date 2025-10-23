@@ -1,7 +1,5 @@
-import { AxiosError } from 'axios';
-import type { AxiosInstance } from 'axios';
+import { BaseApi } from './base-api';
 
-import { createApiInstance, handleAxiosResponse, handleAxiosError } from './base-api';
 import type { ApiResponse } from '../types/api';
 import type {
     CreateUserRequest,
@@ -10,48 +8,32 @@ import type {
     UpdateUserResponse,
     ListUsersResponse,
     GetUserResponse
-}
-from '../types/user-api';
-
-import { useAuth } from "@/stores/auth";
-
+} from '../types/user-api';
+import type { AxiosError } from 'axios';
 
 // ===========================
 // Users API Class
 // ===========================
 
-class UsersApi {
-    private axiosInstance: AxiosInstance;
-
-    constructor() {
-        this.axiosInstance = createApiInstance();
-    }
+class UsersApi extends BaseApi {
 
     /**
      * Cria um novo usuário
      */
     createUser(userData: CreateUserRequest): Promise<ApiResponse<CreateUserResponse>> {
-        const organizationId = useAuth.getState().user?.organization_id;
-
-        if (!organizationId) {
-            throw new Error('Organization ID not found');
-        }
+        const organizationId = this.getOrganizationId();
 
         return this.axiosInstance
             .post<CreateUserResponse>(`/organizations/${organizationId}/users/create`, userData)
-            .then(handleAxiosResponse)
-            .catch((error: AxiosError) => handleAxiosError(error));
+            .then(this.handleAxiosResponse)
+            .catch(error => this.handleAxiosError(error as AxiosError))
     }
 
     /**
      * Lista todos os usuários da organização
      */
     listUsers(params?: { page?: number; limit?: number }): Promise<ApiResponse<ListUsersResponse>> {
-        const organizationId = useAuth.getState().user?.organization_id;
-
-        if (!organizationId) {
-            throw new Error('Organization ID not found');
-        }
+        const organizationId = this.getOrganizationId();
 
         const queryParams = new URLSearchParams();
         if (params?.page) queryParams.append('page', params.page.toString());
@@ -62,24 +44,20 @@ class UsersApi {
 
         return this.axiosInstance
             .get<ListUsersResponse>(url)
-            .then(handleAxiosResponse)
-            .catch((error: AxiosError) => handleAxiosError(error));
+            .then(this.handleAxiosResponse)
+            .catch(error => this.handleAxiosError(error as AxiosError))
     }
 
     /**
      * Busca um usuário específico
      */
     getUser(userId: string): Promise<ApiResponse<GetUserResponse>> {
-        const organizationId = useAuth.getState().user?.organization_id;
-
-        if (!organizationId) {
-            throw new Error('Organization ID not found');
-        }
+        const organizationId = this.getOrganizationId();
 
         return this.axiosInstance
             .get<GetUserResponse>(`/organizations/${organizationId}/users/${userId}`)
-            .then(handleAxiosResponse)
-            .catch((error: AxiosError) => handleAxiosError(error));
+            .then(this.handleAxiosResponse)
+            .catch(error => this.handleAxiosError(error as AxiosError))
     }
 
     /**
@@ -87,32 +65,24 @@ class UsersApi {
      * Tenta PATCH primeiro, se falhar por CORS usa estratégia alternativa
      */
     async updateUser(userId: string, userData: UpdateUserRequest): Promise<ApiResponse<UpdateUserResponse>> {
-        const organizationId = useAuth.getState().user?.organization_id;
-
-        if (!organizationId) {
-            throw new Error('Organization ID not found');
-        }
+        const organizationId = this.getOrganizationId();
 
         return await this.axiosInstance
             .patch<UpdateUserResponse>(`/organizations/${organizationId}/users/${userId}/update`, userData)
-            .then(handleAxiosResponse)
-            .catch((error: AxiosError) => handleAxiosError(error));
+            .then(this.handleAxiosResponse)
+            .catch(error => this.handleAxiosError(error as AxiosError))
     }
 
     /**
      * Remove um usuário (soft delete)
      */
     deleteUser(userId: string): Promise<ApiResponse<{ success: boolean }>> {
-        const organizationId = useAuth.getState().user?.organization_id;
-
-        if (!organizationId) {
-            throw new Error('Organization ID not found');
-        }
+        const organizationId = this.getOrganizationId();
 
         return this.axiosInstance
             .delete(`/organizations/${organizationId}/users/${userId}/delete`)
-            .then(handleAxiosResponse)
-            .catch((error: AxiosError) => handleAxiosError(error));
+            .then(this.handleAxiosResponse)
+            .catch(error => this.handleAxiosError(error as AxiosError))
     }
 }
 
