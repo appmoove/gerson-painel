@@ -8,12 +8,12 @@ import * as z from "zod";
 import { usersApi } from "@/controllers/users-api";
 import { useAuth } from "@/stores/auth";
 import type { ApiResponse } from "@/types/api";
-import type { 
-    UserDetails, 
-    CreateUserRequest, 
+import type {
+    UserDetails,
+    CreateUserRequest,
     UpdateUserRequest,
     UserFormData,
-    UserViewMode 
+    UserViewMode
 } from "@/types/user-api";
 import type { DeleteUserModalState } from "./types";
 
@@ -38,7 +38,7 @@ const userSchema = z.object({
 export function useUserForm(user?: UserDetails) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { user: authUser } = useAuth();
-    
+
     const organizationId = authUser?.organization_id;
 
     const form = useForm({
@@ -67,56 +67,56 @@ export function useUserForm(user?: UserDetails) {
             if (user) {
                 // Atualizar usuário existente - enviar apenas campos alterados
                 const updateData: UpdateUserRequest = {};
-                
+
                 // Comparar e incluir apenas campos que foram alterados
                 if (data.organization_role_id !== user.organization_role_id) {
                     updateData.organization_role_id = data.organization_role_id;
                 }
-                
+
                 if (data.name !== user.name) {
                     updateData.name = data.name;
                 }
-                
+
                 if (data.email !== user.email) {
                     updateData.email = data.email;
                 }
-                
+
                 if (data.document_number !== user.document_number) {
                     updateData.document_number = data.document_number;
                 }
-                
+
                 if (data.phone_number !== user.phone_number) {
                     updateData.phone_number = data.phone_number;
                 }
-                
+
                 if (data.image_url !== user.image_url) {
                     updateData.image_url = data.image_url;
                 }
-                
+
                 // Para permissões, comparar arrays
                 const currentPermissions = user.extra_permissions || [];
                 const newPermissions = data.extra_permissions || [];
-                
+
                 // Verificar se há diferenças nas permissões
-                const permissionsChanged = 
+                const permissionsChanged =
                     currentPermissions.length !== newPermissions.length ||
                     !currentPermissions.every(perm => newPermissions.includes(perm));
-                
+
                 if (permissionsChanged) {
                     // Calcular permissões a serem adicionadas e removidas
                     const addPermissions = newPermissions.filter(perm => !currentPermissions.includes(perm));
                     const removePermissions = currentPermissions.filter(perm => !newPermissions.includes(perm));
-                    
+
                     if (addPermissions.length > 0) {
                         updateData.add_permissions = addPermissions;
                     }
-                    
+
                     if (removePermissions.length > 0) {
                         updateData.remove_permissions = removePermissions;
                     }
                 }
 
-                response = await usersApi.updateUser(organizationId, user.id, updateData);
+                response = await usersApi.updateUser(user.id, updateData);
             } else {
                 // Criar novo usuário
                 const createData: CreateUserRequest = {
@@ -128,7 +128,7 @@ export function useUserForm(user?: UserDetails) {
                     extra_permissions: data.extra_permissions && data.extra_permissions.length > 0 ? data.extra_permissions : undefined
                 };
 
-                response = await usersApi.createUser(organizationId, createData);
+                response = await usersApi.createUser(createData);
             }
 
             if (response.error) {
@@ -141,7 +141,7 @@ export function useUserForm(user?: UserDetails) {
             } else {
                 toast.success("Usuário criado com sucesso!");
             }
-            
+
             return { success: true, data: response.data!, isUpdate: !!user };
         } catch (error) {
             console.error("Erro ao salvar usuário:", error);
@@ -169,11 +169,13 @@ export function useUsersNavigation() {
     const getModeFromPath = (pathname: string): UserViewMode => {
         if (pathname.includes('/novo')) return 'create';
         if (pathname.includes('/editar')) return 'edit';
+        // eslint-disable-next-line no-useless-escape
         if (pathname.match(/\/usuarios\/[^\/]+$/)) return 'view';
         return 'list';
     };
 
     const getUserIdFromPath = (pathname: string): string | undefined => {
+        // eslint-disable-next-line no-useless-escape
         const match = pathname.match(/\/usuarios\/([^\/]+)/);
         return match ? match[1] : undefined;
     };
@@ -225,7 +227,7 @@ export function useUserDetail(userId?: string) {
         setError(null);
 
         try {
-            const response = await usersApi.getUser(organizationId, id);
+            const response = await usersApi.getUser(id);
 
             if (response.error) {
                 setError(response.error.message as string);
@@ -273,13 +275,13 @@ export function useUsuarios() {
 
     const navigation = useUsersNavigation();
     const userDetail = useUserDetail(navigation.userId);
-    
+
     const userForm = useUserForm(userDetail.user || undefined);
 
     // Função para atualizar a lista após criação/edição
     const updateUsersList = useCallback((result: { success: boolean; data: UserDetails; isUpdate: boolean }) => {
         if (!result.success || !result.data) return;
-        
+
         if (result.isUpdate) {
             // Atualização: remover usuário antigo da lista e adicionar o novo
             setUsers((prevUsers: UserDetails[]) => {
@@ -301,7 +303,7 @@ export function useUsuarios() {
         setError(null);
 
         try {
-            const response = await usersApi.listUsers(organizationId);
+            const response = await usersApi.listUsers();
 
             if (response.error) {
                 setError(response.error.message as string);
@@ -342,7 +344,7 @@ export function useUsuarios() {
         setDeleteModal(prev => ({ ...prev, isDeleting: true }));
 
         try {
-            const response = await usersApi.deleteUser(organizationId, deleteModal.userToDelete.id);
+            const response = await usersApi.deleteUser(deleteModal.userToDelete.id);
 
             if (response.error) {
                 toast.error(response.error.message as string);
@@ -350,7 +352,7 @@ export function useUsuarios() {
             }
 
             // Remover usuário da lista local
-            setUsers((prevUsers: UserDetails[]) => 
+            setUsers((prevUsers: UserDetails[]) =>
                 prevUsers.filter((user: UserDetails) => user.id !== deleteModal.userToDelete!.id)
             );
 
@@ -369,7 +371,7 @@ export function useUsuarios() {
         if (!organizationId) return;
 
         try {
-            const response = await usersApi.deleteUser(organizationId, userId);
+            const response = await usersApi.deleteUser(userId);
 
             if (response.error) {
                 toast.error(response.error.message as string);
@@ -377,7 +379,7 @@ export function useUsuarios() {
             }
 
             // Remover usuário da lista local
-            setUsers((prevUsers: UserDetails[]) => 
+            setUsers((prevUsers: UserDetails[]) =>
                 prevUsers.filter((user: UserDetails) => user.id !== userId)
             );
 
