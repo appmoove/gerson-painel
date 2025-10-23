@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui
 import { Button } from "../../../components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../../components/ui/form";
 import { Input } from "../../../components/ui/input";
-import { Loader2, Save, X, Plus, Edit } from "lucide-react";
+import { Loader2, Save, X } from "lucide-react";
 
 import { useLeadForm } from "../hooks";
 import { LeadGroupsSelector } from "./lead-groups-selector";
@@ -30,31 +30,6 @@ export function LeadForm({ lead, onSuccess, onCancel }: LeadFormProps) {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        {lead ? (
-          <>
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <Edit className="h-5 w-5 text-blue-600" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-semibold text-gray-900">Editar Lead</h2>
-              <p className="text-sm text-gray-500">Atualize as informações do lead</p>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="p-2 bg-green-100 rounded-lg">
-              <Plus className="h-5 w-5 text-green-600" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-semibold text-gray-900">Novo Lead</h2>
-              <p className="text-sm text-gray-500">Cadastre um novo lead no sistema</p>
-            </div>
-          </>
-        )}
-      </div>
-
       {/* Layout Principal */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* Coluna Esquerda - Formulário */}
