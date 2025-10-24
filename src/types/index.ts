@@ -48,3 +48,13 @@ export type {
     UsersPageState,
     UserViewMode
 } from './user-api'
+
+// Lead Groups Types
+export type {
+    CreateLeadGroupRequest,
+    CreateLeadGroupResponse,
+    UpdateLeadGroupRequest,
+    UpdateLeadGroupResponse,
+    ListLeadGroupsResponse,
+    GetLeadGroupResponse
+} from './lead-groups-api'
