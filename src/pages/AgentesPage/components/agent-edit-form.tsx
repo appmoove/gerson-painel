@@ -3,10 +3,9 @@ import { Form } from "@/components/ui/form"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Save, X, Bot } from "lucide-react"
+import { Save, X, Bot, Edit } from "lucide-react"
 import { useAgentForm } from "../hooks"
-import type { AgentFormProps } from "../types"
-import type { AgentFormData } from "../types"
+import type { CreateAgentResponse, AgentFormData } from "../types"
 import {
     AgentErrorAlert,
     AgentNameField,
@@ -17,19 +16,30 @@ import {
 } from "./form"
 
 // ===========================
-// AgentForm Component
+// AgentEditForm Props
+// ===========================
+
+interface AgentEditFormProps {
+    agent: CreateAgentResponse
+    onSave: () => void
+    onCancel: () => void
+    isLoading?: boolean
+}
+
+// ===========================
+// AgentEditForm Component
 // ===========================
 
 /**
- * Componente de formulário para cadastro/edição de agente
- * Segue o padrão da LoginPage com componentes organizados
+ * Componente de formulário específico para edição de agente
+ * Focado na experiência de edição com elementos visuais apropriados
  */
-export function AgentForm({
+export function AgentEditForm({
     agent,
     onSave,
     onCancel,
     isLoading = false
-}: AgentFormProps) {
+}: AgentEditFormProps) {
     const {
         form,
         isSubmitting,
@@ -37,9 +47,7 @@ export function AgentForm({
         onSubmit,
         clearError,
         voices
-    } = useAgentForm(agent)
-
-    const isEditing = !!agent
+    } = useAgentForm(agent) // Com agente = modo edição
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleSubmit = async (data: any) => {
@@ -61,14 +69,14 @@ export function AgentForm({
                 <Card>
                     <CardContent className="px-6">
                         <div className="space-y-6">
-                            {/* Ícone discreto do bot */}
-                            <div className="flex items-center gap-2 text-muted-foreground">
-                                <Bot className="h-4 w-4" />
-                                <span className="text-sm">Configuração do Agente</span>
+                            {/* Header com ícone de edição */}
+                            <div className="flex items-center gap-2 text-primary">
+                                <Edit className="h-5 w-5" />
+                                <span className="text-lg font-semibold">Editar Agente</span>
                             </div>
 
                             <div className="grid gap-6">
-                                {/* Linha 1: Nome e Status - Skeleton */}
+                                {/* Linha 1: Nome e Tipo - Skeleton */}
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <Skeleton className="h-4 w-16" />
@@ -76,40 +84,26 @@ export function AgentForm({
                                     </div>
                                     <div className="space-y-2">
                                         <Skeleton className="h-4 w-12" />
-                                        <Skeleton className="h-6 w-20" />
+                                        <Skeleton className="h-10 w-full" />
                                     </div>
                                 </div>
 
-                                <Separator />
-
-                                {/* Linha 2: Descrição - Skeleton */}
+                                {/* Linha 2: Voz - Skeleton */}
                                 <div className="space-y-2">
                                     <Skeleton className="h-4 w-20" />
-                                    <Skeleton className="h-20 w-full" />
+                                    <Skeleton className="h-12 w-full" />
                                 </div>
 
-                                <Separator />
-
-                                {/* Linha 3: Objetivo - Skeleton */}
-                                <div className="space-y-2">
-                                    <Skeleton className="h-4 w-16" />
-                                    <Skeleton className="h-20 w-full" />
-                                </div>
-
-                                <Separator />
-
-                                {/* Linha 4: Personalidade - Skeleton */}
+                                {/* Linha 3: Comportamento - Skeleton */}
                                 <div className="space-y-2">
                                     <Skeleton className="h-4 w-24" />
-                                    <Skeleton className="h-24 w-full" />
+                                    <Skeleton className="h-20 w-full" />
                                 </div>
 
-                                <Separator />
-
-                                {/* Linha 5: Voz - Skeleton */}
+                                {/* Linha 4: Características - Skeleton */}
                                 <div className="space-y-2">
-                                    <Skeleton className="h-4 w-12" />
-                                    <Skeleton className="h-10 w-full" />
+                                    <Skeleton className="h-4 w-28" />
+                                    <Skeleton className="h-20 w-full" />
                                 </div>
                             </div>
 
@@ -130,6 +124,20 @@ export function AgentForm({
             <Card>
                 <CardContent className="px-6">
                     <div className="space-y-6">
+                        {/* Header com ícone de edição */}
+                        <div className="flex items-center gap-2 text-primary">
+                            <Edit className="h-5 w-5" />
+                            <span className="text-lg font-semibold">Editar Agente</span>
+                        </div>
+
+                        {/* Informações do agente */}
+                        <div className="bg-muted/50 rounded-lg p-4">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <Bot className="h-4 w-4" />
+                                <span>Editando: <strong className="text-foreground">{agent.name}</strong></span>
+                            </div>
+                        </div>
+
                         {/* Erro da API */}
                         {submitError && (
                             <AgentErrorAlert error={submitError} />
@@ -145,7 +153,6 @@ export function AgentForm({
                                 </div>
 
                                 <div className="grid gap-6">
-
                                     {/* Linha 1: Nome e Tipo - Responsivo */}
                                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                         <AgentNameField />
@@ -186,7 +193,7 @@ export function AgentForm({
                                         ) : (
                                             <>
                                                 <Save className="h-4 w-4 mr-2" />
-                                                {isEditing ? 'Atualizar' : 'Criar'} Agente
+                                                Salvar Alterações
                                             </>
                                         )}
                                     </Button>

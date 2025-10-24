@@ -85,7 +85,7 @@ export interface AgentsListProps {
 }
 
 /**
- * Props do componente AgentForm
+ * Props do componente AgentForm (DEPRECATED - usar AgentCreateForm ou AgentEditForm)
  */
 export interface AgentFormProps {
     /** Agente para edição (undefined = cadastro) */
@@ -96,6 +96,32 @@ export interface AgentFormProps {
     onCancel: () => void
     /** Título customizado */
     title?: string
+    /** Estado de carregamento */
+    isLoading?: boolean
+}
+
+/**
+ * Props do componente AgentCreateForm
+ */
+export interface AgentCreateFormProps {
+    /** Callback quando formulário é salvo com sucesso */
+    onSave: () => void
+    /** Callback para cancelar */
+    onCancel: () => void
+    /** Estado de carregamento */
+    isLoading?: boolean
+}
+
+/**
+ * Props do componente AgentEditForm
+ */
+export interface AgentEditFormProps {
+    /** Agente para edição */
+    agent: CreateAgentResponse
+    /** Callback quando formulário é salvo com sucesso */
+    onSave: () => void
+    /** Callback para cancelar */
+    onCancel: () => void
     /** Estado de carregamento */
     isLoading?: boolean
 }
