@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Search, Bell, Brain } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
+import { APP_CONFIG } from "@/constants";
 
 export interface AppHeaderProps {
     /** Callback para busca */
@@ -48,10 +50,10 @@ export function AppHeader({
                     <Brain className="w-6 h-6 flex-shrink-0" color="var(--primary)" />
                     <div className="flex-1 min-w-0">
                         <h2 className="text-md font-semibold text-foreground">
-                            Gerson
+                            {APP_CONFIG.name}
                         </h2>
                         <p className="text-xs text-muted-foreground">
-                            Call Center IA
+                            {APP_CONFIG.minor_description}
                         </p>
                     </div>
                 </div>
