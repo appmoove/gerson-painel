@@ -125,54 +125,51 @@ export function useLeadGroupForm(leadGroup?: CreateLeadGroupResponse) {
         }
     })
 
-    const onSubmit = useCallback((data: LeadGroupFormData) => {
+    const onSubmit = useCallback(async (data: LeadGroupFormData) => {
         setIsSubmitting(true)
         setSubmitError(null)
 
-        const processSubmit = () => {
+        try {
+            let response
             if (leadGroup?.id) {
-                return leadGroupsApi.updateLeadGroup(leadGroup.id, {
+                response = await leadGroupsApi.updateLeadGroup(leadGroup.id, {
                     name: data.name
                 })
             } else {
-                return leadGroupsApi.createLeadGroup({
+                response = await leadGroupsApi.createLeadGroup({
                     name: data.name
                 })
             }
-        }
 
-        processSubmit()
-            .then(response => {
-                if (response.error) {
-                    setSubmitError(response.error.message)
-                    toast.error("Erro ao salvar grupo de leads", {
-                        description: response.error.message,
+            if (response.error) {
+                setSubmitError(response.error.message)
+                toast.error("Erro ao salvar grupo de leads", {
+                    description: response.error.message,
+                })
+                return { success: false, error: response.error.message }
+            } else {
+                if (leadGroup?.id) {
+                    toast.success("Grupo de leads atualizado!", {
+                        description: `${data.name} foi atualizado com sucesso.`,
                     })
                 } else {
-                    if (leadGroup?.id) {
-                        toast.success("Grupo de leads atualizado!", {
-                            description: `${data.name} foi atualizado com sucesso.`,
-                        })
-                    } else {
-                        toast.success("Grupo de leads criado!", {
-                            description: `${data.name} foi criado com sucesso.`,
-                        })
-                    }
-                    form.reset()
-                    return { success: true }
+                    toast.success("Grupo de leads criado!", {
+                        description: `${data.name} foi criado com sucesso.`,
+                    })
                 }
+                form.reset()
+                return { success: true }
+            }
+        } catch (err) {
+            const errorMessage = 'Erro ao salvar grupo de leads'
+            setSubmitError(errorMessage)
+            toast.error("Erro ao salvar grupo de leads", {
+                description: errorMessage,
             })
-            .catch(err => {
-                const errorMessage = 'Erro ao salvar grupo de leads'
-                setSubmitError(errorMessage)
-                toast.error("Erro ao salvar grupo de leads", {
-                    description: errorMessage,
-                })
-                return { success: false, error: errorMessage }
-            })
-            .finally(() => {
-                setIsSubmitting(false)
-            })
+            return { success: false, error: errorMessage }
+        } finally {
+            setIsSubmitting(false)
+        }
     }, [leadGroup, form, toast])
 
     return {
@@ -311,7 +308,7 @@ export function useLeadGroups() {
         if (navigation.mode === 'list') {
             leadGroupsList.refreshLeadGroups()
         }
-    }, [navigation.mode])
+    }, [navigation.mode, leadGroupsList.refreshLeadGroups])
 
     // Recarrega dados do grupo sempre que acessar view/edit
     useEffect(() => {
