@@ -31,7 +31,7 @@ export interface CreateLeadGroupRequest {
 /**
  * Resposta da criação de um grupo de leads
  */
-export interface CreateLeadGroupResponse extends LeadGroupResponse {}
+export type CreateLeadGroupResponse = LeadGroupResponse
 
 /**
  * Dados para atualização de um grupo de leads
@@ -44,7 +44,7 @@ export interface UpdateLeadGroupRequest {
 /**
  * Resposta da atualização de um grupo de leads
  */
-export interface UpdateLeadGroupResponse extends LeadGroupResponse {}
+export type UpdateLeadGroupResponse = LeadGroupResponse
 
 /**
  * Filtros para listagem de grupos de leads

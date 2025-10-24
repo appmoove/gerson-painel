@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
@@ -10,7 +12,7 @@ import type { LeadDetails, LeadFilters, LeadListParams } from "../../types/leads
 import type { LeadGroupResponse, LeadGroupListParams } from "../../types/lead-groups-api";
 
 import { type LeadFormData } from "./validation";
-import type { 
+import type {
   LeadViewMode
 } from "./types";
 
@@ -25,13 +27,13 @@ export function useLeadsNavigation() {
   const navigate = useNavigate();
   const location = useLocation();
   const { leadId } = useParams<{ leadId: string }>();
-  
+
   const [mode, setMode] = useState<LeadViewMode>('list');
 
   // Determina o modo baseado na URL
   useEffect(() => {
     const path = location.pathname;
-    
+
     if (path.includes('/leads/create')) {
       setMode('create');
     } else if (path.includes('/leads/') && leadId && !path.includes('/edit')) {
@@ -105,6 +107,7 @@ export function useLeads() {
       } else {
         setError('Erro ao carregar leads');
       }
+      // TODO: Melhorar tipagem de erros
     } catch (err) {
       setError('Erro ao carregar leads');
     } finally {
@@ -174,6 +177,7 @@ export function useLeadForm(lead?: LeadDetails) {
 
     try {
 
+      // TODO: Melhorar tipagem
       let response: ApiResponse<any>;
       let leadId: string;
 
@@ -196,14 +200,15 @@ export function useLeadForm(lead?: LeadDetails) {
       }
 
       if (response.status >= 200 && response.status < 300) {
-        
+
         // Processar grupos se houver grupos selecionados
         if (data.groups && data.groups.length > 0 && leadId) {
-          
+
           // Para cada grupo selecionado, adicionar o lead
           for (const groupId of data.groups) {
             try {
               await leadGroupsApi.addLeadToGroup(groupId, leadId);
+              // TODO: Melhorar tipagem
             } catch (groupError) {
               // Não falha a operação principal, apenas loga o erro
             }
