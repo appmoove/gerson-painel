@@ -11,6 +11,7 @@ const LazyAgentesPage = createLazyComponent(() => import('@/pages/AgentesPage'))
 const LazyRotinasPage = createLazyComponent(() => import('@/pages/RotinasPage'))
 const LazyVozesOrganizacaoPage = createLazyComponent(() => import('@/pages/OrganizationVoicesPage/voices-list'))
 const LazyLeadsPage = createLazyComponent(() => import('@/pages/LeadsPage'))
+const LazyLeadGroupsPage = createLazyComponent(() => import('@/pages/LeadGroupsPage'))
 
 // Componentes de usuários
 const LazyUsersList = createLazyComponent(() => import('@/pages/UsuariosPage/components').then(module => ({ default: module.UsersList })))
@@ -73,6 +74,12 @@ export default function AppRoutes() {
                 <Route path="/leads/create" element={<LazyLeadsPage />} />
                 <Route path="/leads/:leadId" element={<LazyLeadsPage />} />
                 <Route path="/leads/:leadId/edit" element={<LazyLeadsPage />} />
+
+                {/* Rotas de Grupos de Leads */}
+                <Route path="/lead-groups" element={<LazyLeadGroupsPage />} />
+                <Route path="/lead-groups/create" element={<LazyLeadGroupsPage />} />
+                <Route path="/lead-groups/:id" element={<LazyLeadGroupsPage />} />
+                <Route path="/lead-groups/:id/edit" element={<LazyLeadGroupsPage />} />
             </Route>
 
             <Route path="*" element={<RedirectToDashboard />} />
