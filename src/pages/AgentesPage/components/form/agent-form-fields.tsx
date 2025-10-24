@@ -162,13 +162,13 @@ export function AgentVoiceField({ voices }: { voices: Voice[] }) {
                                                     <div className="flex items-center gap-2">
                                                         <span>{selectedVoice.name}</span>
                                                         <Badge
-                                                            variant={selectedVoice.gender === 'male' ? 'default' : 'secondary'}
-                                                            className={`text-xs ${selectedVoice.gender === 'female'
+                                                            variant={selectedVoice.gender === 'MALE' ? 'default' : 'secondary'}
+                                                            className={`text-xs ${selectedVoice.gender === 'FEMALE'
                                                                 ? 'bg-pink-100 text-pink-800 border-pink-200 hover:bg-pink-200 dark:bg-pink-900/50 dark:text-pink-200 dark:border-pink-700 dark:hover:bg-pink-900/70'
                                                                 : 'bg-blue-100 text-blue-800 border-blue-200 hover:bg-blue-200 dark:bg-blue-900/50 dark:text-blue-200 dark:border-blue-700 dark:hover:bg-blue-900/70'
                                                                 }`}
                                                         >
-                                                            {selectedVoice.gender === 'male' ? 'Masculino' : 'Feminino'}
+                                                            {selectedVoice.gender === 'MALE' ? 'Masculino' : 'Feminino'}
                                                         </Badge>
                                                     </div>
                                                 ) : "Selecione uma voz"}
@@ -182,13 +182,13 @@ export function AgentVoiceField({ voices }: { voices: Voice[] }) {
                                                     <div className="flex items-center justify-between w-full">
                                                         <span className="font-medium">{voice.name}</span>
                                                         <Badge
-                                                            variant={voice.gender === 'male' ? 'default' : 'secondary'}
-                                                            className={`text-xs ml-2 ${voice.gender === 'female'
+                                                            variant={voice.gender === 'MALE' ? 'default' : 'secondary'}
+                                                            className={`text-xs ml-2 ${voice.gender === 'FEMALE'
                                                                 ? 'bg-pink-100 text-pink-800 border-pink-200 hover:bg-pink-200 dark:bg-pink-900/50 dark:text-pink-200 dark:border-pink-700 dark:hover:bg-pink-900/70'
                                                                 : 'bg-blue-100 text-blue-800 border-blue-200 hover:bg-blue-200 dark:bg-blue-900/50 dark:text-blue-200 dark:border-blue-700 dark:hover:bg-blue-900/70'
                                                                 }`}
                                                         >
-                                                            {voice.gender === 'male' ? 'Masculino' : 'Feminino'}
+                                                            {voice.gender === 'MALE' ? 'Masculino' : 'Feminino'}
                                                         </Badge>
                                                     </div>
                                                 </div>

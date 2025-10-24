@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -491,7 +492,7 @@ export function RoutineProcessingStackField() {
             setStackItems([])
             setValue("processing_stack", JSON.stringify([]))
         }
-    }, [existingStack, setValue])
+    }, [existingStack])
 
     return (
         <FormField

@@ -330,7 +330,8 @@ export function useAgentDetail(agentId?: string) {
             setAgent(null)
             setError(null)
         }
-    }, [agentId, fetchAgent])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [agentId])
 
     return {
         agent,

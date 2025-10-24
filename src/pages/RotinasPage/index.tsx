@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react"
 import { PageContainer } from "@/components/layout/page-container"
 import { Button } from "@/components/ui/button"
@@ -34,7 +35,7 @@ export default function RotinasPage() {
         if (mode === 'list') {
             refreshRotinas()
         }
-    }, [mode, refreshRotinas])
+    }, [mode])
 
 
     // Gerar breadcrumbs dinamicamente baseado no modo

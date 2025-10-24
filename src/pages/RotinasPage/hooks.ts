@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect, useCallback } from "react"
 import { useForm } from "react-hook-form"
@@ -65,7 +66,7 @@ export function useRoutineAgents() {
 
     useEffect(() => {
         fetchAgents()
-    }, [fetchAgents])
+    }, [])
 
     return {
         agents,
@@ -148,7 +149,7 @@ export function useRotinasList() {
 
     useEffect(() => {
         fetchRotinas()
-    }, [fetchRotinas])
+    }, [])
 
     return {
         ...state,
@@ -438,7 +439,7 @@ export function useRoutineDetail(routineId?: string) {
             setRoutine(null)
             setError(null)
         }
-    }, [routineId, fetchRoutine])
+    }, [routineId])
 
     return {
         routine,
@@ -470,14 +471,14 @@ export function useRotinas() {
         if (navigation.mode === 'list') {
             rotinasList.refreshRotinas()
         }
-    }, [navigation.mode, rotinasList])
+    }, [navigation.mode])
 
     // Auto-refresh para view/edit quando ID muda
     useEffect(() => {
         if ((navigation.mode === 'view' || navigation.mode === 'edit') && navigation.routineId) {
             routineDetail.refetch()
         }
-    }, [navigation.mode, navigation.routineId, routineDetail])
+    }, [navigation.mode, navigation.routineId])
 
     return {
         // Navigation
