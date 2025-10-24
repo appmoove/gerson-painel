@@ -150,7 +150,7 @@ export function Sidebar() {
             collapsible="icon"
 
             className={cn(
-                "select-none transition-all duration-300 ease-in-out pt-16 flex flex-col",
+                "select-none transition-all duration-200 ease-in-out pt-16 flex flex-col",
             )}
         >
             {/* Conteudo do Sidebar */}
@@ -193,7 +193,7 @@ export function Sidebar() {
                             <SidebarMenuButton
                                 className={cn(
                                     "w-full justify-start gap-3 h-12 px-3 rounded-lg hover:bg-muted/50",
-                                    "focus-visible:ring-2 focus-visible:ring-ring",
+                                    "focus-visible:ring-2 focus-visible:ring-ring transition-all duration-200",
                                 )}
                             >
                                 <UserCircle2 className="w-4 h-4" />
@@ -204,7 +204,7 @@ export function Sidebar() {
                                     transition={{ duration: 0.2, ease: "easeIn" }}
                                 >
                                     {open && (
-                                        <div className="flex-1 min-w-0 text-left">
+                                        <div className="flex-1 min-w-0 text-left transition-colors duration-200">
                                             <p className="text-md text-foreground truncate">
                                                 {currentUser?.name || ''}
                                             </p>
@@ -218,14 +218,14 @@ export function Sidebar() {
                         </DropdownMenuTrigger>
 
                         <DropdownMenuContent
-                            align="end"
-                            side="right"
-                            className="w-56 bg-popover border-border"
+                            align={isMobile ? "center" : "end"}
+                            side={isMobile ? "top" : "right"}
+                            className="w-56 bg-popover border-border transition-colors duration-200"
                             sideOffset={8}
                         >
                             {/* User Info Header */}
                             <div className="px-3 py-3">
-                                <p className="text-md font-semibold text-popover-foreground">
+                                <p className="text-md font-semibold text-popover-foreground truncate transition-colors duration-200">
                                     {currentUser?.name || ''}
                                 </p>
                                 <p className="text-xs text-muted-foreground">
@@ -233,7 +233,7 @@ export function Sidebar() {
                                 </p>
                             </div>
 
-                            <DropdownMenuSeparator className="bg-border" />
+                            <DropdownMenuSeparator className="bg-border transition-colors duration-200" />
 
                             {/* Profile Menu Item */}
                             <DropdownMenuItem
@@ -263,7 +263,7 @@ export function Sidebar() {
                                 )}
                             </DropdownMenuItem>
 
-                            <DropdownMenuSeparator className="bg-border" />
+                            <DropdownMenuSeparator className="bg-border transition-colors duration-200" />
 
                             {/* Logout Menu Item */}
                             <DropdownMenuItem

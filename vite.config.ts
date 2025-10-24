@@ -5,6 +5,9 @@ import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
+  server: {
+    allowedHosts: true,
+  },
   plugins: [
     react(),
     tailwindcss(),
@@ -53,8 +56,8 @@ export default defineConfig({
           'charts': ['recharts'],
           'icons': ['lucide-react'],
           'utils': [
-            'axios', 
-            'moment', 
+            'axios',
+            'moment',
             'moment-timezone',
             'date-fns',
             'clsx',
