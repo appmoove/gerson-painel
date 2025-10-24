@@ -1,3 +1,5 @@
+import { APP_CONFIG } from "@/constants";
+
 /**
  * Componente do rodapé da página de login
  * Contém informações de copyright
@@ -9,7 +11,7 @@ export function LoginFooter() {
             {' '}
             {new Date().getFullYear()}
             {' '}
-            Gerson. Todos os direitos reservados.
+            {APP_CONFIG.name}. Todos os direitos reservados.
         </p>
     );
 }

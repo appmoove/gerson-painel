@@ -17,6 +17,7 @@ import { formatCpfCnpj, formatPhoneNumber } from "@/utils/string";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { DeleteUserModal } from "./delete-user-modal";
+import { PageActionFooter } from "@/components/layout/page-action-footer";
 
 export function UserView() {
     const [user, setUser] = useState<UserDetails>();
@@ -104,219 +105,228 @@ export function UserView() {
     ];
 
     return (
-        <PageContainer
-            title="Detalhes do Usuário"
-            subtitle="Visualize e edite as informações do usuário."
-            breadcrumbs={breadcrumbs}
-        >
-            {loading && <UserViewSkeletonCards />}
-            {!loading && user && (
-                <>
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="space-y-4"
-                    >
-                        {/* Dados principais */}
-                        <Card>
-                            <CardHeader>
-                                <div className="flex items-center gap-4">
-                                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                                        {user.image_url ? (
-                                            <img
-                                                src={user.image_url}
-                                                alt={user.name || "Usuário"}
-                                                className="h-10 w-10 rounded-full object-cover"
-                                            />
-                                        ) : (
-                                            <User className="h-6 w-6 text-primary" />
-                                        )}
-                                    </div>
-                                    <div>
-                                        <CardTitle className="text-lg">
-                                            {user.name || "Nome não informado"}
-                                        </CardTitle>
-                                        <div className="flex items-center gap-2 mt-2">
-                                            <Badge variant={user.active ? "default" : "secondary"}>
-                                                {user.active ? (
-                                                    <>
-                                                        <CheckCircle className="h-3 w-3 mr-1" />
-                                                        Ativo
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <XCircle className="h-3 w-3 mr-1" />
-                                                        Inativo
-                                                    </>
-                                                )}
-                                            </Badge>
+        <>
+            <PageContainer
+                title="Detalhes do Usuário"
+                subtitle="Visualize e edite as informações do usuário."
+                breadcrumbs={breadcrumbs}
+                className="relative container"
+            >
+                {loading && <UserViewSkeletonCards />}
+                {!loading && user && (
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="space-y-4 pb-24"
+                        >
+                            {/* Dados principais */}
+                            <Card>
+                                <CardHeader>
+                                    <div className="flex items-center gap-4">
+                                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                            {user.image_url ? (
+                                                <img
+                                                    src={user.image_url}
+                                                    alt={user.name || "Usuário"}
+                                                    className="h-10 w-10 rounded-full object-cover"
+                                                />
+                                            ) : (
+                                                <User className="h-6 w-6 text-primary" />
+                                            )}
                                         </div>
-                                    </div>
-                                </div>
-                            </CardHeader>
-                        </Card>
-
-                        {/* Informações de Contato */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <Mail className="h-5 w-5" />
-                                    Informações de Contato
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div className="flex align-top gap-3">
-                                        <Mail className="h-4 w-4 text-muted-foreground mt-0.5" />
                                         <div>
-                                            <p className="text-sm font-medium">Email</p>
-                                            <p className="text-sm text-muted-foreground">
-                                                {user.email || "Não informado"}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex align-top gap-3">
-                                        <Phone className="h-4 w-4 text-muted-foreground mt-0.5" />
-                                        <div>
-                                            <p className="text-sm font-medium">Telefone</p>
-                                            <p className="text-sm text-muted-foreground">
-                                                {formatPhoneNumber(user.phone_number)}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {user.document_number && (
-                                    <div className="flex align-top gap-3">
-                                        <Shield className="h-4 w-4 text-muted-foreground mt-0.5" />
-                                        <div>
-                                            <p className="text-sm font-medium">Documento</p>
-                                            <p className="text-sm text-muted-foreground">
-                                                {formatCpfCnpj(user.document_number)}
-                                            </p>
-                                        </div>
-                                    </div>
-                                )}
-                            </CardContent>
-                        </Card>
-
-                        {/* Informações do Sistema */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <Shield className="h-5 w-5" />
-                                    Informações do Sistema
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div className="flex align-top gap-3">
-                                        <Shield className="h-4 w-4 text-muted-foreground mt-0.5" />
-                                        <div>
-                                            <p className="text-sm font-medium">Cargo</p>
-                                            <p className="text-sm text-muted-foreground">
-                                                {getRoleName(user.organization_role_id)}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex align-top gap-3">
-                                        <ImageIcon className="h-4 w-4 text-muted-foreground mt-0.5" />
-                                        <div>
-                                            <p className="text-sm font-medium">Imagem</p>
-                                            <p className="text-sm text-muted-foreground">
-                                                {user.image_url ? "Definida" : "Não definida"}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {user.extra_permissions && user.extra_permissions.length > 0 && (
-                                    <div>
-                                        <p className="text-sm font-medium mb-2">Permissões Extras</p>
-                                        <div className="flex flex-wrap gap-2">
-                                            {user.extra_permissions?.map((permission: string, index: number) => (
-                                                <Badge key={index} variant="outline">
-                                                    {permission}
+                                            <CardTitle className="text-lg">
+                                                {user.name || "Nome não informado"}
+                                            </CardTitle>
+                                            <div className="flex items-center gap-2 mt-2">
+                                                <Badge variant={user.active ? "default" : "secondary"}>
+                                                    {user.active ? (
+                                                        <>
+                                                            <CheckCircle className="h-3 w-3 mr-1" />
+                                                            Ativo
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <XCircle className="h-3 w-3 mr-1" />
+                                                            Inativo
+                                                        </>
+                                                    )}
                                                 </Badge>
-                                            ))}
+                                            </div>
                                         </div>
                                     </div>
-                                )}
-                            </CardContent>
-                        </Card>
+                                </CardHeader>
+                            </Card>
 
-                        {/* Informações de Data */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <Calendar className="h-5 w-5" />
-                                    Datas
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div className="flex align-top gap-3">
-                                        <Calendar className="h-4 w-4 text-muted-foreground mt-0.5" />
+                            {/* Informações de Contato */}
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <Mail className="h-5 w-5" />
+                                        Informações de Contato
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="flex align-top gap-3">
+                                            <Mail className="h-4 w-4 text-muted-foreground mt-0.5" />
+                                            <div>
+                                                <p className="text-sm font-medium">Email</p>
+                                                <p className="text-sm text-muted-foreground">
+                                                    {user.email || "Não informado"}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex align-top gap-3">
+                                            <Phone className="h-4 w-4 text-muted-foreground mt-0.5" />
+                                            <div>
+                                                <p className="text-sm font-medium">Telefone</p>
+                                                <p className="text-sm text-muted-foreground">
+                                                    {formatPhoneNumber(user.phone_number)}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {user.document_number && (
+                                        <div className="flex align-top gap-3">
+                                            <Shield className="h-4 w-4 text-muted-foreground mt-0.5" />
+                                            <div>
+                                                <p className="text-sm font-medium">Documento</p>
+                                                <p className="text-sm text-muted-foreground">
+                                                    {formatCpfCnpj(user.document_number)}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </CardContent>
+                            </Card>
+
+                            {/* Informações do Sistema */}
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <Shield className="h-5 w-5" />
+                                        Informações do Sistema
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="flex align-top gap-3">
+                                            <Shield className="h-4 w-4 text-muted-foreground mt-0.5" />
+                                            <div>
+                                                <p className="text-sm font-medium">Cargo</p>
+                                                <p className="text-sm text-muted-foreground">
+                                                    {getRoleName(user.organization_role_id)}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex align-top gap-3">
+                                            <ImageIcon className="h-4 w-4 text-muted-foreground mt-0.5" />
+                                            <div>
+                                                <p className="text-sm font-medium">Imagem</p>
+                                                <p className="text-sm text-muted-foreground">
+                                                    {user.image_url ? "Definida" : "Não definida"}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {user.extra_permissions && user.extra_permissions.length > 0 && (
                                         <div>
-                                            <p className="text-sm font-medium">Criado em</p>
-                                            <p className="text-sm text-muted-foreground">
-                                                {formatDate(user.created_at)}
-                                            </p>
+                                            <p className="text-sm font-medium mb-2">Permissões Extras</p>
+                                            <div className="flex flex-wrap gap-2">
+                                                {user.extra_permissions?.map((permission: string, index: number) => (
+                                                    <Badge key={index} variant="outline">
+                                                        {permission}
+                                                    </Badge>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </CardContent>
+                            </Card>
+
+                            {/* Informações de Data */}
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <Calendar className="h-5 w-5" />
+                                        Datas
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="flex align-top gap-3">
+                                            <Calendar className="h-4 w-4 text-muted-foreground mt-0.5" />
+                                            <div>
+                                                <p className="text-sm font-medium">Criado em</p>
+                                                <p className="text-sm text-muted-foreground">
+                                                    {formatDate(user.created_at)}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex align-top gap-3">
+                                            <Calendar className="h-4 w-4 text-muted-foreground mt-0.5" />
+                                            <div>
+                                                <p className="text-sm font-medium">Atualizado em</p>
+                                                <p className="text-sm text-muted-foreground">
+                                                    {formatDate(user.updated_at)}
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div className="flex align-top gap-3">
-                                        <Calendar className="h-4 w-4 text-muted-foreground mt-0.5" />
-                                        <div>
-                                            <p className="text-sm font-medium">Atualizado em</p>
-                                            <p className="text-sm text-muted-foreground">
-                                                {formatDate(user.updated_at)}
-                                            </p>
+                                    {user.deleted_at && (
+                                        <div className="flex align-top gap-3">
+                                            <XCircle className="h-4 w-4 text-destructive mt-0.5" />
+                                            <div>
+                                                <p className="text-sm font-medium text-destructive">Excluído em</p>
+                                                <p className="text-sm text-destructive">
+                                                    {formatDate(user.deleted_at)}
+                                                </p>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        </motion.div>
 
-                                {user.deleted_at && (
-                                    <div className="flex align-top gap-3">
-                                        <XCircle className="h-4 w-4 text-destructive mt-0.5" />
-                                        <div>
-                                            <p className="text-sm font-medium text-destructive">Excluído em</p>
-                                            <p className="text-sm text-destructive">
-                                                {formatDate(user.deleted_at)}
-                                            </p>
-                                        </div>
-                                    </div>
-                                )}
-                            </CardContent>
-                        </Card>
-                    </motion.div>
 
-                    <div className="absolute right-2 bottom-0 flex justify-end space-x-4">
-                        <Link to={`/usuarios/${user?.id}/editar`}>
-                            <Button className="cursor-pointer">
-                                <Edit className="h-4 w-4" />
-                                Editar
-                            </Button>
-                        </Link>
-                        <Button variant="destructive" className="cursor-pointer" onClick={() => setDeleteModalOpen(true)}>
-                            <Trash2 className="h-4 w-4" />
-                            Excluir
-                        </Button>
-                    </div>
-                </>
-            )}
-            {user && (
-                <DeleteUserModal
-                    user={user}
-                    isOpen={deleteModalOpen}
-                    isDeleting={isDeleting}
-                    onClose={() => setDeleteModalOpen(false)}
-                    onConfirm={deleteUser}
-                />
-            )}
-        </PageContainer>
+                    </>
+                )}
+                {user && (
+                    <DeleteUserModal
+                        user={user}
+                        isOpen={deleteModalOpen}
+                        isDeleting={isDeleting}
+                        onClose={() => setDeleteModalOpen(false)}
+                        onConfirm={deleteUser}
+                    />
+                )}
+            </PageContainer>
+
+            <PageActionFooter variant="glass">
+                <Button
+                    variant="destructive"
+                    className="cursor-pointer"
+                    onClick={() => setDeleteModalOpen(true)}
+                >
+                    <Trash2 className="h-4 w-4" />
+                    Excluir
+                </Button>
+                <Link to={`/usuarios/${user?.id}/editar`}>
+                    <Button className="cursor-pointer">
+                        <Edit className="h-4 w-4" />
+                        Editar
+                    </Button>
+                </Link>
+            </PageActionFooter>
+        </>
     )
 }

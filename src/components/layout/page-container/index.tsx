@@ -2,6 +2,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 interface Crumb {
     label: string
@@ -26,7 +27,9 @@ export function PageContainer({
     className,
 }: PageContainerProps) {
     return (
-        <div
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             className={cn(
                 "mx-auto flex w-full max-w-7xl min-w-0 flex-1 flex-col gap-4 px-4 py-2",
                 className,
@@ -76,6 +79,6 @@ export function PageContainer({
 
             {/* Conteúdo */}
             <div>{children}</div>
-        </div>
+        </motion.div>
     )
 }

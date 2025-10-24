@@ -39,7 +39,7 @@ export interface LeadResponse {
  */
 export interface LeadDetails extends LeadResponse {
   /** Dados adicionais do lead */
-  lead_data: any;
+  lead_data: Record<string, string | number | boolean>;
 }
 
 /**
@@ -59,7 +59,7 @@ export interface CreateLeadRequest {
 /**
  * Resposta da criação de um lead
  */
-export interface CreateLeadResponse extends LeadResponse {}
+export type CreateLeadResponse = LeadResponse
 
 /**
  * Dados para atualização de um lead
@@ -78,7 +78,7 @@ export interface UpdateLeadRequest {
 /**
  * Resposta da atualização de um lead
  */
-export interface UpdateLeadResponse extends LeadResponse {}
+export type UpdateLeadResponse = LeadResponse
 
 /**
  * Filtros para listagem de leads
