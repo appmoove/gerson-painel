@@ -53,7 +53,7 @@ const formUtils = {
     })
 }
 
-export function UserForm() {
+export function UserCreateForm() {
 
     const [loading, setLoading] = useState(false);
 

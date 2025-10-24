@@ -6,9 +6,8 @@ import LoginPage from "@/pages/LoginPage"
 import DashboardPage from "@/pages/DashboardPage"
 import AgentesPage from "@/pages/AgentesPage"
 import RotinasPage from "@/pages/RotinasPage"
-import UsuariosPage from "@/pages/UsuariosPage"
 import { UsersList } from "@/pages/UsuariosPage/components/users-list"
-import { UserForm, UserView } from "@/pages/UsuariosPage/components"
+import { UserCreateForm, UserEditForm, UserView } from "@/pages/UsuariosPage/components"
 
 function ProtectedRoute() {
     const { isAuthenticated } = useAuth()
@@ -51,10 +50,9 @@ export default function AppRoutes() {
 
                 {/* Rotas de Usuários */}
                 <Route path="/usuarios" element={<UsersList />} />
-                <Route path="/usuarios/novo" element={<UsuariosPage />} />
-                <Route path="/usuarios/novo/refactor" element={<UserForm />} />
+                <Route path="/usuarios/novo" element={<UserCreateForm />} />
                 <Route path="/usuarios/:id" element={<UserView />} />
-                <Route path="/usuarios/:id/editar" element={<UsuariosPage />} />
+                <Route path="/usuarios/:id/editar" element={<UserEditForm />} />
             </Route>
             <Route path="*" element={<RedirectToDashboard />} />
         </Routes>

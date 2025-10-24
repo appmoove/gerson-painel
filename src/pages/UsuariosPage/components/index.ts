@@ -3,8 +3,7 @@
 // ===========================
 
 export { UsersList } from './users-list';
-export { UserForm as UserFormOld } from './user-form-old';
-export { UserForm } from './user-new-form';
+export { UserCreateForm } from './user-new-form';
 export { UserEditForm } from './user-edit-form';
 export { UserView } from './user-view';
 export { DeleteUserModal } from './delete-user-modal';
