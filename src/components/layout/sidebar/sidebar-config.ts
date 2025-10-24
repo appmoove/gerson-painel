@@ -84,6 +84,13 @@ export const sidebarItems: SidebarItem[] = [
                 disabled: false,
             },
             {
+                id: "grupos-leads",
+                title: "Grupos de Leads",
+                icon: Users2,
+                href: "/lead-groups",
+                exact: true
+            },
+            {
                 id: "agentes",
                 title: "Agentes",
                 icon: Bot,
