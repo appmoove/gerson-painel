@@ -36,7 +36,7 @@ export interface CreateUserRequest {
 /**
  * Response da criação de usuário
  */
-export interface CreateUserResponse extends UserDetails {}
+export type CreateUserResponse = UserDetails;
 
 /**
  * Request para atualizar um usuário
@@ -56,17 +56,17 @@ export interface UpdateUserRequest {
 /**
  * Response da atualização de usuário
  */
-export interface UpdateUserResponse extends UserDetails {}
+export type UpdateUserResponse = UserDetails;
 
 /**
  * Response da listagem de usuários
  */
-export interface ListUsersResponse extends Array<UserDetails> {}
+export type ListUsersResponse = Array<UserDetails>;
 
 /**
  * Response da busca de usuário específico
  */
-export interface GetUserResponse extends UserDetails {}
+export type GetUserResponse = UserDetails;
 
 /**
  * Dados do formulário de usuário
