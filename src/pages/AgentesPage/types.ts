@@ -2,27 +2,23 @@
 // Agentes Page Types
 // ===========================
 
-import type { AgentDetails } from "@/types/agent"
+import type { CreateAgentResponse } from "@/types/agent-api"
 
 /**
  * Dados do formulário de agente (cadastro/edição)
- * Baseado no CreateAgentDto do backend
+ * Baseado no CreateAgentRequest do backend
  */
 export interface AgentFormData {
     /** Nome do agente */
     name: string
-    /** Descrição/persona do agente */
-    description: string
-    /** Objetivo do agente */
-    objective: string
-    /** Personalidade do agente */
-    personality: string
+    /** Tipo do agente */
+    type: 'SUPPORT' | 'SALES' | 'GENERAL'
+    /** Comportamento do agente */
+    behaviour: string
+    /** Características do agente */
+    characteristics: string
     /** ID da voz do agente */
     voice_id: string
-    /** Mensagem de apresentação (opcional) */
-    presentation_message?: string | null
-    /** Se o agente está ativo (opcional, padrão true) */
-    active?: boolean
 }
 
 /**
@@ -30,13 +26,13 @@ export interface AgentFormData {
  */
 export interface AgentsPageState {
     /** Lista de agentes carregados */
-    agentes: AgentDetails[]
+    agentes: CreateAgentResponse[]
     /** Estado de carregamento */
     isLoading: boolean
     /** Erro da API */
     error: string | null
     /** Agente selecionado para visualização */
-    selectedAgent: AgentDetails | null
+    selectedAgent: CreateAgentResponse | null
 }
 
 
@@ -46,9 +42,9 @@ export interface AgentsPageState {
  */
 export interface AgentComponentProps {
     /** Agente para exibir/editar */
-    agent: AgentDetails
+    agent: CreateAgentResponse
     /** Callback quando agente é atualizado */
-    onUpdate?: (agent: AgentDetails) => void
+    onUpdate?: (agent: CreateAgentResponse) => void
     /** Callback quando agente é excluído */
     onDelete?: (agentId: string) => void
 }
@@ -77,13 +73,13 @@ export interface AgentRouteParams {
  */
 export interface AgentsListProps {
     /** Lista de agentes */
-    agentes: AgentDetails[]
+    agentes: CreateAgentResponse[]
     /** Estado de carregamento */
     isLoading: boolean
     /** Callback para visualizar agente */
     onView: (agentId: string) => void
     /** Callback para editar agente */
-    onEdit: (agent: AgentDetails) => void
+    onEdit: (agent: CreateAgentResponse) => void
     /** Callback para excluir agente */
     onDelete?: (agentId: string) => void
 }
@@ -93,7 +89,7 @@ export interface AgentsListProps {
  */
 export interface AgentFormProps {
     /** Agente para edição (undefined = cadastro) */
-    agent?: AgentDetails
+    agent?: CreateAgentResponse
     /** Callback quando formulário é salvo com sucesso */
     onSave: () => void
     /** Callback para cancelar */
@@ -109,7 +105,7 @@ export interface AgentFormProps {
  */
 export interface AgentViewProps {
     /** Agente para visualizar */
-    agent: AgentDetails | null
+    agent: CreateAgentResponse | null
     /** Estado de carregamento */
     isLoading?: boolean
 }

@@ -4,78 +4,63 @@
 
 /**
  * Request para criação de agente
- * Baseado no CreateAgentDto do backend
+ * Baseado no exemplo fornecido do backend
  */
 export interface CreateAgentRequest {
-    /** ID da empresa */
-    company_id: string
     /** Nome do agente */
     name: string
-    /** Descrição/persona do agente */
-    description: string
-    /** Objetivo do agente */
-    objective: string
-    /** Personalidade do agente */
-    personality: string
+    /** Tipo do agente */
+    type: 'SUPPORT' | 'SALES' | 'GENERAL'
+    /** Comportamento do agente */
+    behaviour: string
+    /** Características do agente */
+    characteristics: string
     /** ID da voz */
     voice_id: string
-    /** Mensagem de apresentação (opcional) */
-    presentation_message?: string | null
-    /** Status ativo (opcional, padrão true) */
-    active?: boolean
 }
 
 /**
  * Request para atualização de agente
- * Baseado no UpdateAgentDto do backend
+ * Baseado no exemplo fornecido do backend
  */
 export interface UpdateAgentRequest {
     /** Nome do agente */
     name?: string
-    /** Descrição/persona do agente */
-    description?: string
-    /** Objetivo do agente */
-    objective?: string
-    /** Personalidade do agente */
-    personality?: string
-    /** Mensagem de apresentação */
-    presentation_message?: string | null
+    /** Tipo do agente */
+    type?: 'SUPPORT' | 'SALES' | 'GENERAL'
+    /** Comportamento do agente */
+    behaviour?: string
+    /** Características do agente */
+    characteristics?: string
     /** ID da voz */
     voice_id?: string
-    /** Status ativo */
-    active?: boolean
 }
 
 /**
  * Resposta da criação de agente
+ * Baseado no exemplo fornecido do backend
  */
 export interface CreateAgentResponse {
     /** ID do agente */
     id: string
     /** Nome do agente */
     name: string
-    /** Descrição/persona do agente */
-    description: string
-    /** Objetivo do agente */
-    objective: string
-    /** Personalidade do agente */
-    personality: string
+    /** Tipo do agente */
+    type: 'SUPPORT' | 'SALES' | 'GENERAL'
+    /** Comportamento do agente */
+    behaviour: string
+    /** Características do agente */
+    characteristics: string
     /** ID da voz */
     voice_id: string
-    /** Nome da voz */
-    voice_name: string
-    /** Gênero da voz */
-    voice_gender: 'male' | 'female'
-    /** Mensagem de apresentação */
-    presentation_message?: string | null
-    /** ID da empresa */
-    company_id: string
-    /** Status ativo */
-    active: boolean
+    /** ID da organização */
+    organization_id: string
     /** Data de criação */
     created_at: string
     /** Data de atualização */
     updated_at: string
+    /** Data de exclusão (nullable) */
+    deleted_at: string | null
 }
 
 /**
@@ -91,11 +76,9 @@ export type ListAgentsResponse = CreateAgentResponse[]
 
 /**
  * Resposta de detalhes de um agente
+ * A API retorna diretamente o agente
  */
-export interface GetAgentResponse {
-    message: string
-    data: CreateAgentResponse
-}
+export type GetAgentResponse = CreateAgentResponse
 
 // ===========================
 // Voice Types
