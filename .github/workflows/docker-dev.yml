@@ -36,4 +36,6 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             NODE_ENV=development
+            VITE_ORGANIZATION_API_URL=${{ secrets.VITE_ORGANIZATION_API_URL || 'https://gerson-organization-api.hackaton.appmoove.com.br' }}
+            VITE_PORT=5173
 
