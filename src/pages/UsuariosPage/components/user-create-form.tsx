@@ -31,8 +31,6 @@ export function UserCreateForm() {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleFormSubmit = async (data: any) => {
-        console.log("Form submitted:", data);
-
         try {
             setLoading(true);
             const result = await usersApi.createUser(data);

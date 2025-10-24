@@ -127,7 +127,6 @@ export function useAgentForm(agent?: AgentDetails) {
                 }
 
                 const voicesData = response.data || []
-                console.log('Vozes carregadas:', voicesData)
                 setVoices(voicesData)
             } catch (error) {
                 console.error('Erro ao carregar vozes:', error)

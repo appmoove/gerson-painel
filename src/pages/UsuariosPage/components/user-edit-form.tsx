@@ -51,8 +51,6 @@ export function UserEditForm() {
                 return;
             }
 
-            console.log("User data loaded:", data);
-
             // Preenche o formulário com os dados carregados
             form.reset({
                 organization_role_id: data.organization_role_id || "",
@@ -74,8 +72,6 @@ export function UserEditForm() {
     }
 
     const handleFormSubmit = async (data: any) => {
-        console.log("Form submitted:", data);
-
         if (!id) {
             toast.error("ID do usuário não encontrado.");
             return;
