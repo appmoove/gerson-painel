@@ -104,12 +104,6 @@ export function LeadGroupView({
                                                 <span className="text-sm font-medium">Nome:</span>
                                                 <span className="text-sm">{leadGroup.name}</span>
                                             </div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-sm font-medium">ID:</span>
-                                                <span className="text-sm font-mono text-muted-foreground">
-                                                    {leadGroup.id}
-                                                </span>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>

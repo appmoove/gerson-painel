@@ -78,11 +78,6 @@ export function LeadView({ lead, onEdit, onBack }: LeadViewProps) {
                 {lead.name || 'Nome não informado'}
               </p>
             </div>
-            
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">ID</label>
-              <p className="text-sm font-mono">{lead.id}</p>
-            </div>
           </div>
 
           {/* Contato */}

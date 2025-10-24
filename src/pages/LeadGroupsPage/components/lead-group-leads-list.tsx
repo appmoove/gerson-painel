@@ -109,9 +109,6 @@ export function LeadGroupLeadsList({
                                 <h4 className="font-medium text-sm truncate">
                                     {lead.name || 'Nome não informado'}
                                 </h4>
-                                <Badge variant="outline" className="text-xs">
-                                    ID: {lead.id.slice(0, 8)}...
-                                </Badge>
                             </div>
                             
                             <div className="flex items-center gap-4 text-xs text-muted-foreground">
