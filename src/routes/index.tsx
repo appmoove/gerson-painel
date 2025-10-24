@@ -1,13 +1,14 @@
+import { lazy } from "react";
 import { Routes, Route, Outlet, Navigate } from "react-router-dom"
 import { Layout } from "@/components/layout"
 import { useAuth } from "@/stores/auth"
 
-import LoginPage from "@/pages/LoginPage"
-import DashboardPage from "@/pages/DashboardPage"
-import AgentesPage from "@/pages/AgentesPage"
-import RotinasPage from "@/pages/RotinasPage"
-import { UsersList } from "@/pages/UsuariosPage/components/users-list"
-import { UserCreateForm, UserEditForm, UserView } from "@/pages/UsuariosPage/components"
+const LoginPage = lazy(() => import('@/pages/LoginPage'))
+const DashboardPage = lazy(() => import('@/pages/DashboardPage'))
+const AgentesPage = lazy(() => import('@/pages/AgentesPage'))
+const RotinasPage = lazy(() => import('@/pages/RotinasPage'))
+
+import { UserCreateForm, UserEditForm, UserView, UsersList } from "@/pages/UsuariosPage/components"
 
 function ProtectedRoute() {
     const { isAuthenticated } = useAuth()
