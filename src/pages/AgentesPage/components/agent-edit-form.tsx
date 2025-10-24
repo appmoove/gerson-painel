@@ -3,7 +3,7 @@ import { Form } from "@/components/ui/form"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Save, X, Bot, Edit } from "lucide-react"
+import { Save, X, Bot,} from "lucide-react"
 import { useAgentForm } from "../hooks"
 import type { CreateAgentResponse, AgentFormData } from "../types"
 import {
@@ -70,11 +70,6 @@ export function AgentEditForm({
                     <CardContent className="px-6">
                         <div className="space-y-6">
                             {/* Header com ícone de edição */}
-                            <div className="flex items-center gap-2 text-primary">
-                                <Edit className="h-5 w-5" />
-                                <span className="text-lg font-semibold">Editar Agente</span>
-                            </div>
-
                             <div className="grid gap-6">
                                 {/* Linha 1: Nome e Tipo - Skeleton */}
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -124,20 +119,6 @@ export function AgentEditForm({
             <Card>
                 <CardContent className="px-6">
                     <div className="space-y-6">
-                        {/* Header com ícone de edição */}
-                        <div className="flex items-center gap-2 text-primary">
-                            <Edit className="h-5 w-5" />
-                            <span className="text-lg font-semibold">Editar Agente</span>
-                        </div>
-
-                        {/* Informações do agente */}
-                        <div className="bg-muted/50 rounded-lg p-4">
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                <Bot className="h-4 w-4" />
-                                <span>Editando: <strong className="text-foreground">{agent.name}</strong></span>
-                            </div>
-                        </div>
-
                         {/* Erro da API */}
                         {submitError && (
                             <AgentErrorAlert error={submitError} />

@@ -3,7 +3,7 @@ import { Form } from "@/components/ui/form"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Save, X, Bot, Plus } from "lucide-react"
+import { Save, X, Bot,} from "lucide-react"
 import { useAgentForm } from "../hooks"
 import type { AgentFormData } from "../types"
 import {
@@ -67,12 +67,6 @@ export function AgentCreateForm({
                 <Card>
                     <CardContent className="px-6">
                         <div className="space-y-6">
-                            {/* Header com ícone de criação */}
-                            <div className="flex items-center gap-2 text-primary">
-                                <Plus className="h-5 w-5" />
-                                <span className="text-lg font-semibold">Criar Novo Agente</span>
-                            </div>
-
                             <div className="grid gap-6">
                                 {/* Linha 1: Nome e Tipo - Skeleton */}
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -122,12 +116,6 @@ export function AgentCreateForm({
             <Card>
                 <CardContent className="px-6">
                     <div className="space-y-6">
-                        {/* Header com ícone de criação */}
-                        <div className="flex items-center gap-2 text-primary">
-                            <Plus className="h-5 w-5" />
-                            <span className="text-lg font-semibold">Criar Novo Agente</span>
-                        </div>
-
                         {/* Erro da API */}
                         {submitError && (
                             <AgentErrorAlert error={submitError} />
