@@ -24,23 +24,32 @@ import { cn } from "@/lib/utils";
 type PhoneInputProps = Omit<
     React.ComponentProps<"input">,
     "onChange" | "value" | "ref"
-> &
-    Omit<RPNInput.Props<typeof RPNInput.default>, "onChange"> & {
-        onChange?: (value: RPNInput.Value) => void;
-    };
+> & Omit<RPNInput.Props<typeof RPNInput.default>, "onChange"> & {
+    onChange?: (value: RPNInput.Value) => void;
+    defaultCountry?: RPNInput.Country;
+    allowedCountries?: RPNInput.Country[];
+};
 
 const PhoneInput: React.ForwardRefExoticComponent<PhoneInputProps> =
     React.forwardRef<React.ElementRef<typeof RPNInput.default>, PhoneInputProps>(
-        ({ className, onChange, value, ...props }, ref) => {
+        ({ className, onChange, value, defaultCountry = "BR", allowedCountries, ...props }, ref) => {
+            // Cria um componente CountrySelect que recebe allowedCountries
+            const CountrySelectWithAllowed = React.useCallback((countrySelectProps: CountrySelectProps) => (
+                <CountrySelect {...countrySelectProps} allowedCountries={allowedCountries} />
+            ), [allowedCountries]);
+
             return (
                 <RPNInput.default
                     ref={ref}
                     className={cn("flex", className)}
                     flagComponent={FlagComponent}
-                    countrySelectComponent={CountrySelect}
+                    countrySelectComponent={CountrySelectWithAllowed}
                     inputComponent={InputComponent}
                     smartCaret={false}
                     value={value || undefined}
+                    defaultCountry={defaultCountry}
+                    countries={allowedCountries}
+                    limitMaxLength
                     /**
                      * Handles the onChange event.
                      *
@@ -84,10 +93,44 @@ const CountrySelect = ({
     value: selectedCountry,
     options: countryList,
     onChange,
-}: CountrySelectProps) => {
+    allowedCountries,
+}: CountrySelectProps & { allowedCountries?: RPNInput.Country[] }) => {
     const scrollAreaRef = React.useRef<HTMLDivElement>(null);
     const [searchValue, setSearchValue] = React.useState("");
     const [isOpen, setIsOpen] = React.useState(false);
+
+    // Filtra a lista de países com base nos países permitidos
+    const filteredCountryList = React.useMemo(() => {
+
+        if (!allowedCountries || allowedCountries.length === 0) {
+            return countryList;
+        }
+
+        const filtered = countryList.filter(({ value, label }) => {
+            const isValidCountry = value !== undefined && value !== null && typeof value === 'string';
+            const isAllowed = isValidCountry && allowedCountries.includes(value);
+            return isAllowed;
+        });
+
+        return filtered;
+    }, [countryList, allowedCountries]);    // Se há apenas um país permitido, não mostra o dropdown
+    const hasOnlyOneCountry = filteredCountryList.length === 1;
+
+    if (hasOnlyOneCountry) {
+        return (
+            <Button
+                type="button"
+                variant="outline"
+                className="flex gap-1 rounded-e-none border-r-0 px-3 focus:z-10"
+                onClick={() => { }}
+            >
+                <FlagComponent
+                    country={selectedCountry}
+                    countryName={selectedCountry}
+                />
+            </Button>
+        );
+    }
 
     return (
         <Popover
@@ -103,7 +146,7 @@ const CountrySelect = ({
                 <Button
                     type="button"
                     variant="outline"
-                    className="flex gap-1 rounded-e-none rounded-s-lg border-r-0 px-3 focus:z-10"
+                    className="flex gap-1 rounded-e-none border-r-0 px-3 focus:z-10"
                     disabled={disabled}
                 >
                     <FlagComponent
@@ -135,13 +178,13 @@ const CountrySelect = ({
                                 }
                             }, 0);
                         }}
-                        placeholder="Search country..."
+                        placeholder="Selecionar País..."
                     />
                     <CommandList>
                         <ScrollArea ref={scrollAreaRef} className="h-72">
                             <CommandEmpty>No country found.</CommandEmpty>
                             <CommandGroup>
-                                {countryList.map(({ value, label }) =>
+                                {filteredCountryList.map(({ value, label }) =>
                                     value ? (
                                         <CountrySelectOption
                                             key={value}
