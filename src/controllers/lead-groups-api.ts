@@ -1,142 +1,87 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import type { AxiosInstance, AxiosError } from 'axios';
+import { AxiosError } from 'axios';
+
+import { BaseApi } from './base-api';
+import type { ApiResponse } from '../types/api';
 import type {
     CreateLeadGroupRequest,
     CreateLeadGroupResponse,
     UpdateLeadGroupRequest,
     UpdateLeadGroupResponse,
-    LeadGroupResponse,
-    LeadGroupListParams
+    ListLeadGroupsResponse,
+    GetLeadGroupResponse
 } from '../types/lead-groups-api';
-import type { ApiResponse } from '../types/api';
-import { createApiInstance, handleAxiosResponse, handleAxiosError } from './base-api';
-import { useAuth } from '@/stores/auth';
 
 // ===========================
 // Lead Groups API Class
 // ===========================
 
-class LeadGroupsApi {
-    private axiosInstance: AxiosInstance;
-
-    constructor() {
-        this.axiosInstance = createApiInstance();
-    }
+class LeadGroupsApi extends BaseApi {
 
     /**
      * Cria um novo grupo de leads
      */
-    async createLeadGroup(groupData: CreateLeadGroupRequest): Promise<ApiResponse<CreateLeadGroupResponse>> {
-        const authState = useAuth.getState();
-        const organizationId = authState.user?.organization_id;
-
-        if (!organizationId) {
-            throw new Error('Organization ID not found');
-        }
-
+    createLeadGroup(leadGroupData: CreateLeadGroupRequest): Promise<ApiResponse<CreateLeadGroupResponse>> {
+        const organizationId = this.getOrganizationId();
+        
         return this.axiosInstance.post<CreateLeadGroupResponse>(
-            `/organizations/${organizationId}/lead-groups/create`,
-            groupData
+            `/organizations/${organizationId}/lead-groups/create`, 
+            leadGroupData
         )
-            .then(response => handleAxiosResponse(response))
-            .catch(error => handleAxiosError(error as AxiosError));
+            .then(response => this.handleAxiosResponse(response))
+            .catch(error => this.handleAxiosError(error as AxiosError));
     }
 
     /**
      * Lista todos os grupos de leads da organização
      */
-    async listLeadGroups(params?: LeadGroupListParams): Promise<ApiResponse<LeadGroupResponse[]>> {
-        const authState = useAuth.getState();
-        const organizationId = authState.user?.organization_id;
-
-        if (!organizationId) {
-            throw new Error('Organization ID not found');
-        }
-
-        const queryParams = new URLSearchParams();
-
-        if (params?.filters) {
-            const { filters } = params;
-            if (filters.name) queryParams.append('name', filters.name);
-        }
-
-        const queryString = queryParams.toString();
-        const url = `/organizations/${organizationId}/lead-groups/list${queryString ? `?${queryString}` : ''}`;
-
-        return this.axiosInstance.get<LeadGroupResponse[]>(url)
-            .then(response => handleAxiosResponse(response))
-            .catch(error => handleAxiosError(error as AxiosError));
-    }
-
-    /**
-     * Busca um grupo específico por ID
-     */
-    async getLeadGroup(groupId: string): Promise<ApiResponse<LeadGroupResponse>> {
-        const organizationId = useAuth.getState().user?.organization_id;
-
-        if (!organizationId) {
-            throw new Error('Organization ID not found');
-        }
-
-        return this.axiosInstance.get<LeadGroupResponse>(
-            `/organizations/${organizationId}/lead-groups/${groupId}`
+    listLeadGroups(): Promise<ApiResponse<ListLeadGroupsResponse>> {
+        const organizationId = this.getOrganizationId();
+        
+        return this.axiosInstance.get<ListLeadGroupsResponse>(
+            `/organizations/${organizationId}/lead-groups/list`
         )
-            .then(response => handleAxiosResponse(response))
-            .catch(error => handleAxiosError(error as AxiosError));
+            .then(response => this.handleAxiosResponse(response))
+            .catch(error => this.handleAxiosError(error as AxiosError));
     }
 
     /**
-     * Atualiza um grupo existente
+     * Busca um grupo de leads específico por ID
      */
-    async updateLeadGroup(groupId: string, groupData: UpdateLeadGroupRequest): Promise<ApiResponse<UpdateLeadGroupResponse>> {
-        const organizationId = useAuth.getState().user?.organization_id;
+    getLeadGroup(leadGroupId: string): Promise<ApiResponse<GetLeadGroupResponse>> {
+        const organizationId = this.getOrganizationId();
+        
+        return this.axiosInstance.get<GetLeadGroupResponse>(
+            `/organizations/${organizationId}/lead-groups/${leadGroupId}`
+        )
+            .then(response => this.handleAxiosResponse(response))
+            .catch(error => this.handleAxiosError(error as AxiosError));
+    }
 
-        if (!organizationId) {
-            throw new Error('Organization ID not found');
-        }
-
+    /**
+     * Atualiza um grupo de leads existente
+     */
+    updateLeadGroup(leadGroupId: string, leadGroupData: UpdateLeadGroupRequest): Promise<ApiResponse<UpdateLeadGroupResponse>> {
+        const organizationId = this.getOrganizationId();
+        
         return this.axiosInstance.patch<UpdateLeadGroupResponse>(
-            `/organizations/${organizationId}/lead-groups/${groupId}`,
-            groupData
+            `/organizations/${organizationId}/lead-groups/${leadGroupId}/update`, 
+            leadGroupData
         )
-            .then(response => handleAxiosResponse(response))
-            .catch(error => handleAxiosError(error as AxiosError));
+            .then(response => this.handleAxiosResponse(response))
+            .catch(error => this.handleAxiosError(error as AxiosError));
     }
 
     /**
-     * Remove um grupo
+     * Exclui um grupo de leads
      */
-    async deleteLeadGroup(groupId: string): Promise<ApiResponse<void>> {
-        const organizationId = useAuth.getState().user?.organization_id;
-
-        if (!organizationId) {
-            throw new Error('Organization ID not found');
-        }
-
+    deleteLeadGroup(leadGroupId: string): Promise<ApiResponse<void>> {
+        const organizationId = this.getOrganizationId();
+        
         return this.axiosInstance.delete<void>(
-            `/organizations/${organizationId}/lead-groups/${groupId}`
+            `/organizations/${organizationId}/lead-groups/${leadGroupId}/delete`
         )
-            .then(response => handleAxiosResponse(response))
-            .catch(error => handleAxiosError(error as AxiosError));
-    }
-
-    /**
-     * Adiciona um lead a um grupo
-     */// TODO: Ajustar tipagem da resposta
-    async addLeadToGroup(groupId: string, leadId: string): Promise<ApiResponse<any>> {
-        const organizationId = useAuth.getState().user?.organization_id;
-
-        if (!organizationId) {
-            throw new Error('Organization ID not found');
-        }
-
-        // TODO: Ajustar tipagem da resposta
-        return this.axiosInstance.post<any>(
-            `/organizations/${organizationId}/lead-groups/${groupId}/leads/add`,
-            { lead_ids: [leadId] }
-        )
-            .then(response => handleAxiosResponse(response))
-            .catch(error => handleAxiosError(error as AxiosError));
+            .then(response => this.handleAxiosResponse(response))
+            .catch(error => this.handleAxiosError(error as AxiosError));
     }
 }
 
