@@ -81,6 +81,55 @@ export const formatCpfCnpj = (value: string | null) => {
     return value;
 };
 
+/**
+ * Aplica máscara dinâmica em tempo real para CPF/CNPJ
+ * Funciona conforme o usuário digita, adaptando automaticamente
+ */
+export const maskCpfCnpj = (value: string): string => {
+    if (!value) return "";
+
+    // Remove tudo que não é dígito
+    const cleaned = value.replace(/\D/g, '');
+    
+    // Limita a 14 dígitos (CNPJ)
+    const limited = cleaned.substring(0, 14);
+    
+    // Aplica máscara baseada no comprimento
+    if (limited.length <= 11) {
+        // Máscara de CPF: 000.000.000-00
+        return limited
+            .replace(/(\d{3})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    } else {
+        // Máscara de CNPJ: 00.000.000/0000-00
+        return limited
+            .replace(/(\d{2})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d)/, '$1/$2')
+            .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+    }
+};
+
+/**
+ * Valida CPF ou CNPJ dinamicamente
+ * Retorna true se o documento estiver completo e válido
+ */
+export const validateDocument = (value: string): boolean => {
+    if (!value) return false;
+    
+    const cleaned = value.replace(/\D/g, '');
+    
+    // Verifica se tem o número correto de dígitos
+    if (cleaned.length === 11) {
+        return validateCPF(cleaned);
+    } else if (cleaned.length === 14) {
+        return validateCNPJ(cleaned);
+    }
+    
+    return false;
+};
+
 export const validateCPF = (cpf: string): boolean => {
     let sum = 0
     let remaining: number
