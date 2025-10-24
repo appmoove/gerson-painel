@@ -248,7 +248,7 @@ export default function LeadsPage() {
                 <LeadForm
                     lead={currentLead}
                     onSuccess={() => goToView(currentLead.id)}
-                    onCancel={() => goToView(currentLead.id)}
+                    onCancel={() => goToList()}
                 />
             </PageContainer>
         );

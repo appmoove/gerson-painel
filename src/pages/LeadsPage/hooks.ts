@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 
 import { leadsApi } from "../../controllers/leads-api";
@@ -23,13 +23,14 @@ import type {
  */
 export function useLeadsNavigation() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { leadId } = useParams<{ leadId: string }>();
   
   const [mode, setMode] = useState<LeadViewMode>('list');
 
   // Determina o modo baseado na URL
   useEffect(() => {
-    const path = window.location.pathname;
+    const path = location.pathname;
     
     if (path.includes('/leads/create')) {
       setMode('create');
@@ -37,10 +38,10 @@ export function useLeadsNavigation() {
       setMode('view');
     } else if (path.includes('/leads/') && leadId && path.includes('/edit')) {
       setMode('edit');
-    } else {
+    } else if (path.includes('/leads')) {
       setMode('list');
     }
-  }, [leadId]);
+  }, [location.pathname, leadId]);
 
   const goToList = useCallback(() => {
     navigate('/leads');

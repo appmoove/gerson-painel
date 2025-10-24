@@ -27,6 +27,7 @@ import { cn } from "@/lib/utils"
 import { useTheme } from "@/components/theme-provider"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { motion } from "framer-motion"
+import { useState, useMemo } from "react"
 
 export function Sidebar() {
     const location = useLocation()
@@ -34,6 +35,36 @@ export function Sidebar() {
     const { theme, setTheme } = useTheme()
     const { user: currentUser, logout, setProfileModalOpen } = useAuth()
     const { open, setOpen } = useSidebar()
+    const [openGroups, setOpenGroups] = useState<string[]>([])
+
+    // Determinar quais grupos devem estar abertos automaticamente baseado na rota atual
+    const expandedGroupsForCurrentRoute = useMemo(() => {
+        const expanded = new Set<string>()
+        sidebarItems.forEach(item => {
+            if (item.isGroup && item.children) {
+                const hasActiveChild = item.children.some(child => child.href === location.pathname || location.pathname.startsWith(child.href || ""))
+                if (hasActiveChild) {
+                    expanded.add(item.id)
+                }
+            }
+        })
+        return expanded
+    }, [location.pathname])
+
+    const isGroupOpen = (groupId: string) => {
+        if (expandedGroupsForCurrentRoute.has(groupId)) {
+            return true
+        }
+        return openGroups.includes(groupId)
+    }
+
+    const toggleGroup = (groupId: string) => {
+        setOpenGroups(prev =>
+            prev.includes(groupId)
+                ? prev.filter(id => id !== groupId)
+                : [...prev, groupId]
+        )
+    }
 
     const isActive = (item: SidebarItem, children?: SidebarItem[]) => {
         if (children) {
@@ -62,7 +93,7 @@ export function Sidebar() {
 
         if (item.isGroup && item.children) {
             return (
-                <Collapsible key={item.id} defaultOpen className="group/collapsible">
+                <Collapsible key={item.id} open={isGroupOpen(item.id)} onOpenChange={() => toggleGroup(item.id)} className="group/collapsible">
                     <SidebarMenuItem>
                         <CollapsibleTrigger asChild>
                             <SidebarMenuButton isActive={isActive(item, item.children)} disabled={item.disabled}>
