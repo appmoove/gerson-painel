@@ -16,6 +16,7 @@ import type { LeadGroupViewProps } from "../types"
 export function LeadGroupView({
     leadGroup,
     isLoading = false,
+    onEdit,
     onDelete,
 }: LeadGroupViewProps) {
 
@@ -152,10 +153,16 @@ export function LeadGroupView({
 
                             {/* Ações */}
                             <div className="flex items-center gap-3 pt-4 border-t">
-                                <Button variant="outline" size="sm">
-                                    <Edit className="h-4 w-4 mr-2" />
-                                    Editar Grupo
-                                </Button>
+                                {onEdit && (
+                                    <Button 
+                                        variant="outline" 
+                                        size="sm"
+                                        onClick={() => onEdit(leadGroup.id)}
+                                    >
+                                        <Edit className="h-4 w-4 mr-2" />
+                                        Editar Grupo
+                                    </Button>
+                                )}
                                 
                                 {onDelete && (
                                     <Button 

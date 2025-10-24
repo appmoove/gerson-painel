@@ -170,6 +170,7 @@ export function LeadGroupsPage() {
                     <LeadGroupView
                         leadGroup={currentLeadGroup}
                         isLoading={isLoading}
+                        onEdit={goToEdit}
                         onDelete={deleteLeadGroup}
                     />
                 )

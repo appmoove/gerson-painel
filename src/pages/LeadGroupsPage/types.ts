@@ -98,6 +98,8 @@ export interface LeadGroupViewProps {
     leadGroup: CreateLeadGroupResponse | null
     /** Estado de carregamento */
     isLoading?: boolean
+    /** Callback para editar grupo */
+    onEdit?: (leadGroupId: string) => void
     /** Callback para excluir grupo */
     onDelete?: (leadGroupId: string) => void
 }
