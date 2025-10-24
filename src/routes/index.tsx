@@ -4,18 +4,13 @@ import { Layout } from "@/components/layout"
 import { useAuth } from "@/stores/auth"
 import { createLazyComponent } from "@/components/routing"
 
-import LoginPage from "@/pages/LoginPage"
-import DashboardPage from "@/pages/DashboardPage"
-import AgentesPage from "@/pages/AgentesPage"
-import RotinasPage from "@/pages/RotinasPage"
-import VozesOrganizacaoPage from "@/pages/OrganizationVoicesPage/voices-list"
-import LeadsPage from "@/pages/LeadsPage"
 // Páginas principais
 const LazyLoginPage = createLazyComponent(() => import('@/pages/LoginPage'))
 const LazyDashboardPage = createLazyComponent(() => import('@/pages/DashboardPage'))
 const LazyAgentesPage = createLazyComponent(() => import('@/pages/AgentesPage'))
 const LazyRotinasPage = createLazyComponent(() => import('@/pages/RotinasPage'))
 const LazyVozesOrganizacaoPage = createLazyComponent(() => import('@/pages/OrganizationVoicesPage/voices-list'))
+const LazyLeadsPage = createLazyComponent(() => import('@/pages/LeadsPage'))
 
 // Componentes de usuários
 const LazyUsersList = createLazyComponent(() => import('@/pages/UsuariosPage/components').then(module => ({ default: module.UsersList })))
@@ -71,14 +66,13 @@ export default function AppRoutes() {
                 <Route path="/usuarios/:id/editar" element={<LazyUserEditForm />} />
 
                 {/* Rotas de Vozes */}
-                <Route path="/vozes" element={<VozesOrganizacaoPage />} />
+                <Route path="/vozes" element={<LazyVozesOrganizacaoPage />} />
 
                 {/* Rotas de Leads */}
-                <Route path="/leads" element={<LeadsPage />} />
-                <Route path="/leads/create" element={<LeadsPage />} />
-                <Route path="/leads/:leadId" element={<LeadsPage />} />
-                <Route path="/leads/:leadId/edit" element={<LeadsPage />} />
-                <Route path="/vozes" element={<LazyVozesOrganizacaoPage />} />
+                <Route path="/leads" element={<LazyLeadsPage />} />
+                <Route path="/leads/create" element={<LazyLeadsPage />} />
+                <Route path="/leads/:leadId" element={<LazyLeadsPage />} />
+                <Route path="/leads/:leadId/edit" element={<LazyLeadsPage />} />
             </Route>
 
             <Route path="*" element={<RedirectToDashboard />} />
