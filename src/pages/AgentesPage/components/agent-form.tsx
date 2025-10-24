@@ -10,11 +10,10 @@ import type { AgentFormData } from "../types"
 import {
     AgentErrorAlert,
     AgentNameField,
-    AgentDescriptionField,
-    AgentObjectiveField,
-    AgentPersonalityField,
-    AgentVoiceField,
-    AgentActiveField
+    AgentTypeField,
+    AgentBehaviourField,
+    AgentCharacteristicsField,
+    AgentVoiceField
 } from "./form"
 
 // ===========================
@@ -147,23 +146,20 @@ export function AgentForm({
 
                                 <div className="grid gap-6">
 
-                                    {/* Linha 1: Nome e Status - Responsivo */}
+                                    {/* Linha 1: Nome e Tipo - Responsivo */}
                                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                         <AgentNameField />
-                                        <AgentActiveField />
+                                        <AgentTypeField />
                                     </div>
 
-                                    {/* Linha 2: Tipo de voz */}
+                                    {/* Linha 2: Voz */}
                                     <AgentVoiceField voices={voices} />
 
-                                    {/* Linha 3: Descrição */}
-                                    <AgentDescriptionField />
+                                    {/* Linha 3: Comportamento */}
+                                    <AgentBehaviourField />
 
-                                    {/* Linha 4: Objetivo */}
-                                    <AgentObjectiveField />
-
-                                    {/* Linha 5: Personalidade */}
-                                    <AgentPersonalityField />
+                                    {/* Linha 4: Características */}
+                                    <AgentCharacteristicsField />
                                 </div>
 
                                 <Separator />

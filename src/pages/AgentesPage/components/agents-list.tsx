@@ -3,46 +3,26 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Eye, Edit, Trash2 } from "lucide-react"
 import type { ColumnDef } from "@tanstack/react-table"
-import type { AgentDetails } from "@/types/agent"
+import type { CreateAgentResponse } from "@/types/agent-api"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { stringLimit } from "@/utils/string"
+import { AGENT_TYPE_LABELS } from "@/constants/agent"
 
 // ===========================
 // Helper Functions
 // ===========================
 
-const getActiveLabel = (active: boolean) => {
-    return active ? (
-        <Badge className="bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900/50 dark:text-green-200 dark:border-green-700 dark:hover:bg-green-900/70">
-            Ativo
-        </Badge>
-    ) : (
-        <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200 hover:bg-yellow-100 dark:bg-yellow-900/50 dark:text-yellow-200 dark:border-yellow-700 dark:hover:bg-yellow-900/70">
-            Inativo
-        </Badge>
-    )
-}
-
-const getVoiceLabel = (voiceName: string, voiceGender: 'male' | 'female') => {
-    const displayText = voiceName || "Sem voz"
-
-    if (voiceGender === 'female') {
-        return (
-            <Badge
-                variant="outline"
-                className="bg-pink-50 text-pink-700 border-pink-200 hover:bg-pink-100 dark:bg-pink-900/50 dark:text-pink-200 dark:border-pink-700 dark:hover:bg-pink-900/70"
-            >
-                {displayText}
-            </Badge>
-        )
+const getTypeLabel = (type: 'SUPPORT' | 'SALES' | 'GENERAL') => {
+    const labels = {
+        SUPPORT: { label: "Suporte", className: "bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-900/50 dark:text-blue-200 dark:border-blue-700 dark:hover:bg-blue-900/70" },
+        SALES: { label: "Vendas", className: "bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900/50 dark:text-green-200 dark:border-green-700 dark:hover:bg-green-900/70" },
+        GENERAL: { label: "Geral", className: "bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-900/50 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-900/70" }
     }
-
+    
+    const config = labels[type]
     return (
-        <Badge
-            variant="outline"
-            className="bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100 dark:bg-blue-900/50 dark:text-blue-200 dark:border-blue-700 dark:hover:bg-blue-900/70"
-        >
-            {displayText}
+        <Badge className={config.className}>
+            {config.label}
         </Badge>
     )
 }
@@ -53,13 +33,13 @@ const getVoiceLabel = (voiceName: string, voiceGender: 'male' | 'female') => {
 
 interface AgentsListProps {
     /** Lista de agentes */
-    agentes: AgentDetails[]
+    agentes: CreateAgentResponse[]
     /** Estado de carregamento */
     isLoading: boolean
     /** Callback para visualizar agente */
     onView: (agentId: string) => void
     /** Callback para editar agente */
-    onEdit: (agent: AgentDetails) => void
+    onEdit: (agent: CreateAgentResponse) => void
     /** Callback para excluir agente */
     onDelete?: (agentId: string) => void
 }
@@ -77,25 +57,25 @@ export function AgentsList({
 }: AgentsListProps) {
 
     // Definição das colunas da tabela
-    const columns: ColumnDef<AgentDetails>[] = [
+    const columns: ColumnDef<CreateAgentResponse>[] = [
         {
             accessorKey: "name",
             header: "Nome do agente",
         },
         {
-            accessorKey: "objective",
-            header: "Objetivo",
-            cell: ({ row }) => stringLimit(row.original.objective, 30),
+            accessorKey: "type",
+            header: "Tipo",
+            cell: ({ row }) => getTypeLabel(row.original.type),
         },
         {
-            accessorKey: "voice_name",
-            header: "Voz",
-            cell: ({ row }) => getVoiceLabel(row.original.voice_name, row.original.voice_gender),
+            accessorKey: "behaviour",
+            header: "Comportamento",
+            cell: ({ row }) => stringLimit(row.original.behaviour, 30),
         },
         {
-            accessorKey: "active",
-            header: "Status",
-            cell: ({ row }) => getActiveLabel(row.original.active),
+            accessorKey: "characteristics",
+            header: "Características",
+            cell: ({ row }) => stringLimit(row.original.characteristics, 30),
         },
         {
             id: "actions",

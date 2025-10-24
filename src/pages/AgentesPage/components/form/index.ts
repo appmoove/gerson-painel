@@ -5,10 +5,8 @@
 export { AgentErrorAlert } from './agent-error-alert'
 export {
     AgentNameField,
-    AgentDescriptionField,
-    AgentObjectiveField,
-    AgentPersonalityField,
-    AgentVoiceField,
-    AgentPresentationField,
-    AgentActiveField
+    AgentTypeField,
+    AgentBehaviourField,
+    AgentCharacteristicsField,
+    AgentVoiceField
 } from './agent-form-fields'
