@@ -14,6 +14,7 @@ import type { ColumnDef } from "@tanstack/react-table"
 import type { UserDetails } from "@/types";
 
 import { usersApi } from "@/controllers";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function UsersList() {
 
@@ -59,14 +60,14 @@ export function UsersList() {
             <div className="flex items-center gap-2">
                 <Link to={`/usuarios/${userRow.id}`}>
                     <BasicTooltip content="Visualizar">
-                        <Button variant="outline" size="icon" className="cursor-pointer hover:text-primary">
+                        <Button variant="ghost" size="icon" className="cursor-pointer hover:text-primary">
                             <Eye className="h-4 w-4" />
                         </Button>
                     </BasicTooltip>
                 </Link>
                 <Link to={`/usuarios/${userRow.id}/editar`}>
                     <BasicTooltip content="Editar">
-                        <Button variant="outline" size="icon" className="cursor-pointer hover:text-primary">
+                        <Button variant="ghost" size="icon" className="cursor-pointer hover:text-primary">
                             <PenBox className="h-4 w-4" />
                         </Button>
                     </BasicTooltip>
@@ -130,7 +131,7 @@ export function UsersList() {
             extra={getExtraButton()}
             breadcrumbs={breadcrumbs}
         >
-            <div className="grid gap-4 mb-4 lg:grid-cols-2">
+            <div className="grid gap-4 mb-4 md:grid-cols-2">
                 <MetricsCard
                     icon={Users}
                     iconColor="text-blue-500"
@@ -138,7 +139,6 @@ export function UsersList() {
                     value={users ? users.length.toString() : '0'}
                     loading={isLoading}
                     tooltipContent="Total de usuários registrados na organização."
-                    className="bg-transparent"
                 />
                 <MetricsCard
                     icon={CheckCircle}
@@ -147,14 +147,23 @@ export function UsersList() {
                     value={users ? users.filter(user => user.active).length.toString() : '0'}
                     loading={isLoading}
                     tooltipContent="Total de usuários ativos na organização."
-                    className="bg-transparent"
                 />
             </div>
-            <DataTable
-                data={users}
-                columns={columns}
-                isLoading={isLoading}
-            />
+            <Card>
+                <CardHeader>
+                    <CardTitle>
+                        Lista de Usuários
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <DataTable
+                        data={users}
+                        columns={columns}
+                        isLoading={isLoading}
+                        showPagination
+                    />
+                </CardContent>
+            </Card>
         </PageContainer>
     );
 }
