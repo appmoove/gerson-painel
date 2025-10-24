@@ -1,14 +1,12 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useCallback } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useNavigate, useParams, useLocation } from "react-router-dom"
 
 import { agentsApi } from "@/controllers/agents-api"
-import { useAuth } from "@/stores/auth"
+import { voicesApi } from "@/controllers/voices-api"
 import { useToast } from "@/hooks/use-toast"
-import type { AgentDetails } from "@/types/agent"
-import type { Voice } from "@/types/agent-api"
+import type { CreateAgentResponse, Voice } from "@/types/agent-api"
 import { AGENT_FORM_DEFAULTS } from "@/constants/agent"
 
 import { agentSchema } from "./validation"
@@ -35,24 +33,17 @@ export function useAgentsList() {
 
         agentsApi.listAgents()
             .then(response => {
-
                 // Verifica se há erro na resposta
                 if (response.error) {
                     throw new Error(response.error.message as string || 'Erro da API')
                 }
 
                 // A API retorna diretamente um array de agentes
-                const rawAgentes = response.data ?? [];
-
-                // Converte CreateAgentResponse[] para AgentDetails[] adicionando deleted_at
-                const agentesWithDeletedAt = Array.isArray(rawAgentes) ? rawAgentes.map(agent => ({
-                    ...agent,
-                    deleted_at: null
-                })) : [];
+                const agentes = response.data ?? [];
 
                 setState(prev => ({
                     ...prev,
-                    agentes: agentesWithDeletedAt,
+                    agentes,
                     isLoading: false
                 }));
 
@@ -72,8 +63,7 @@ export function useAgentsList() {
                     isLoading: false
                 }))
             })
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [toast])
 
     const refreshAgents = useCallback(() => {
         fetchAgentes()
@@ -86,7 +76,7 @@ export function useAgentsList() {
     return {
         ...state,
         refreshAgents,
-        setSelectedAgent: (agent: AgentDetails | null) =>
+        setSelectedAgent: (agent: CreateAgentResponse | null) =>
             setState(prev => ({ ...prev, selectedAgent: agent }))
     }
 }
@@ -98,23 +88,20 @@ export function useAgentsList() {
 /**
  * Hook para formulário de agente (cadastro/edição)
  */
-export function useAgentForm(agent?: AgentDetails) {
+export function useAgentForm(agent?: CreateAgentResponse) {
     const { toast } = useToast()
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [submitError, setSubmitError] = useState<string | null>(null)
     const [voices, setVoices] = useState<Voice[]>([])
-    const { user } = useAuth()
 
     const form = useForm<AgentFormData>({
         resolver: zodResolver(agentSchema),
         defaultValues: {
             name: agent?.name || "",
-            description: agent?.description || "",
-            objective: agent?.objective || "",
-            personality: agent?.personality || "",
-            voice_id: agent?.voice_id || AGENT_FORM_DEFAULTS.voice_id,
-            presentation_message: agent?.presentation_message || AGENT_FORM_DEFAULTS.presentation_message,
-            active: agent?.active ?? AGENT_FORM_DEFAULTS.active
+            type: agent?.type || AGENT_FORM_DEFAULTS.type,
+            behaviour: agent?.behaviour || "",
+            characteristics: agent?.characteristics || "",
+            voice_id: agent?.voice_id || AGENT_FORM_DEFAULTS.voice_id
         }
     })
 
@@ -122,7 +109,7 @@ export function useAgentForm(agent?: AgentDetails) {
     useEffect(() => {
         const loadVoices = async () => {
             try {
-                const response = await agentsApi.listVoices()
+                const response = await voicesApi.listOrganizationVoices()
                 if (response.error) {
                     console.error('Erro ao carregar vozes:', response.error.message)
                     return
@@ -147,28 +134,19 @@ export function useAgentForm(agent?: AgentDetails) {
                 // Atualização de agente existente
                 return agentsApi.updateAgent(agent.id, {
                     name: data.name,
-                    description: data.description,
-                    objective: data.objective,
-                    personality: data.personality,
-                    voice_id: data.voice_id,
-                    presentation_message: data.presentation_message,
-                    active: data.active
+                    type: data.type,
+                    behaviour: data.behaviour,
+                    characteristics: data.characteristics,
+                    voice_id: data.voice_id
                 })
             } else {
                 // Criação de novo agente
-                if (!user?.organization_id) {
-                    return Promise.reject(new Error('ID da organização não encontrado'))
-                }
-
                 return agentsApi.createAgent({
-                    company_id: user.organization_id,
                     name: data.name,
-                    description: data.description,
-                    objective: data.objective,
-                    personality: data.personality,
-                    voice_id: data.voice_id,
-                    presentation_message: data.presentation_message,
-                    active: data.active
+                    type: data.type,
+                    behaviour: data.behaviour,
+                    characteristics: data.characteristics,
+                    voice_id: data.voice_id
                 })
             }
         }
@@ -215,7 +193,7 @@ export function useAgentForm(agent?: AgentDetails) {
                 setIsSubmitting(false)
                 return { success: false, error: errorMessage }
             })
-    }, [agent, form, user?.organization_id, toast])
+    }, [agent, form, toast])
 
     return {
         form,
@@ -288,7 +266,7 @@ export function useAgentsNavigation() {
  * Hook para buscar dados detalhados de um agente específico
  */
 export function useAgentDetail(agentId?: string) {
-    const [agent, setAgent] = useState<AgentDetails | null>(null)
+    const [agent, setAgent] = useState<CreateAgentResponse | null>(null)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
@@ -305,14 +283,9 @@ export function useAgentDetail(agentId?: string) {
                 throw new Error(response.error.message as string || 'Erro ao buscar agente')
             }
 
-            const agentData = response.data?.data
-            if (agentData) {
-                // Converte GetAgentResponse para AgentDetails adicionando deleted_at
-                const agentDetails: AgentDetails = {
-                    ...agentData,
-                    deleted_at: null
-                }
-                setAgent(agentDetails)
+            // A API retorna diretamente o agente em response.data
+            if (response.data) {
+                setAgent(response.data)
             }
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : 'Erro ao buscar agente'
@@ -386,5 +359,64 @@ export function useAgentes() {
         // Current Agent (apenas para view/edit)
         currentAgent,
         refetchAgent: agentDetail.refetch
+    }
+}
+
+// ===========================
+// Voice Data Hook
+// ===========================
+
+/**
+ * Hook para buscar dados da voz de um agente específico
+ * Usado para preview de áudio na visualização
+ */
+export function useAgentVoice(voiceId?: string) {
+    const [voice, setVoice] = useState<Voice | null>(null)
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+
+    const fetchVoice = useCallback(async (id: string) => {
+        setIsLoading(true)
+        setError(null)
+
+        try {
+            const response = await voicesApi.listOrganizationVoices()
+            
+            if (response.error) {
+                setError(typeof response.error.message === 'string' ? response.error.message : 'Erro desconhecido')
+                return
+            }
+
+            const voices = response.data || []
+            const foundVoice = voices.find(v => v.id === id)
+            
+            if (foundVoice) {
+                setVoice(foundVoice)
+            } else {
+                setError('Voz não encontrada')
+            }
+        } catch (err) {
+            setError('Erro ao carregar dados da voz')
+            console.error('Erro ao buscar voz:', err)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [])
+
+    useEffect(() => {
+        if (voiceId) {
+            fetchVoice(voiceId)
+        } else {
+            setVoice(null)
+            setError(null)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [voiceId])
+
+    return {
+        voice,
+        isLoading,
+        error,
+        refetch: () => voiceId ? fetchVoice(voiceId) : Promise.resolve()
     }
 }

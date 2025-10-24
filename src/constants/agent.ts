@@ -6,6 +6,14 @@
 // Validation Constants
 // ===========================
 
+/**
+ * Constantes e configurações relacionadas aos agentes
+ */
+
+// ===========================
+// Validation Constants
+// ===========================
+
 export const AGENT_VALIDATION = {
     // Nome
     NAME: {
@@ -16,45 +24,33 @@ export const AGENT_VALIDATION = {
         MAX_LENGTH_MESSAGE: "Nome deve ter no máximo 100 caracteres"
     },
 
-    // Descrição/Persona
-    DESCRIPTION: {
-        REQUIRED: "Descrição é obrigatória",
-        MIN_LENGTH: 10,
-        MAX_LENGTH: 1000,
-        MIN_LENGTH_MESSAGE: "Descrição deve ter pelo menos 10 caracteres",
-        MAX_LENGTH_MESSAGE: "Descrição deve ter no máximo 1000 caracteres"
+    // Tipo
+    TYPE: {
+        REQUIRED: "Tipo é obrigatório"
     },
 
-    // Objetivo
-    OBJECTIVE: {
-        REQUIRED: "Objetivo é obrigatório",
+    // Comportamento
+    BEHAVIOUR: {
+        REQUIRED: "Comportamento é obrigatório",
         MIN_LENGTH: 10,
-        MAX_LENGTH: 1000,
-        MIN_LENGTH_MESSAGE: "Objetivo deve ter pelo menos 10 caracteres",
-        MAX_LENGTH_MESSAGE: "Objetivo deve ter no máximo 1000 caracteres"
+        MAX_LENGTH: 2000,
+        MIN_LENGTH_MESSAGE: "Comportamento deve ter pelo menos 10 caracteres",
+        MAX_LENGTH_MESSAGE: "Comportamento deve ter no máximo 2000 caracteres"
     },
 
-    // Personalidade
-    PERSONALITY: {
-        REQUIRED: "Personalidade é obrigatória",
+    // Características
+    CHARACTERISTICS: {
+        REQUIRED: "Características são obrigatórias",
         MIN_LENGTH: 10,
-        MAX_LENGTH: 1000,
-        MIN_LENGTH_MESSAGE: "Personalidade deve ter pelo menos 10 caracteres",
-        MAX_LENGTH_MESSAGE: "Personalidade deve ter no máximo 1000 caracteres"
+        MAX_LENGTH: 2000,
+        MIN_LENGTH_MESSAGE: "Características devem ter pelo menos 10 caracteres",
+        MAX_LENGTH_MESSAGE: "Características devem ter no máximo 2000 caracteres"
     },
 
     // Tipo de Voz
     VOICE_ID: {
         REQUIRED: "Voz é obrigatória",
         INVALID: "Voz selecionada é inválida"
-    },
-
-    // Mensagem de Apresentação (opcional)
-    PRESENTATION_MESSAGE: {
-        MIN_LENGTH: 10,
-        MAX_LENGTH: 1000,
-        MIN_LENGTH_MESSAGE: "Mensagem deve ter pelo menos 10 caracteres",
-        MAX_LENGTH_MESSAGE: "Mensagem deve ter no máximo 1000 caracteres"
     }
 } as const
 
@@ -72,7 +68,16 @@ export const AGENT_VALIDATION = {
 // ===========================
 
 export const AGENT_FORM_DEFAULTS = {
-    active: true,
-    voice_id: "", // Será preenchido quando houver voices disponíveis
-    presentation_message: null
+    type: 'SUPPORT' as const,
+    voice_id: "" // Será preenchido quando houver voices disponíveis
+} as const
+
+// ===========================
+// Agent Type Labels
+// ===========================
+
+export const AGENT_TYPE_LABELS = {
+    SUPPORT: "Suporte",
+    SALES: "Vendas", 
+    GENERAL: "Geral"
 } as const
