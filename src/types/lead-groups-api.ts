@@ -37,16 +37,55 @@ export interface CreateLeadGroupResponse {
 }
 
 /**
- * Resposta da atualização de um grupo de leads
+ * Informações básicas de um lead
  */
-export type UpdateLeadGroupResponse = CreateLeadGroupResponse
+export interface LeadInfo {
+    /** ID único do lead */
+    id: string
+    /** Nome do lead */
+    name: string | null
+    /** Email do lead */
+    email: string | null
+    /** Telefone do lead */
+    phone: string | null
+    /** Data de criação */
+    created_at: string
+    /** Data de atualização */
+    updated_at: string
+}
 
 /**
- * Resposta da listagem de grupos de leads
+ * Resposta da criação de um grupo de leads
  */
-export type ListLeadGroupsResponse = CreateLeadGroupResponse[]
+export interface CreateLeadGroupResponse {
+    /** ID único do grupo */
+    id: string
+    /** ID da organização */
+    organization_id: string
+    /** Nome do grupo */
+    name: string
+    /** Quantidade de leads no grupo */
+    leads_count: number
+    /** Data de criação */
+    created_at: string
+    /** Data de atualização */
+    updated_at: string
+}
 
 /**
- * Resposta da busca de um grupo específico
+ * Resposta da busca de um grupo específico (inclui leads)
  */
-export type GetLeadGroupResponse = CreateLeadGroupResponse
+export interface GetLeadGroupResponse {
+    /** ID único do grupo */
+    id: string
+    /** ID da organização */
+    organization_id: string
+    /** Nome do grupo */
+    name: string
+    /** Leads neste grupo */
+    leads: LeadInfo[]
+    /** Data de criação */
+    created_at: string
+    /** Data de atualização */
+    updated_at: string
+}

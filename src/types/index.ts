@@ -56,5 +56,6 @@ export type {
     UpdateLeadGroupRequest,
     UpdateLeadGroupResponse,
     ListLeadGroupsResponse,
-    GetLeadGroupResponse
+    GetLeadGroupResponse,
+    LeadInfo
 } from './lead-groups-api'
