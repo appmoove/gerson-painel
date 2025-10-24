@@ -1,7 +1,6 @@
 import { AxiosError } from 'axios';
-import type { AxiosInstance } from 'axios';
 
-import { createApiInstance, handleAxiosResponse, handleAxiosError } from './base-api';
+import { BaseApi } from './base-api';
 import type { ApiResponse } from '../types/api';
 import type {
     CreateAgentRequest,
@@ -17,20 +16,15 @@ import type {
 // Agents API Class
 // ===========================
 
-class AgentsApi {
-    private axiosInstance: AxiosInstance;
-
-    constructor() {
-        this.axiosInstance = createApiInstance();
-    }
+class AgentsApi extends BaseApi {
 
     /**
      * Cria um novo agente
      */
     createAgent(agentData: CreateAgentRequest): Promise<ApiResponse<CreateAgentResponse>> {
         return this.axiosInstance.post<CreateAgentResponse>('/agent/create', agentData)
-            .then(response => handleAxiosResponse(response))
-            .catch(error => handleAxiosError(error as AxiosError));
+            .then(response => this.handleAxiosResponse(response))
+            .catch(error => this.handleAxiosError(error as AxiosError));
     }
 
     /**
@@ -38,8 +32,8 @@ class AgentsApi {
      */
     listAgents(): Promise<ApiResponse<ListAgentsResponse>> {
         return this.axiosInstance.get<ListAgentsResponse>('/agent/list')
-            .then(response => handleAxiosResponse(response))
-            .catch(error => handleAxiosError(error as AxiosError));
+            .then(response => this.handleAxiosResponse(response))
+            .catch(error => this.handleAxiosError(error as AxiosError));
     }
 
     /**
@@ -47,8 +41,8 @@ class AgentsApi {
      */
     getAgent(agentId: string): Promise<ApiResponse<GetAgentResponse>> {
         return this.axiosInstance.get<GetAgentResponse>(`/agent/${agentId}`)
-            .then(response => handleAxiosResponse(response))
-            .catch(error => handleAxiosError(error as AxiosError));
+            .then(response => this.handleAxiosResponse(response))
+            .catch(error => this.handleAxiosError(error as AxiosError));
     }
 
     /**
@@ -56,8 +50,8 @@ class AgentsApi {
      */
     updateAgent(agentId: string, agentData: UpdateAgentRequest): Promise<ApiResponse<UpdateAgentResponse>> {
         return this.axiosInstance.post<UpdateAgentResponse>(`/agent/${agentId}/update`, agentData)
-            .then(response => handleAxiosResponse(response))
-            .catch(error => handleAxiosError(error as AxiosError));
+            .then(response => this.handleAxiosResponse(response))
+            .catch(error => this.handleAxiosError(error as AxiosError));
     }
 
     /**
@@ -65,8 +59,8 @@ class AgentsApi {
      */
     listVoices(): Promise<ApiResponse<ListVoicesResponse>> {
         return this.axiosInstance.get<ListVoicesResponse>('/agent/voices')
-            .then(response => handleAxiosResponse(response))
-            .catch(error => handleAxiosError(error as AxiosError));
+            .then(response => this.handleAxiosResponse(response))
+            .catch(error => this.handleAxiosError(error as AxiosError));
     }
 }
 

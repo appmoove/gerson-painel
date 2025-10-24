@@ -1,6 +1,5 @@
-import type { AxiosInstance, AxiosError } from 'axios'
+import { BaseApi } from './base-api'
 
-import { createApiInstance, handleAxiosResponse, handleAxiosError } from './base-api'
 import type { ApiResponse } from '@/types/api'
 import type {
     CreateRoutineRequest,
@@ -10,25 +9,21 @@ import type {
     ListRoutinesResponse,
     GetRoutineResponse
 } from '@/types/routine-api'
+import type { AxiosError } from 'axios'
 
 // ===========================
 // Routines API Class
 // ===========================
 
-class RoutinesApi {
-    private axiosInstance: AxiosInstance
-
-    constructor() {
-        this.axiosInstance = createApiInstance()
-    }
+class RoutinesApi extends BaseApi {
 
     /**
      * Criar uma nova rotina
      */
     createRoutine(data: CreateRoutineRequest): Promise<ApiResponse<CreateRoutineResponse>> {
         return this.axiosInstance.post<CreateRoutineResponse>('/routine/create', data)
-            .then(response => handleAxiosResponse(response))
-            .catch(error => handleAxiosError(error as AxiosError))
+            .then(this.handleAxiosResponse)
+            .catch(error => this.handleAxiosError(error as AxiosError))
     }
 
     /**
@@ -37,8 +32,8 @@ class RoutinesApi {
      */
     listRoutines(companyId: string): Promise<ApiResponse<ListRoutinesResponse>> {
         return this.axiosInstance.get<ListRoutinesResponse>(`/company/${companyId}/routines`)
-            .then(response => handleAxiosResponse(response))
-            .catch(error => handleAxiosError(error as AxiosError))
+            .then(this.handleAxiosResponse)
+            .catch(error => this.handleAxiosError(error as AxiosError))
     }
 
     /**
@@ -46,8 +41,8 @@ class RoutinesApi {
      */
     getRoutine(routineId: string): Promise<ApiResponse<GetRoutineResponse>> {
         return this.axiosInstance.get<GetRoutineResponse>(`/routine/${routineId}`)
-            .then(response => handleAxiosResponse(response))
-            .catch(error => handleAxiosError(error as AxiosError))
+            .then(this.handleAxiosResponse)
+            .catch(error => this.handleAxiosError(error as AxiosError))
     }
 
     /**
@@ -57,8 +52,8 @@ class RoutinesApi {
      */
     updateRoutine(routineId: string, data: UpdateRoutineRequest): Promise<ApiResponse<UpdateRoutineResponse>> {
         return this.axiosInstance.put<UpdateRoutineResponse>(`/routine/${routineId}`, data)
-            .then(response => handleAxiosResponse(response))
-            .catch(error => handleAxiosError(error as AxiosError))
+            .then(this.handleAxiosResponse)
+            .catch(error => this.handleAxiosError(error as AxiosError))
     }
 }
 

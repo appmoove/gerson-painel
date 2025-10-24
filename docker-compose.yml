@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  # Frontend - Gerson Painel
+  gerson-painel:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - NODE_ENV=development
+        - VITE_ORGANIZATION_API_URL=${VITE_ORGANIZATION_API_URL:-https://gerson-organization-api.hackaton.appmoove.com.br}
+        - VITE_PORT=5173
+    container_name: gerson-painel-dev
+    ports:
+      - "3000:80"
+    environment:
+      - NODE_ENV=development
+    networks:
+      - gerson-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Nginx Reverse Proxy (opcional - para simular produção)
+  nginx-proxy:
+    image: nginx:alpine
+    container_name: gerson-nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/proxy.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - gerson-painel
+    networks:
+      - gerson-network
+    restart: unless-stopped
+    profiles:
+      - production
+
+  # Redis (para cache/sessões - futuro)
+  redis:
+    image: redis:7-alpine
+    container_name: gerson-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    networks:
+      - gerson-network
+    restart: unless-stopped
+    profiles:
+      - full
+
+  # PostgreSQL (caso precise de BD local - futuro)
+  postgres:
+    image: postgres:15-alpine
+    container_name: gerson-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=gerson_dev
+      - POSTGRES_USER=gerson_user
+      - POSTGRES_PASSWORD=gerson_pass
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d
+    networks:
+      - gerson-network
+    restart: unless-stopped
+    profiles:
+      - full
+
+volumes:
+  redis-data:
+    driver: local
+  postgres-data:
+    driver: local
+
+networks:
+  gerson-network:
+    driver: bridge
+    name: gerson-network

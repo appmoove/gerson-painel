@@ -11,7 +11,7 @@ export interface TextareaWithCounterProps
     /** Máximo de caracteres (para mostrar progresso) */
     maxLength?: number
     /** Classe customizada para o contador */
-    counterClassName?: string
+    counterClassName?: React.HTMLAttributes<HTMLDivElement>['className']
 }
 
 const TextareaWithCounter = React.forwardRef<

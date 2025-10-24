@@ -19,7 +19,7 @@ interface ProgressCardProps {
   /** Cor da barra de progresso */
   progressColor?: string;
   /** Classe CSS adicional */
-  className?: string;
+  className?: React.HTMLAttributes<HTMLDivElement>['className'];
 }
 
 export function ProgressCard({
@@ -59,12 +59,12 @@ export function ProgressCard({
         {/* Barra de progresso */}
         <div className="space-y-2">
           <div className="w-full bg-muted rounded-full h-2">
-            <div 
+            <div
               className={cn("h-2 rounded-full transition-all duration-300", progressColor)}
               style={{ width: `${percentage}%` }}
             />
           </div>
-          
+
           {/* Texto de progresso */}
           <p className="text-[10px] text-muted-foreground">
             {progressText}
