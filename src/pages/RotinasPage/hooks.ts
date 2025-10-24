@@ -29,7 +29,7 @@ export function useRoutineAgents() {
     const { user } = useAuth()
 
     const fetchAgents = useCallback(() => {
-        if (!user?.company_id) {
+        if (!user?.organization_id) {
             setError("ID da empresa não encontrado")
             setIsLoading(false)
             return Promise.resolve()
@@ -61,7 +61,7 @@ export function useRoutineAgents() {
             .finally(() => {
                 setIsLoading(false)
             })
-    }, [user?.company_id])
+    }, [user?.organization_id])
 
     useEffect(() => {
         fetchAgents()
@@ -92,7 +92,7 @@ export function useRotinasList() {
     const { user } = useAuth()
 
     const fetchRotinas = useCallback(() => {
-        if (!user?.company_id) {
+        if (!user?.organization_id) {
             setState(prev => ({
                 ...prev,
                 error: "ID da empresa não encontrado",
@@ -103,7 +103,7 @@ export function useRotinasList() {
 
         setState(prev => ({ ...prev, isLoading: true, error: null }))
 
-        return routinesApi.listRoutines(user.company_id)
+        return routinesApi.listRoutines(user.organization_id)
             .then(response => {
                 // Verifica se há erro na resposta
                 if (response.error) {
@@ -140,7 +140,7 @@ export function useRotinasList() {
                     isLoading: false
                 }))
             })
-    }, [user?.company_id])
+    }, [user?.organization_id])
 
     const refreshRotinas = useCallback(() => {
         return fetchRotinas()
@@ -247,12 +247,12 @@ export function useRoutineForm(routine?: RoutineDetails) {
                 })
             } else {
                 // Criação de nova rotina
-                if (!user?.company_id) {
+                if (!user?.organization_id) {
                     return Promise.reject(new Error('ID da empresa não encontrado'))
                 }
 
                 return routinesApi.createRoutine({
-                    company_id: user.company_id,
+                    company_id: user.organization_id,
                     agent_id: data.agent_id,
                     name: data.name,
                     description: data.description,
@@ -309,7 +309,7 @@ export function useRoutineForm(routine?: RoutineDetails) {
                 setIsSubmitting(false)
                 return { success: false, error: errorMessage }
             })
-    }, [routine, form, user?.company_id])
+    }, [routine, form, user?.organization_id])
 
     return {
         form,

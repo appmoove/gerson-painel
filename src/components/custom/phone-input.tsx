@@ -106,7 +106,7 @@ const CountrySelect = ({
             return countryList;
         }
 
-        const filtered = countryList.filter(({ value, label }) => {
+        const filtered = countryList.filter(({ value }) => {
             const isValidCountry = value !== undefined && value !== null && typeof value === 'string';
             const isAllowed = isValidCountry && allowedCountries.includes(value);
             return isAllowed;
