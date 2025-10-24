@@ -1,8 +1,9 @@
-import { MessageSquare, Settings, User, Bot, Volume2 } from "lucide-react"
+import { MessageSquare, Settings, User, Bot, Volume2, Trash2 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { AudioPlayer } from "@/components/custom/audio-player"
 import type { AgentViewProps } from "../types"
 import { cn } from "@/lib/utils"
@@ -36,7 +37,7 @@ const getTypeLabel = (type: 'SUPPORT' | 'SALES' | 'GENERAL') => {
  * Componente de visualização detalhada de um agente
  * Mostra todas as informações organizadas em cards
  */
-export function AgentView({ agent, isLoading = false }: AgentViewProps) {
+export function AgentView({ agent, isLoading = false, onDelete }: AgentViewProps) {
     // Hook para buscar dados da voz do agente
     const { voice: agentVoice, isLoading: voiceLoading } = useAgentVoice(agent?.voice_id)
 
@@ -289,6 +290,20 @@ export function AgentView({ agent, isLoading = false }: AgentViewProps) {
                     </CardContent>
                 </Card>
             </div>
+
+            {/* Seção de Ações */}
+            {onDelete && (
+                <div className="flex justify-end pt-6">
+                    <Button
+                        variant="destructive"
+                        onClick={() => onDelete(agent.id)}
+                        className="cursor-pointer"
+                    >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Excluir Agente
+                    </Button>
+                </div>
+            )}
         </div>
     )
 }

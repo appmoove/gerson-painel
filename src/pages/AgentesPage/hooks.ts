@@ -325,6 +325,7 @@ export function useAgentes() {
     const navigation = useAgentsNavigation()
     const agentsList = useAgentsList()
     const agentDetail = useAgentDetail(navigation.agentId)
+    const agentDelete = useAgentDelete()
 
     // Usa apenas dados da requisição específica quando em modo view/edit
     // Para listagem, não precisa de currentAgent
@@ -346,6 +347,19 @@ export function useAgentes() {
         }
     }, [navigation.mode, navigation.agentId])
 
+    // Handler para exclusão de agente
+    const handleDeleteAgent = useCallback(async (agentId: string) => {
+        const result = await agentDelete.deleteAgent(agentId)
+        if (result.success) {
+            // Recarrega a lista após exclusão
+            agentsList.refreshAgents()
+            // Se estava visualizando/editando o agente excluído, volta para lista
+            if (navigation.agentId === agentId) {
+                navigation.goToList()
+            }
+        }
+    }, [agentDelete, agentsList, navigation])
+
     return {
         // Navigation
         ...navigation,
@@ -358,7 +372,11 @@ export function useAgentes() {
 
         // Current Agent (apenas para view/edit)
         currentAgent,
-        refetchAgent: agentDetail.refetch
+        refetchAgent: agentDetail.refetch,
+
+        // Delete functionality
+        deleteAgent: handleDeleteAgent,
+        isDeleting: agentDelete.isDeleting
     }
 }
 
@@ -418,5 +436,59 @@ export function useAgentVoice(voiceId?: string) {
         isLoading,
         error,
         refetch: () => voiceId ? fetchVoice(voiceId) : Promise.resolve()
+    }
+}
+
+// ===========================
+// Agent Delete Hook
+// ===========================
+
+/**
+ * Hook para exclusão de agentes
+ * Gerencia estado de loading e erros durante exclusão
+ */
+export function useAgentDelete() {
+    const [isDeleting, setIsDeleting] = useState(false)
+    const [deleteError, setDeleteError] = useState<string | null>(null)
+    const { toast } = useToast()
+
+    const deleteAgent = useCallback(async (agentId: string) => {
+        setIsDeleting(true)
+        setDeleteError(null)
+
+        try {
+            const response = await agentsApi.deleteAgent(agentId)
+            
+            if (response.error) {
+                const errorMessage = typeof response.error.message === 'string' ? response.error.message : 'Erro desconhecido'
+                setDeleteError(errorMessage)
+                toast.error("Erro ao excluir agente", {
+                    description: errorMessage,
+                })
+                return { success: false, error: errorMessage }
+            }
+
+            toast.success("Agente excluído!", {
+                description: "O agente foi excluído com sucesso"
+            })
+
+            return { success: true }
+        } catch (err) {
+            const errorMessage = 'Erro ao excluir agente'
+            setDeleteError(errorMessage)
+            toast.error("Erro ao excluir agente", {
+                description: errorMessage,
+            })
+            return { success: false, error: errorMessage }
+        } finally {
+            setIsDeleting(false)
+        }
+    }, [toast])
+
+    return {
+        deleteAgent,
+        isDeleting,
+        deleteError,
+        clearError: () => setDeleteError(null)
     }
 }

@@ -134,4 +134,6 @@ export interface AgentViewProps {
     agent: CreateAgentResponse | null
     /** Estado de carregamento */
     isLoading?: boolean
+    /** Callback para excluir agente */
+    onDelete?: (agentId: string) => void
 }
