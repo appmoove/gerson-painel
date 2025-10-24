@@ -137,19 +137,19 @@ export function UserView() {
                     <Card>
                         <CardHeader>
                             <div className="flex items-center gap-4">
-                                <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
+                                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
                                     {user.image_url ? (
                                         <img
                                             src={user.image_url}
                                             alt={user.name || "Usuário"}
-                                            className="h-16 w-16 rounded-full object-cover"
+                                            className="h-10 w-10 rounded-full object-cover"
                                         />
                                     ) : (
-                                        <User className="h-8 w-8 text-primary" />
+                                        <User className="h-6 w-6 text-primary" />
                                     )}
                                 </div>
                                 <div>
-                                    <CardTitle className="text-xl">
+                                    <CardTitle className="text-lg">
                                         {user.name || "Nome não informado"}
                                     </CardTitle>
                                     <div className="flex items-center gap-2 mt-2">
@@ -182,8 +182,8 @@ export function UserView() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="flex items-center gap-3">
-                                    <Mail className="h-4 w-4 text-muted-foreground" />
+                                <div className="flex align-top gap-3">
+                                    <Mail className="h-4 w-4 text-muted-foreground mt-0.5" />
                                     <div>
                                         <p className="text-sm font-medium">Email</p>
                                         <p className="text-sm text-muted-foreground">
@@ -192,8 +192,8 @@ export function UserView() {
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-3">
-                                    <Phone className="h-4 w-4 text-muted-foreground" />
+                                <div className="flex align-top gap-3">
+                                    <Phone className="h-4 w-4 text-muted-foreground mt-0.5" />
                                     <div>
                                         <p className="text-sm font-medium">Telefone</p>
                                         <p className="text-sm text-muted-foreground">
@@ -204,8 +204,8 @@ export function UserView() {
                             </div>
 
                             {user.document_number && (
-                                <div className="flex items-center gap-3">
-                                    <Shield className="h-4 w-4 text-muted-foreground" />
+                                <div className="flex align-top gap-3">
+                                    <Shield className="h-4 w-4 text-muted-foreground mt-0.5" />
                                     <div>
                                         <p className="text-sm font-medium">Documento</p>
                                         <p className="text-sm text-muted-foreground">
@@ -227,8 +227,8 @@ export function UserView() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="flex items-center gap-3">
-                                    <Shield className="h-4 w-4 text-muted-foreground" />
+                                <div className="flex align-top gap-3">
+                                    <Shield className="h-4 w-4 text-muted-foreground mt-0.5" />
                                     <div>
                                         <p className="text-sm font-medium">Cargo</p>
                                         <p className="text-sm text-muted-foreground">
@@ -237,8 +237,8 @@ export function UserView() {
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-3">
-                                    <ImageIcon className="h-4 w-4 text-muted-foreground" />
+                                <div className="flex align-top gap-3">
+                                    <ImageIcon className="h-4 w-4 text-muted-foreground mt-0.5" />
                                     <div>
                                         <p className="text-sm font-medium">Imagem</p>
                                         <p className="text-sm text-muted-foreground">
@@ -273,8 +273,8 @@ export function UserView() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="flex items-center gap-3">
-                                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                                <div className="flex align-top gap-3">
+                                    <Calendar className="h-4 w-4 text-muted-foreground mt-0.5" />
                                     <div>
                                         <p className="text-sm font-medium">Criado em</p>
                                         <p className="text-sm text-muted-foreground">
@@ -283,8 +283,8 @@ export function UserView() {
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-3">
-                                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                                <div className="flex align-top gap-3">
+                                    <Calendar className="h-4 w-4 text-muted-foreground mt-0.5" />
                                     <div>
                                         <p className="text-sm font-medium">Atualizado em</p>
                                         <p className="text-sm text-muted-foreground">
@@ -295,8 +295,8 @@ export function UserView() {
                             </div>
 
                             {user.deleted_at && (
-                                <div className="flex items-center gap-3">
-                                    <XCircle className="h-4 w-4 text-destructive" />
+                                <div className="flex align-top gap-3">
+                                    <XCircle className="h-4 w-4 text-destructive mt-0.5" />
                                     <div>
                                         <p className="text-sm font-medium text-destructive">Excluído em</p>
                                         <p className="text-sm text-destructive">
