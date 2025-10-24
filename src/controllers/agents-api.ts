@@ -22,16 +22,25 @@ class AgentsApi extends BaseApi {
      * Cria um novo agente
      */
     createAgent(agentData: CreateAgentRequest): Promise<ApiResponse<CreateAgentResponse>> {
-        return this.axiosInstance.post<CreateAgentResponse>('/agent/create', agentData)
+        const organizationId = this.getOrganizationId();
+        
+        return this.axiosInstance.post<CreateAgentResponse>(
+            `/organizations/${organizationId}/agents/create`, 
+            agentData
+        )
             .then(response => this.handleAxiosResponse(response))
             .catch(error => this.handleAxiosError(error as AxiosError));
     }
 
     /**
-     * Lista todos os agentes da empresa
+     * Lista todos os agentes da organização
      */
     listAgents(): Promise<ApiResponse<ListAgentsResponse>> {
-        return this.axiosInstance.get<ListAgentsResponse>('/agent/list')
+        const organizationId = this.getOrganizationId();
+        
+        return this.axiosInstance.get<ListAgentsResponse>(
+            `/organizations/${organizationId}/agents/list`
+        )
             .then(response => this.handleAxiosResponse(response))
             .catch(error => this.handleAxiosError(error as AxiosError));
     }
@@ -40,7 +49,11 @@ class AgentsApi extends BaseApi {
      * Busca um agente específico por ID
      */
     getAgent(agentId: string): Promise<ApiResponse<GetAgentResponse>> {
-        return this.axiosInstance.get<GetAgentResponse>(`/agent/${agentId}`)
+        const organizationId = this.getOrganizationId();
+        
+        return this.axiosInstance.get<GetAgentResponse>(
+            `/organizations/${organizationId}/agents/${agentId}`
+        )
             .then(response => this.handleAxiosResponse(response))
             .catch(error => this.handleAxiosError(error as AxiosError));
     }
@@ -49,16 +62,25 @@ class AgentsApi extends BaseApi {
      * Atualiza um agente existente
      */
     updateAgent(agentId: string, agentData: UpdateAgentRequest): Promise<ApiResponse<UpdateAgentResponse>> {
-        return this.axiosInstance.post<UpdateAgentResponse>(`/agent/${agentId}/update`, agentData)
+        const organizationId = this.getOrganizationId();
+        
+        return this.axiosInstance.patch<UpdateAgentResponse>(
+            `/organizations/${organizationId}/agents/${agentId}/update`, 
+            agentData
+        )
             .then(response => this.handleAxiosResponse(response))
             .catch(error => this.handleAxiosError(error as AxiosError));
     }
 
     /**
-     * Lista todas as vozes disponíveis para agentes
+     * Exclui um agente
      */
-    listVoices(): Promise<ApiResponse<ListVoicesResponse>> {
-        return this.axiosInstance.get<ListVoicesResponse>('/agent/voices')
+    deleteAgent(agentId: string): Promise<ApiResponse<void>> {
+        const organizationId = this.getOrganizationId();
+        
+        return this.axiosInstance.delete<void>(
+            `/organizations/${organizationId}/agents/${agentId}/delete`
+        )
             .then(response => this.handleAxiosResponse(response))
             .catch(error => this.handleAxiosError(error as AxiosError));
     }

@@ -4,7 +4,7 @@ import { Plus, Edit } from "lucide-react"
 
 // Imports locais
 import { useAgentes } from "./hooks"
-import { AgentsList, AgentForm, AgentView } from "./components"
+import { AgentsList, AgentCreateForm, AgentEditForm, AgentView } from "./components"
 
 // ===========================
 // Main AgentesPage Component
@@ -29,7 +29,11 @@ export default function AgentesPage() {
         isLoading,
         error,
         refreshAgents,
-        currentAgent
+        currentAgent,
+
+        // Delete functionality
+        deleteAgent,
+        isDeleting
     } = useAgentes()
 
     // Determina breadcrumbs baseado no modo atual
@@ -157,11 +161,12 @@ export default function AgentesPage() {
                         isLoading={isLoading}
                         onView={goToView}
                         onEdit={(agent) => goToEdit(agent.id)}
+                        onDelete={deleteAgent}
                     />
                 )}
 
                 {mode === 'create' && (
-                    <AgentForm
+                    <AgentCreateForm
                         onSave={handleSaveAgent}
                         onCancel={goToList}
                         isLoading={isLoading}
@@ -172,6 +177,7 @@ export default function AgentesPage() {
                     <AgentView
                         agent={currentAgent}
                         isLoading={isLoading}
+                        onDelete={deleteAgent}
                     />
                 )}
 
@@ -190,11 +196,10 @@ export default function AgentesPage() {
                                 </div>
                             </div>
                         ) : currentAgent ? (
-                            <AgentForm
+                            <AgentEditForm
                                 agent={currentAgent}
                                 onSave={handleSaveAgent}
                                 onCancel={goToList}
-                                title={`Editar ${currentAgent.name}`}
                                 isLoading={false}
                             />
                         ) : (

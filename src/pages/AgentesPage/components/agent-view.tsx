@@ -1,29 +1,30 @@
-import { MessageSquare, Settings, User } from "lucide-react"
+import { MessageSquare, Settings, User, Bot, Volume2, Trash2 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { AudioPlayer } from "@/components/custom/audio-player"
 import type { AgentViewProps } from "../types"
 import { cn } from "@/lib/utils"
+import { AGENT_TYPE_LABELS } from "@/constants/agent"
+import { useAgentVoice } from "../hooks"
 
 // ===========================
 // Helper Functions
 // ===========================
 
-const getActiveStatus = (active: boolean) => {
-    return active ? (
-        <Badge className={cn(
-            "bg-green-100 text-green-800 hover:bg-green-200",
-            "dark:bg-green-900/50 dark:text-green-200 dark:border-green-700 dark:hover:bg-green-900/70"
-        )}>
-            Ativo
-        </Badge>
-    ) : (
-        <Badge variant="outline" className={cn(
-            "bg-yellow-50 text-yellow-700 border-yellow-200 hover:bg-yellow-100",
-            "dark:bg-yellow-900/50 dark:text-yellow-200 dark:border-yellow-700 dark:hover:bg-yellow-900/70"
-        )}>
-            Inativo
+const getTypeLabel = (type: 'SUPPORT' | 'SALES' | 'GENERAL') => {
+    const labels = {
+        SUPPORT: { label: "Suporte", className: "bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-900/50 dark:text-blue-200 dark:border-blue-700 dark:hover:bg-blue-900/70" },
+        SALES: { label: "Vendas", className: "bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900/50 dark:text-green-200 dark:border-green-700 dark:hover:bg-green-900/70" },
+        GENERAL: { label: "Geral", className: "bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-900/50 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-900/70" }
+    }
+    
+    const config = labels[type]
+    return (
+        <Badge className={config.className}>
+            {config.label}
         </Badge>
     )
 }
@@ -36,7 +37,9 @@ const getActiveStatus = (active: boolean) => {
  * Componente de visualização detalhada de um agente
  * Mostra todas as informações organizadas em cards
  */
-export function AgentView({ agent, isLoading = false }: AgentViewProps) {
+export function AgentView({ agent, isLoading = false, onDelete }: AgentViewProps) {
+    // Hook para buscar dados da voz do agente
+    const { voice: agentVoice, isLoading: voiceLoading } = useAgentVoice(agent?.voice_id)
 
     // Se estiver carregando ou não tiver agente, mostra skeletons
     if (isLoading || !agent) {
@@ -182,10 +185,10 @@ export function AgentView({ agent, isLoading = false }: AgentViewProps) {
 
                         <div>
                             <label className="text-sm font-medium text-muted-foreground">
-                                Status
+                                Tipo
                             </label>
                             <div className="mt-1">
-                                {getActiveStatus(agent.active)}
+                                {getTypeLabel(agent.type)}
                             </div>
                         </div>
 
@@ -208,84 +211,99 @@ export function AgentView({ agent, isLoading = false }: AgentViewProps) {
                             <label className="text-sm font-medium text-muted-foreground">
                                 Voz Selecionada
                             </label>
-                            <div className="mt-2 space-y-2">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm font-medium">{agent.voice_name}</span>
-                                    <Badge
-                                        variant={agent.voice_gender === 'male' ? 'default' : 'secondary'}
-                                        className={`text-xs ${agent.voice_gender === 'female'
-                                            ? 'bg-pink-100 text-pink-800 border-pink-200 hover:bg-pink-200 dark:bg-pink-900/50 dark:text-pink-200 dark:border-pink-700 dark:hover:bg-pink-900/70'
-                                            : 'bg-blue-100 text-blue-800 border-blue-200 hover:bg-blue-200 dark:bg-blue-900/50 dark:text-blue-200 dark:border-blue-700 dark:hover:bg-blue-900/70'
-                                            }`}
-                                    >
-                                        {agent.voice_gender === 'male' ? 'Masculino' : 'Feminino'}
-                                    </Badge>
-                                </div>
-                                <p className="text-xs text-muted-foreground">
-                                    {agent.voice_gender === 'male'
-                                        ? 'Voz masculina para atendimento'
-                                        : 'Voz feminina para atendimento'
-                                    }
-                                </p>
+                            <div className="mt-2 space-y-3">
+                                {voiceLoading ? (
+                                    <div className="space-y-2">
+                                        <Skeleton className="h-4 w-32" />
+                                        <Skeleton className="h-8 w-full" />
+                                    </div>
+                                ) : agentVoice ? (
+                                    <div className="space-y-3">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <Volume2 className="h-4 w-4 text-primary" />
+                                                <span className="text-sm font-medium">{agentVoice.name}</span>
+                                            </div>
+                                            <Badge
+                                                variant={agentVoice.gender === 'MALE' ? 'default' : 'secondary'}
+                                                className={`text-xs px-2 py-0.5 ${agentVoice.gender === 'FEMALE'
+                                                    ? 'bg-pink-100 text-pink-700 border-pink-200 hover:bg-pink-200 dark:bg-pink-900/20 dark:text-pink-300 dark:border-pink-800'
+                                                    : 'bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800'
+                                                    }`}
+                                            >
+                                                {agentVoice.gender === 'MALE' ? 'Masculino' : 'Feminino'}
+                                            </Badge>
+                                        </div>
+                                        <p className="text-xs text-muted-foreground">
+                                            {agentVoice.description}
+                                        </p>
+                                        <div className="pt-2">
+                                            <AudioPlayer voice={agentVoice} />
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-2">
+                                        <span className="text-sm font-medium">Voz ID: {agent.voice_id}</span>
+                                        <p className="text-xs text-muted-foreground">
+                                            Voz não encontrada ou indisponível
+                                        </p>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </CardContent>
                 </Card>
 
-                {/* Card: Descrição */}
+                {/* Card: Comportamento */}
                 <Card className="md:col-span-2">
                     <CardHeader>
                         <div className="flex items-center gap-2">
-                            <User className="h-5 w-5" />
-                            <CardTitle>Descrição</CardTitle>
+                            <Bot className="h-5 w-5" />
+                            <CardTitle>Comportamento</CardTitle>
                         </div>
                         <CardDescription>
-                            Descrição do agente
+                            Como o agente deve se comportar e se comunicar
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
                         <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                            {agent.description}
+                            {agent.behaviour}
                         </p>
                     </CardContent>
                 </Card>
 
-                {/* Card: Objetivo */}
-                <Card className="md:col-span-2">
-                    <CardHeader>
-                        <div className="flex items-center gap-2">
-                            <MessageSquare className="h-5 w-5" />
-                            <CardTitle>Objetivo</CardTitle>
-                        </div>
-                        <CardDescription>
-                            Propósito e função principal do agente
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                            {agent.objective}
-                        </p>
-                    </CardContent>
-                </Card>
-
-                {/* Card: Personalidade */}
+                {/* Card: Características */}
                 <Card className="md:col-span-2">
                     <CardHeader>
                         <div className="flex items-center gap-2">
                             <User className="h-5 w-5" />
-                            <CardTitle>Personalidade</CardTitle>
+                            <CardTitle>Características</CardTitle>
                         </div>
                         <CardDescription>
-                            Características comportamentais e tom de voz
+                            Características específicas e habilidades do agente
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
                         <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                            {agent.personality}
+                            {agent.characteristics}
                         </p>
                     </CardContent>
                 </Card>
             </div>
+
+            {/* Seção de Ações */}
+            {onDelete && (
+                <div className="flex justify-end pt-6">
+                    <Button
+                        variant="destructive"
+                        onClick={() => onDelete(agent.id)}
+                        className="cursor-pointer"
+                    >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Excluir Agente
+                    </Button>
+                </div>
+            )}
         </div>
     )
 }
