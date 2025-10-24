@@ -9,14 +9,13 @@ const LazyLoginPage = createLazyComponent(() => import('@/pages/LoginPage'))
 const LazyDashboardPage = createLazyComponent(() => import('@/pages/DashboardPage'))
 const LazyAgentesPage = createLazyComponent(() => import('@/pages/AgentesPage'))
 const LazyRotinasPage = createLazyComponent(() => import('@/pages/RotinasPage'))
+const LazyVozesOrganizacaoPage = createLazyComponent(() => import('@/pages/OrganizationVoicesPage/voices-list'))
 
 // Componentes de usuários
 const LazyUsersList = createLazyComponent(() => import('@/pages/UsuariosPage/components').then(module => ({ default: module.UsersList })))
 const LazyUserCreateForm = createLazyComponent(() => import('@/pages/UsuariosPage/components').then(module => ({ default: module.UserCreateForm })))
 const LazyUserEditForm = createLazyComponent(() => import('@/pages/UsuariosPage/components').then(module => ({ default: module.UserEditForm })))
 const LazyUserView = createLazyComponent(() => import('@/pages/UsuariosPage/components').then(module => ({ default: module.UserView })))
-
-import VozesOrganizacaoPage from "@/pages/OrganizationVoicesPage/voices-list"
 
 function ProtectedRoute() {
     const { isAuthenticated } = useAuth()
@@ -66,7 +65,7 @@ export default function AppRoutes() {
                 <Route path="/usuarios/:id/editar" element={<LazyUserEditForm />} />
 
                 {/* Rotas de Vozes */}
-                <Route path="/vozes" element={<VozesOrganizacaoPage />} />
+                <Route path="/vozes" element={<LazyVozesOrganizacaoPage />} />
             </Route>
 
             <Route path="*" element={<RedirectToDashboard />} />
