@@ -251,7 +251,7 @@ export function AudioPlayer({ voice, waveform, seekable = true, className = '' }
 
             {/* Botão Play/Pause */}
             <Tooltip>
-                <TooltipTrigger>
+                <TooltipTrigger asChild>
                     <Button
                         variant="ghost"
                         size="sm"

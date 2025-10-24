@@ -27,25 +27,22 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
           # setup-node does not support asdf yet.
           # Uncomment when https://github.com/actions/setup-node/pull/373 has landed.
           # node-version-file: .tool-versions
-
-      - name: Setup yarn
-        run: npm install -g yarn
 
       - name: Set up Node.js with caching
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
           # setup-node does not support asdf yet.
           # Uncomment when https://github.com/actions/setup-node/pull/373 has landed.
           # node-version-file: .tool-versions
-          cache: yarn
+          cache: npm
 
       - name: Install dependencies
-        run: yarn install
+        run: npm ci
 
       - name: Lint
-        run: yarn eslint "{src, apps, libs, test}/**/*.{js, ts}"
+        run: npm run lint

@@ -12,7 +12,7 @@ export interface ApiError {
 /**
  * Resposta genérica da API com tipagem
  */
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
     data?: T;
     error?: ApiError;
     status: number;

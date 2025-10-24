@@ -71,6 +71,7 @@ export function useAgentsList() {
                     isLoading: false
                 }))
             })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const refreshAgents = useCallback(() => {
@@ -79,6 +80,7 @@ export function useAgentsList() {
 
     useEffect(() => {
         fetchAgentes()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return {
@@ -127,7 +129,6 @@ export function useAgentForm(agent?: AgentDetails) {
                 }
 
                 const voicesData = response.data || []
-                console.log('Vozes carregadas:', voicesData)
                 setVoices(voicesData)
             } catch (error) {
                 console.error('Erro ao carregar vozes:', error)
@@ -155,12 +156,12 @@ export function useAgentForm(agent?: AgentDetails) {
                 })
             } else {
                 // Criação de novo agente
-                if (!user?.company_id) {
-                    return Promise.reject(new Error('ID da empresa não encontrado'))
+                if (!user?.organization_id) {
+                    return Promise.reject(new Error('ID da organização não encontrado'))
                 }
 
                 return agentsApi.createAgent({
-                    company_id: user.company_id,
+                    company_id: user.organization_id,
                     name: data.name,
                     description: data.description,
                     objective: data.objective,
@@ -214,7 +215,7 @@ export function useAgentForm(agent?: AgentDetails) {
                 setIsSubmitting(false)
                 return { success: false, error: errorMessage }
             })
-    }, [agent, form, user?.company_id, toast])
+    }, [agent, form, user?.organization_id, toast])
 
     return {
         form,
@@ -362,14 +363,14 @@ export function useAgentes() {
         if (navigation.mode === 'list') {
             agentsList.refreshAgents()
         }
-    }, [navigation.mode]) // Removido agentsList.refreshAgents da dependência
+    }, [navigation.mode, agentsList])
 
     // Recarrega dados do agente sempre que acessar view/edit
     useEffect(() => {
         if ((navigation.mode === 'view' || navigation.mode === 'edit') && navigation.agentId) {
             agentDetail.refetch()
         }
-    }, [navigation.mode, navigation.agentId]) // Removido agentDetail.refetch da dependência
+    }, [navigation.mode, navigation.agentId, agentDetail])
 
     return {
         // Navigation

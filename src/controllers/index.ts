@@ -10,3 +10,6 @@ export { agentsApi } from './agents-api'
 
 // Routines Controller
 export { routinesApi } from './routines-api'
+
+// Users Controller
+export { usersApi } from './users-api'

@@ -6,14 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
-
 export interface AppHeaderProps {
     /** Callback para busca */
     onSearch?: (query: string) => void;
     /** Placeholder do campo de busca */
     searchPlaceholder?: string;
     /** Classes CSS adicionais */
-    className?: string;
+    className?: React.HTMLAttributes<HTMLElement>['className'];
 }
 
 export function AppHeader({
@@ -23,7 +22,6 @@ export function AppHeader({
 }: AppHeaderProps) {
     const [searchQuery, setSearchQuery] = useState("");
     const [isSearchFocused, setIsSearchFocused] = useState(false);
-
 
     const handleSearchSubmit = (e: React.FormEvent) => {
         e.preventDefault();

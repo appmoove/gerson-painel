@@ -14,7 +14,7 @@ interface PageContainerProps {
     breadcrumbs?: Crumb[]
     extra?: React.ReactNode
     children?: React.ReactNode
-    className?: string
+    className?: React.HTMLAttributes<HTMLDivElement>['className']
 }
 
 export function PageContainer({

@@ -1,4 +1,6 @@
-import { type AxiosInstance, AxiosError } from 'axios';
+import { BaseApi } from '@/controllers/base-api';
+
+import type { AxiosError } from 'axios';
 import type {
     LoginRequest,
     LoginResponse,
@@ -6,18 +8,12 @@ import type {
 import type { ApiResponse } from '../types/api';
 
 import { AUTH_ENDPOINTS } from '@/constants/auth';
-import { createApiInstance, handleAxiosResponse, handleAxiosError } from '@/controllers/base-api';
 
 // ===========================
 // Auth API Class
 // ===========================
 
-class AuthApi {
-    private axiosInstance: AxiosInstance;
-
-    constructor() {
-        this.axiosInstance = createApiInstance();
-    }
+class AuthApi extends BaseApi {
 
     /**
      * Realiza login do usuário
@@ -28,9 +24,9 @@ class AuthApi {
                 AUTH_ENDPOINTS.LOGIN,
                 credentials
             );
-            return handleAxiosResponse(response);
+            return this.handleAxiosResponse(response);
         } catch (error) {
-            return handleAxiosError(error as AxiosError);
+            return this.handleAxiosError(error as AxiosError);
         }
     }
 }
