@@ -112,15 +112,13 @@ export const sidebarItems: SidebarItem[] = [
         title: "Gestão",
         icon: Handshake,
         isGroup: true,
-        disabled: true,
         children: [
             {
                 id: "usuarios",
                 title: "Usuários",
                 icon: Users2,
                 href: "/usuarios",
-                exact: true,
-                disabled: true,
+                exact: false,
             },
             {
                 id: "permissoes",
