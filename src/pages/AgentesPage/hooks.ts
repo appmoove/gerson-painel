@@ -71,6 +71,7 @@ export function useAgentsList() {
                     isLoading: false
                 }))
             })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const refreshAgents = useCallback(() => {
@@ -79,6 +80,7 @@ export function useAgentsList() {
 
     useEffect(() => {
         fetchAgentes()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return {
@@ -361,14 +363,14 @@ export function useAgentes() {
         if (navigation.mode === 'list') {
             agentsList.refreshAgents()
         }
-    }, [navigation.mode]) // Removido agentsList.refreshAgents da dependência
+    }, [navigation.mode, agentsList])
 
     // Recarrega dados do agente sempre que acessar view/edit
     useEffect(() => {
         if ((navigation.mode === 'view' || navigation.mode === 'edit') && navigation.agentId) {
             agentDetail.refetch()
         }
-    }, [navigation.mode, navigation.agentId]) // Removido agentDetail.refetch da dependência
+    }, [navigation.mode, navigation.agentId, agentDetail])
 
     return {
         // Navigation

@@ -65,7 +65,7 @@ export function useRoutineAgents() {
 
     useEffect(() => {
         fetchAgents()
-    }, [])
+    }, [fetchAgents])
 
     return {
         agents,
@@ -470,14 +470,14 @@ export function useRotinas() {
         if (navigation.mode === 'list') {
             rotinasList.refreshRotinas()
         }
-    }, [navigation.mode])
+    }, [navigation.mode, rotinasList])
 
     // Auto-refresh para view/edit quando ID muda
     useEffect(() => {
         if ((navigation.mode === 'view' || navigation.mode === 'edit') && navigation.routineId) {
             routineDetail.refetch()
         }
-    }, [navigation.mode, navigation.routineId])
+    }, [navigation.mode, navigation.routineId, routineDetail])
 
     return {
         // Navigation
