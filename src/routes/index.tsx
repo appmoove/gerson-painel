@@ -1,4 +1,5 @@
 import { Routes, Route, Outlet, Navigate } from "react-router-dom"
+
 import { Layout } from "@/components/layout"
 import { useAuth } from "@/stores/auth"
 import { createLazyComponent } from "@/components/routing"
@@ -14,6 +15,8 @@ const LazyUsersList = createLazyComponent(() => import('@/pages/UsuariosPage/com
 const LazyUserCreateForm = createLazyComponent(() => import('@/pages/UsuariosPage/components').then(module => ({ default: module.UserCreateForm })))
 const LazyUserEditForm = createLazyComponent(() => import('@/pages/UsuariosPage/components').then(module => ({ default: module.UserEditForm })))
 const LazyUserView = createLazyComponent(() => import('@/pages/UsuariosPage/components').then(module => ({ default: module.UserView })))
+
+import VozesOrganizacaoPage from "@/pages/OrganizationVoicesPage/voices-list"
 
 function ProtectedRoute() {
     const { isAuthenticated } = useAuth()
@@ -39,7 +42,7 @@ export default function AppRoutes() {
         <Routes>
             {/* Rota pública */}
             <Route path="/login" element={<LazyLoginPage />} />
-            
+
             {/* Rotas privadas agrupadas */}
             <Route path="/" element={<ProtectedRoute />}>
                 <Route index element={<LazyDashboardPage />} />
@@ -61,8 +64,11 @@ export default function AppRoutes() {
                 <Route path="/usuarios/novo" element={<LazyUserCreateForm />} />
                 <Route path="/usuarios/:id" element={<LazyUserView />} />
                 <Route path="/usuarios/:id/editar" element={<LazyUserEditForm />} />
+
+                {/* Rotas de Vozes */}
+                <Route path="/vozes" element={<VozesOrganizacaoPage />} />
             </Route>
-            
+
             <Route path="*" element={<RedirectToDashboard />} />
         </Routes>
     )

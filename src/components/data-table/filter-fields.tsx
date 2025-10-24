@@ -40,7 +40,7 @@ export function FilterFields<T extends Record<string, any>>({
             }}
             transition={{
                 duration: 0.3,
-                ease: "easeInOut"
+                ease: "easeInOut",
             }}
             style={{ overflow: "hidden" }}
         >

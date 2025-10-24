@@ -35,7 +35,11 @@ export function Sidebar() {
     const { user: currentUser, logout, setProfileModalOpen } = useAuth()
     const { open, setOpen } = useSidebar()
 
-    const isActive = (item: SidebarItem) => {
+    const isActive = (item: SidebarItem, children?: SidebarItem[]) => {
+        if (children) {
+            return children.some(child => child.href === location.pathname)
+        }
+
         if (!item.href) return false
 
         if (item.exact) {
@@ -61,7 +65,7 @@ export function Sidebar() {
                 <Collapsible key={item.id} defaultOpen className="group/collapsible">
                     <SidebarMenuItem>
                         <CollapsibleTrigger asChild>
-                            <SidebarMenuButton>
+                            <SidebarMenuButton isActive={isActive(item, item.children)} disabled={item.disabled}>
                                 {Icon && <Icon />}
                                 <span>{item.title}</span>
                                 <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
@@ -71,7 +75,7 @@ export function Sidebar() {
                             <SidebarMenuSub>
                                 {item.children.map((child) => (
                                     <SidebarMenuSubItem key={child.id}>
-                                        <SidebarMenuSubButton asChild>
+                                        <SidebarMenuSubButton asChild isActive={isActive(child)} disabled={child.disabled}>
                                             <Link to={child.href || "#"}>
                                                 {child.icon && <child.icon />}
                                                 <span>{child.title}</span>
@@ -90,12 +94,9 @@ export function Sidebar() {
             return (
                 <SidebarMenuItem key={item.id}>
                     <SidebarMenuButton asChild isActive={isActive(item)}>
-                        <Link to={item.href} className={cn(
-                            "flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted/50",
-                            open ? "justify-start" : "justify-center"
-                        )}>
+                        <Link to={item.href}>
                             {Icon && <Icon />}
-                            {!open && <span>{item.title}</span>}
+                            <span>{item.title}</span>
                         </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -114,7 +115,7 @@ export function Sidebar() {
             )}
         >
             {/* Conteudo do Sidebar */}
-            <ScrollArea className="h-full overflow-hidden" >
+            <ScrollArea className="h-full overflow-hidden">
                 <SidebarContent>
                     <SidebarGroup>
                         <SidebarGroupContent>
@@ -148,7 +149,7 @@ export function Sidebar() {
                             )}
                         </SidebarMenuButton>
                     </SidebarMenuItem>
-                    <DropdownMenu>
+                    <DropdownMenu modal={false}>
                         <DropdownMenuTrigger asChild>
                             <SidebarMenuButton
                                 className={cn(
