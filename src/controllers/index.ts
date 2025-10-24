@@ -11,5 +11,13 @@ export { agentsApi } from './agents-api'
 // Routines Controller
 export { routinesApi } from './routines-api'
 
+// Voices Controller
+export { voicesApi } from './voices-api'
+
+// Leads Controller
+export { leadsApi } from './leads-api'
+
+// Lead Groups Controller
+export { leadGroupsApi } from './lead-groups-api'
 // Users Controller
 export { usersApi } from './users-api'
