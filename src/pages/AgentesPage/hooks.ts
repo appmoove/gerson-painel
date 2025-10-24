@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useCallback } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -80,7 +81,6 @@ export function useAgentsList() {
 
     useEffect(() => {
         fetchAgentes()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return {
@@ -364,14 +364,14 @@ export function useAgentes() {
         if (navigation.mode === 'list') {
             agentsList.refreshAgents()
         }
-    }, [navigation.mode, agentsList])
+    }, [navigation.mode])
 
     // Recarrega dados do agente sempre que acessar view/edit
     useEffect(() => {
         if ((navigation.mode === 'view' || navigation.mode === 'edit') && navigation.agentId) {
             agentDetail.refetch()
         }
-    }, [navigation.mode, navigation.agentId, agentDetail])
+    }, [navigation.mode, navigation.agentId])
 
     return {
         // Navigation
