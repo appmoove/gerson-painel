@@ -4,6 +4,8 @@
 
 import type { CreateAgentResponse } from "@/types/agent-api"
 
+export type { CreateAgentResponse }
+
 /**
  * Dados do formulário de agente (cadastro/edição)
  * Baseado no CreateAgentRequest do backend
