@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Mail, Save, Settings } from "lucide-react";
-import z from "zod";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -13,60 +12,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-import { validateCNPJ, validateCPF, maskCpfCnpj } from "@/utils/string";
+import { CREATE_USER_FORM_DEFAULTS, createUserSchema } from "@/pages/UsuariosPage/validation";
+import { maskCpfCnpj } from "@/utils/string";
 import { USER_ROLES } from "@/constants";
 import { usersApi } from "@/controllers";
 import { toast } from "sonner";
-
-const formUtils = {
-    userSchema: z.object({
-        organization_role_id: z.uuid("Selecione um cargo válido"),
-        name: z.string().trim()
-            .min(4, "Digite um nome válido"),
-        email: z.email("Email inválido").trim(),
-        document_number: z.string()
-            .min(1, "Documento é obrigatório")
-            .refine((val) => {
-                const cleaned = val.replace(/\D/g, '');
-                return cleaned.length === 11 || cleaned.length === 14;
-            }, {
-                message: "Documento deve ser um CPF (11 dígitos) ou CNPJ (14 dígitos)"
-            })
-            .refine(val => {
-                const cleaned = val.replace(/\D/g, '');
-                // Verifica o tamanho e aplica validações específicas
-                if (cleaned.length === 11) {
-                    return validateCPF(cleaned);
-                }
-
-                if (cleaned.length === 14) {
-                    return validateCNPJ(cleaned);
-                }
-
-                return false;
-            }, {
-                message: "Documento inválido"
-            }).transform(val => val.replace(/\D/g, '')),
-        phone_number: z.string()
-            .min(10, "Telefone deve ter pelo menos 10 dígitos"),
-        image_url: z.string().optional(),
-    })
-}
 
 export function UserCreateForm() {
 
     const [loading, setLoading] = useState(false);
 
     const form = useForm({
-        resolver: zodResolver(formUtils.userSchema),
-        defaultValues: {
-            organization_role_id: "",
-            name: "",
-            email: "",
-            document_number: "",
-            phone_number: "",
-            image_url: "",
-        }
+        resolver: zodResolver(createUserSchema),
+        defaultValues: CREATE_USER_FORM_DEFAULTS,
     });
 
     const navigate = useNavigate();
