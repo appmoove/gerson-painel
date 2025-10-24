@@ -11,7 +11,7 @@ const footerVariants = cva(
                 default: "bg-background border-t border-border",
                 destructive: "bg-destructive border-t border-destructive",
                 ghost: "bg-transparent",
-                glass: "bg-background/70 backdrop-blur-md border-t border-border/50",
+                glass: "bg-background/70 backdrop-blur border-t border-border/50 supports-[backdrop-filter]:bg-background/60",
             },
             size: {
                 default: "h-16",

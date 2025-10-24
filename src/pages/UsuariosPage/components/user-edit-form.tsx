@@ -5,14 +5,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { Loader2, Mail, Save, Settings } from "lucide-react";
-
 import { AnimatePresence, motion } from "framer-motion";
+
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { PhoneInput } from "@/components/custom/phone-input";
 import { PageContainer } from "@/components/layout/page-container";
+import { PageActionFooter } from "@/components/layout/page-action-footer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -22,7 +23,6 @@ import { EDIT_USER_FORM_DEFAULTS, editUserSchema } from "@/pages/UsuariosPage/va
 import { maskCpfCnpj } from "@/utils/string";
 import { USER_ROLES } from "@/constants";
 import { usersApi } from "@/controllers";
-import { PageActionFooter } from "@/components/layout/page-action-footer";
 
 
 export function UserEditForm() {
@@ -124,7 +124,7 @@ export function UserEditForm() {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onSubmit={form.handleSubmit(handleFormSubmit)}
-                            className="space-y-4"
+                            className="space-y-4 pb-16"
                         >
                             <Card>
                                 <CardHeader>
