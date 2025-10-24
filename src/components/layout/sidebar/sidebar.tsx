@@ -68,7 +68,15 @@ export function Sidebar() {
 
     const isActive = (item: SidebarItem, children?: SidebarItem[]) => {
         if (children) {
-            return children.some(child => child.href === location.pathname)
+            // Valida o exact das children, quando houver
+            const hasActiveChild = children.some(child => {
+                if (!child.href) return false
+                if (child.exact) {
+                    return location.pathname === child.href
+                }
+                return location.pathname.startsWith(child.href)
+            })
+            return hasActiveChild
         }
 
         if (!item.href) return false
