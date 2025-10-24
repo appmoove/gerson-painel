@@ -3,18 +3,18 @@ import { toast } from "sonner";
 import { CheckCircle, Eye, PenBox, Plus, Users } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { MetricsCard } from "@/components/custom";
-import { DataTable } from "@/components/data-table";
-import { PageContainer } from "@/components/layout/page-container";
-import { BasicTooltip } from "@/components/custom/basic-tooltip";
-import { useTableData } from "@/hooks/use-table-data";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/data-table";
+import { MetricsCard } from "@/components/custom";
+import { BasicTooltip } from "@/components/custom/basic-tooltip";
+import { PageContainer } from "@/components/layout/page-container";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useTableData } from "@/hooks/use-table-data";
 import type { ColumnDef } from "@tanstack/react-table"
 import type { UserDetails } from "@/types";
 
 import { usersApi } from "@/controllers";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function UsersList() {
 
