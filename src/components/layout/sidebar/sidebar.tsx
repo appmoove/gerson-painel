@@ -34,7 +34,7 @@ export function Sidebar() {
     const navigate = useNavigate()
     const { theme, setTheme } = useTheme()
     const { user: currentUser, logout, setProfileModalOpen } = useAuth()
-    const { open, toggleSidebar } = useSidebar()
+    const { open, toggleSidebar, isMobile } = useSidebar()
     const [openGroups, setOpenGroups] = useState<string[]>([])
 
     // Determinar quais grupos devem estar abertos automaticamente baseado na rota atual
@@ -115,7 +115,7 @@ export function Sidebar() {
                                 {item.children.map((child) => (
                                     <SidebarMenuSubItem key={child.id}>
                                         <SidebarMenuSubButton asChild isActive={isActive(child)} disabled={child.disabled}>
-                                            <Link to={child.href || "#"}>
+                                            <Link to={child.href || "#"} onClick={isMobile ? () => toggleSidebar() : undefined}>
                                                 {child.icon && <child.icon />}
                                                 <span>{child.title}</span>
                                             </Link>
@@ -133,7 +133,7 @@ export function Sidebar() {
             return (
                 <SidebarMenuItem key={item.id}>
                     <SidebarMenuButton asChild isActive={isActive(item)}>
-                        <Link to={item.href}>
+                        <Link to={item.href} onClick={isMobile ? () => toggleSidebar() : undefined}>
                             {Icon && <Icon />}
                             <span>{item.title}</span>
                         </Link>
