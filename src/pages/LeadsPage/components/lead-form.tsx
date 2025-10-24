@@ -14,6 +14,8 @@ import type { LeadFormProps } from "../types";
 export function LeadForm({ lead, onSuccess, onCancel }: LeadFormProps) {
   const { form, isSubmitting, apiError, onSubmit, clearError } = useLeadForm(lead);
 
+  // TODO: Corrigir tipagem do handle submit
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSubmit = async (data: any) => {
     const success = await onSubmit(data);
     if (success) {
@@ -43,7 +45,7 @@ export function LeadForm({ lead, onSuccess, onCancel }: LeadFormProps) {
                 Preencha os dados básicos do lead
               </p>
             </CardHeader>
-            
+
             <CardContent>
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
@@ -131,7 +133,7 @@ export function LeadForm({ lead, onSuccess, onCancel }: LeadFormProps) {
                         </>
                       )}
                     </Button>
-                    
+
                     <Button
                       type="button"
                       variant="outline"

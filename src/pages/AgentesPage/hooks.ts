@@ -72,7 +72,6 @@ export function useAgentsList() {
                     isLoading: false
                 }))
             })
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const refreshAgents = useCallback(() => {
@@ -330,7 +329,6 @@ export function useAgentDetail(agentId?: string) {
             setAgent(null)
             setError(null)
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [agentId])
 
     return {

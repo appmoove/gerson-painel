@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Card, CardContent } from "../../../components/ui/card";
 import { Button } from "../../../components/ui/button";
 import { Badge } from "../../../components/ui/badge";
 import { Skeleton } from "../../../components/ui/skeleton";
-import { 
+import {
   Table,
   TableBody,
   TableCell,
@@ -10,13 +11,13 @@ import {
   TableHeader,
   TableRow,
 } from "../../../components/ui/table";
-import { 
-  Eye, 
-  Edit, 
-  Trash2, 
-  User, 
-  Mail, 
-  Phone, 
+import {
+  Eye,
+  Edit,
+  Trash2,
+  User,
+  Mail,
+  Phone,
   Calendar,
   Users
 } from "lucide-react";
@@ -27,12 +28,12 @@ import type { LeadsListProps } from "../types";
  * Componente de lista de leads em formato de tabela
  * Exibe informações dos leads em uma tabela organizada
  */
-export function LeadsList({ 
-  leads, 
-  isLoading, 
-  onView, 
-  onEdit, 
-  onDelete 
+export function LeadsList({
+  leads,
+  isLoading,
+  onView,
+  onEdit,
+  onDelete
 }: LeadsListProps) {
   if (isLoading) {
     return <LeadsTableSkeleton />;
@@ -76,12 +77,13 @@ export function LeadsList({
 /**
  * Linha da tabela para cada lead
  */
-function LeadTableRow({ 
-  lead, 
-  onView, 
-  onEdit, 
-  onDelete 
+function LeadTableRow({
+  lead,
+  onView,
+  onEdit,
+  onDelete
 }: {
+  // TODO: Corrigir tipagem do lead
   lead: any;
   onView: () => void;
   onEdit: () => void;
@@ -146,6 +148,7 @@ function LeadTableRow({
           <div className="flex items-center gap-1">
             <Users className="h-4 w-4 text-muted-foreground" />
             <div className="flex flex-wrap gap-1">
+              {/* TODO: Corrigir tipagem do grupo */}
               {lead.groups.map((group: any) => (
                 <Badge key={group.id} variant="secondary" className="text-xs">
                   {group.name}
