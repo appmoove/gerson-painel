@@ -62,7 +62,6 @@ export function AgentTypeField() {
                         <SelectContent>
                             <SelectItem value="SUPPORT">Suporte</SelectItem>
                             <SelectItem value="SALES">Vendas</SelectItem>
-                            <SelectItem value="GENERAL">Geral</SelectItem>
                         </SelectContent>
                     </Select>
                     <FormMessage />
