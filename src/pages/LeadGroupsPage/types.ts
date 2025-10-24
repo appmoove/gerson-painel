@@ -59,7 +59,7 @@ export interface LeadGroupsListProps {
     /** Callback para visualizar grupo */
     onView: (leadGroupId: string) => void
     /** Callback para editar grupo */
-    onEdit: (leadGroup: CreateLeadGroupResponse) => void
+    onEdit: (leadGroupId: string) => void
     /** Callback para excluir grupo */
     onDelete?: (leadGroupId: string) => void
 }

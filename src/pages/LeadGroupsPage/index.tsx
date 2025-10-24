@@ -108,6 +108,22 @@ export function LeadGroupsPage() {
                 )
 
             case 'edit':
+                // Se está carregando, mostra loading
+                if (isLoading) {
+                    return (
+                        <div className="text-center py-12">
+                            <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4 animate-pulse" />
+                            <h3 className="text-lg font-medium text-muted-foreground mb-2">
+                                Carregando grupo...
+                            </h3>
+                            <p className="text-sm text-muted-foreground">
+                                Buscando informações do grupo de leads.
+                            </p>
+                        </div>
+                    )
+                }
+
+                // Se não está carregando e não tem grupo, mostra erro
                 if (!currentLeadGroup) {
                     return (
                         <div className="text-center py-12">
@@ -135,6 +151,21 @@ export function LeadGroupsPage() {
                 )
 
             case 'view':
+                // Se está carregando, mostra loading
+                if (isLoading) {
+                    return (
+                        <div className="text-center py-12">
+                            <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4 animate-pulse" />
+                            <h3 className="text-lg font-medium text-muted-foreground mb-2">
+                                Carregando grupo...
+                            </h3>
+                            <p className="text-sm text-muted-foreground">
+                                Buscando informações do grupo de leads.
+                            </p>
+                        </div>
+                    )
+                }
+
                 return (
                     <LeadGroupView
                         leadGroup={currentLeadGroup}

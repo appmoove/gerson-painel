@@ -102,7 +102,7 @@ export function LeadGroupsList({
                                 <Button
                                     variant="ghost"
                                     size="sm"
-                                    onClick={() => onEdit(leadGroup)}
+                                    onClick={() => onEdit(leadGroup.id)}
                                     className="h-8 w-8 p-0"
                                 >
                                     <Edit className="h-4 w-4" />

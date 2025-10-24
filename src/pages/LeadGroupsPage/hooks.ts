@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast"
 import type { CreateLeadGroupResponse } from "@/types/lead-groups-api"
 
 import { leadGroupSchema } from "./validation"
-import type { LeadGroupFormData, LeadGroupsPageState, LeadGroupViewMode } from "./types"
+import type { LeadGroupFormData, LeadGroupViewMode } from "./types"
 
 // ===========================
 // Navigation Hook
@@ -81,7 +81,8 @@ export function useLeadGroupsList() {
             const response = await leadGroupsApi.listLeadGroups()
             
             if (response.error) {
-                setError(response.error.message)
+                const errorMessage = typeof response.error.message === 'string' ? response.error.message : 'Erro desconhecido'
+                setError(errorMessage)
                 return
             }
 
@@ -142,11 +143,12 @@ export function useLeadGroupForm(leadGroup?: CreateLeadGroupResponse) {
             }
 
             if (response.error) {
-                setSubmitError(response.error.message)
+                const errorMessage = typeof response.error.message === 'string' ? response.error.message : 'Erro desconhecido'
+                setSubmitError(errorMessage)
                 toast.error("Erro ao salvar grupo de leads", {
-                    description: response.error.message,
+                    description: errorMessage,
                 })
-                return { success: false, error: response.error.message }
+                return { success: false, error: errorMessage }
             } else {
                 if (leadGroup?.id) {
                     toast.success("Grupo de leads atualizado!", {
@@ -201,11 +203,12 @@ export function useLeadGroupDetail(leadGroupId?: string) {
             const response = await leadGroupsApi.getLeadGroup(id)
             
             if (response.error) {
-                setError(response.error.message)
+                const errorMessage = typeof response.error.message === 'string' ? response.error.message : 'Erro desconhecido'
+                setError(errorMessage)
                 return
             }
 
-            setLeadGroup(response.data)
+            setLeadGroup(response.data || null)
         } catch (err) {
             setError('Erro ao carregar grupo de leads')
             console.error('Erro ao buscar grupo de leads:', err)
