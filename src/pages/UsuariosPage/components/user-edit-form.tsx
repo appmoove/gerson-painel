@@ -22,6 +22,7 @@ import { EDIT_USER_FORM_DEFAULTS, editUserSchema } from "@/pages/UsuariosPage/va
 import { maskCpfCnpj } from "@/utils/string";
 import { USER_ROLES } from "@/constants";
 import { usersApi } from "@/controllers";
+import { PageActionFooter } from "@/components/layout/page-action-footer";
 
 
 export function UserEditForm() {
@@ -110,268 +111,270 @@ export function UserEditForm() {
     ];
 
     return (
-        <PageContainer
-            title="Editar Usuário"
-            subtitle="Atualize as informações do usuário."
-            breadcrumbs={breadcrumbs}
-        >
-            <Form {...form}>
-                <AnimatePresence>
-                    <motion.form
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        onSubmit={form.handleSubmit(handleFormSubmit)}
-                        className="space-y-4"
-                    >
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <Mail className="h-5 w-5" />
-                                    Informações Básicas
-                                </CardTitle>
-                                <CardAction>
-                                    {loadingGet && <Loader2 className="h-5 w-5 text-primary animate-spin" />}
-                                </CardAction>
-                            </CardHeader>
-                            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <>
+            <PageContainer
+                title="Editar Usuário"
+                subtitle="Atualize as informações do usuário."
+                breadcrumbs={breadcrumbs}
+            >
+                <Form {...form}>
+                    <AnimatePresence>
+                        <motion.form
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onSubmit={form.handleSubmit(handleFormSubmit)}
+                            className="space-y-4"
+                        >
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <Mail className="h-5 w-5" />
+                                        Informações Básicas
+                                    </CardTitle>
+                                    <CardAction>
+                                        {loadingGet && <Loader2 className="h-5 w-5 text-primary animate-spin" />}
+                                    </CardAction>
+                                </CardHeader>
+                                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-                                <FormField
-                                    control={form.control}
-                                    name="name"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>
-                                                Nome Completo <span className='text-destructive'>*</span>
-                                            </FormLabel>
-                                            <FormControl>
-                                                {loadingGet
-                                                    ? <Skeleton className="h-9 w-full rounded-md" />
-                                                    : <Input
-                                                        placeholder="Digite o nome completo"
-                                                        disabled={loadingUpdate}
-                                                        {...field}
-                                                    />
-                                                }
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="email"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>
-                                                Email <span className='text-destructive'>*</span>
-                                            </FormLabel>
-                                            <FormControl>
-                                                {loadingGet
-                                                    ? <Skeleton className="h-9 w-full rounded-md" />
-                                                    : <Input
-                                                        type="email"
-                                                        placeholder="Digite o email"
-                                                        disabled={loadingUpdate}
-                                                        {...field}
-                                                    />
-                                                }
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="document_number"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>
-                                                Documento <span className='text-destructive'>*</span>
-                                            </FormLabel>
-                                            <FormControl>
-                                                {loadingGet
-                                                    ? <Skeleton className="h-9 w-full rounded-md" />
-                                                    : <Input
-                                                        placeholder="CPF ou CNPJ"
-                                                        value={field.value}
-                                                        onChange={(e) => {
-                                                            const maskedValue = maskCpfCnpj(e.target.value);
-                                                            field.onChange(maskedValue);
-                                                        }}
-                                                        onBlur={field.onBlur}
-                                                        name={field.name}
-                                                        ref={field.ref}
-                                                        maxLength={18}
-                                                        disabled={loadingUpdate}
-                                                    />
-                                                }
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="phone_number"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>
-                                                Telefone <span className='text-destructive'>*</span>
-                                            </FormLabel>
-                                            <FormControl>
-                                                {loadingGet
-                                                    ? <Skeleton className="h-9 w-full rounded-md" />
-                                                    : <PhoneInput
-                                                        placeholder="11 99999-9999"
-                                                        defaultCountry="BR"
-                                                        allowedCountries={["BR"]}
-                                                        disabled={loadingUpdate}
-                                                        {...field}
-                                                    />
-                                                }
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            </CardContent>
-                        </Card>
-
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <Settings className="h-5 w-5" />
-                                    Configurações
-                                </CardTitle>
-                                <CardAction>
-                                    {loadingGet && <Loader2 className="h-5 w-5 text-primary animate-spin" />}
-                                </CardAction>
-                            </CardHeader>
-                            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <FormField
-                                    control={form.control}
-                                    name="organization_role_id"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>
-                                                Cargo <span className='text-destructive'>*</span>
-                                            </FormLabel>
-                                            <Select
-                                                onValueChange={field.onChange}
-                                                defaultValue={field.value}
-                                                disabled={loadingUpdate}
-                                            >
+                                    <FormField
+                                        control={form.control}
+                                        name="name"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>
+                                                    Nome Completo <span className='text-destructive'>*</span>
+                                                </FormLabel>
                                                 <FormControl>
                                                     {loadingGet
                                                         ? <Skeleton className="h-9 w-full rounded-md" />
-                                                        : <SelectTrigger className="w-full">
-                                                            <SelectValue placeholder="Selecione um cargo" />
-                                                        </SelectTrigger>
+                                                        : <Input
+                                                            placeholder="Digite o nome completo"
+                                                            disabled={loadingUpdate}
+                                                            {...field}
+                                                        />
                                                     }
                                                 </FormControl>
-                                                <SelectContent>
-                                                    {USER_ROLES.map((role) => (
-                                                        <SelectItem key={role.id} value={role.id}>
-                                                            {role.name}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
 
-                                <FormField
-                                    control={form.control}
-                                    name="active"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Status do Usuário</FormLabel>
-                                            <FormControl>
-                                                {loadingGet
-                                                    ? <Skeleton className="h-6 w-12 rounded-full" />
-                                                    : <div className="flex items-center space-x-3">
-                                                        <Switch
-                                                            checked={field.value}
-                                                            onCheckedChange={field.onChange}
+                                    <FormField
+                                        control={form.control}
+                                        name="email"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>
+                                                    Email <span className='text-destructive'>*</span>
+                                                </FormLabel>
+                                                <FormControl>
+                                                    {loadingGet
+                                                        ? <Skeleton className="h-9 w-full rounded-md" />
+                                                        : <Input
+                                                            type="email"
+                                                            placeholder="Digite o email"
+                                                            disabled={loadingUpdate}
+                                                            {...field}
+                                                        />
+                                                    }
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="document_number"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>
+                                                    Documento <span className='text-destructive'>*</span>
+                                                </FormLabel>
+                                                <FormControl>
+                                                    {loadingGet
+                                                        ? <Skeleton className="h-9 w-full rounded-md" />
+                                                        : <Input
+                                                            placeholder="CPF ou CNPJ"
+                                                            value={field.value}
+                                                            onChange={(e) => {
+                                                                const maskedValue = maskCpfCnpj(e.target.value);
+                                                                field.onChange(maskedValue);
+                                                            }}
+                                                            onBlur={field.onBlur}
+                                                            name={field.name}
+                                                            ref={field.ref}
+                                                            maxLength={18}
                                                             disabled={loadingUpdate}
                                                         />
-                                                        <Label
-                                                            htmlFor="active"
-                                                            className="text-sm font-medium"
-                                                            onClick={() => field.onChange(!field.value)}
-                                                        >
-                                                            {field.value ? 'Ativo' : 'Inativo'}
-                                                        </Label>
-                                                    </div>
-                                                }
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                                                    }
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="phone_number"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>
+                                                    Telefone <span className='text-destructive'>*</span>
+                                                </FormLabel>
+                                                <FormControl>
+                                                    {loadingGet
+                                                        ? <Skeleton className="h-9 w-full rounded-md" />
+                                                        : <PhoneInput
+                                                            placeholder="11 99999-9999"
+                                                            defaultCountry="BR"
+                                                            allowedCountries={["BR"]}
+                                                            disabled={loadingUpdate}
+                                                            {...field}
+                                                        />
+                                                    }
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </CardContent>
+                            </Card>
 
-                                <FormField
-                                    control={form.control}
-                                    name="image_url"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>URL da Imagem</FormLabel>
-                                            <FormControl>
-                                                {loadingGet
-                                                    ? <Skeleton className="h-9 w-full rounded-md" />
-                                                    : <Input
-                                                        placeholder="https://exemplo.com/imagem.jpg"
-                                                        disabled={loadingUpdate}
-                                                        {...field}
-                                                    />
-                                                }
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            </CardContent>
-                        </Card>
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <Settings className="h-5 w-5" />
+                                        Configurações
+                                    </CardTitle>
+                                    <CardAction>
+                                        {loadingGet && <Loader2 className="h-5 w-5 text-primary animate-spin" />}
+                                    </CardAction>
+                                </CardHeader>
+                                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <FormField
+                                        control={form.control}
+                                        name="organization_role_id"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>
+                                                    Cargo <span className='text-destructive'>*</span>
+                                                </FormLabel>
+                                                <Select
+                                                    onValueChange={field.onChange}
+                                                    defaultValue={field.value}
+                                                    disabled={loadingUpdate}
+                                                >
+                                                    <FormControl>
+                                                        {loadingGet
+                                                            ? <Skeleton className="h-9 w-full rounded-md" />
+                                                            : <SelectTrigger className="w-full">
+                                                                <SelectValue placeholder="Selecione um cargo" />
+                                                            </SelectTrigger>
+                                                        }
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        {USER_ROLES.map((role) => (
+                                                            <SelectItem key={role.id} value={role.id}>
+                                                                {role.name}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
 
-                        <div className="absolute right-2 bottom-0 flex justify-end space-x-4">
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => navigate('/usuarios')}
-                                disabled={loadingUpdate || loadingGet}
-                                className="cursor-pointer dark:bg-card"
-                            >
-                                Cancelar
-                            </Button>
-                            <Button
-                                type="submit"
-                                disabled={loadingUpdate || loadingGet}
-                                className="cursor-pointer"
-                            >
-                                {loadingGet && (
-                                    <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Carregando...
-                                    </>
-                                )}
-                                {!loadingGet && (loadingUpdate
-                                    ? <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Salvando...
-                                    </> : <>
-                                        <Save className="mr-2 h-4 w-4" />
-                                        Salvar
-                                    </>
-                                )}
-                            </Button>
-                        </div>
-                    </motion.form>
-                </AnimatePresence>
-            </Form>
-        </PageContainer>
+                                    <FormField
+                                        control={form.control}
+                                        name="active"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Status do Usuário</FormLabel>
+                                                <FormControl>
+                                                    {loadingGet
+                                                        ? <Skeleton className="h-6 w-12 rounded-full" />
+                                                        : <div className="flex items-center space-x-3">
+                                                            <Switch
+                                                                checked={field.value}
+                                                                onCheckedChange={field.onChange}
+                                                                disabled={loadingUpdate}
+                                                            />
+                                                            <Label
+                                                                htmlFor="active"
+                                                                className="text-sm font-medium"
+                                                                onClick={() => field.onChange(!field.value)}
+                                                            >
+                                                                {field.value ? 'Ativo' : 'Inativo'}
+                                                            </Label>
+                                                        </div>
+                                                    }
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="image_url"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>URL da Imagem</FormLabel>
+                                                <FormControl>
+                                                    {loadingGet
+                                                        ? <Skeleton className="h-9 w-full rounded-md" />
+                                                        : <Input
+                                                            placeholder="https://exemplo.com/imagem.jpg"
+                                                            disabled={loadingUpdate}
+                                                            {...field}
+                                                        />
+                                                    }
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </CardContent>
+                            </Card>
+                        </motion.form>
+                    </AnimatePresence>
+                </Form>
+            </PageContainer>
+            <PageActionFooter variant="glass">
+                <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => navigate('/usuarios')}
+                    disabled={loadingUpdate || loadingGet}
+                    className="cursor-pointer dark:bg-card"
+                >
+                    Cancelar
+                </Button>
+                <Button
+                    type="submit"
+                    disabled={loadingUpdate || loadingGet}
+                    className="cursor-pointer"
+                    onClick={form.handleSubmit(handleFormSubmit)}
+                >
+                    {loadingGet && (
+                        <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Carregando...
+                        </>
+                    )}
+                    {!loadingGet && (loadingUpdate
+                        ? <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Salvando...
+                        </> : <>
+                            <Save className="mr-2 h-4 w-4" />
+                            Salvar
+                        </>
+                    )}
+                </Button>
+            </PageActionFooter>
+        </>
     );
 }
