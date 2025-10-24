@@ -30,8 +30,10 @@ class RoutinesApi extends BaseApi {
      * Listar todas as rotinas da empresa do usuário logado
      * Usa o company_id do token JWT automaticamente
      */
-    listRoutines(companyId: string): Promise<ApiResponse<ListRoutinesResponse>> {
-        return this.axiosInstance.get<ListRoutinesResponse>(`/company/${companyId}/routines`)
+    listRoutines(): Promise<ApiResponse<ListRoutinesResponse>> {
+        const organizationId = this.getOrganizationId();
+
+        return this.axiosInstance.get<ListRoutinesResponse>(`/organizations/${organizationId}/routines/list`)
             .then(this.handleAxiosResponse)
             .catch(error => this.handleAxiosError(error as AxiosError))
     }
