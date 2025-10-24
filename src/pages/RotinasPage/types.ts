@@ -106,3 +106,8 @@ export interface UseRotinasProps {
         refreshInterval?: number
     }
 }
+
+export interface RoutineChangingState {
+    routineId: string | null
+    loading: boolean
+}

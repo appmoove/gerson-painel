@@ -4,7 +4,7 @@ import { PageContainer } from "@/components/layout/page-container"
 import { Button } from "@/components/ui/button"
 import { Plus, Edit, Calendar, Loader2 } from "lucide-react"
 import { useRotinas } from "./hooks"
-import { RoutineList, RoutineForm, RoutineView } from "./components"
+import { RoutineListOld, RoutineForm, RoutineView } from "./components"
 
 // ===========================
 // RotinasPage Component
@@ -139,7 +139,7 @@ export default function RotinasPage() {
                 breadcrumbs={getBreadcrumbs()}
                 extra={getPageExtra()}
             >
-                <RoutineList
+                <RoutineListOld
                     rotinas={rotinas}
                     isLoading={isLoading}
                     onView={goToView}

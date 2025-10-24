@@ -3,6 +3,7 @@ import { Routes, Route, Outlet, Navigate } from "react-router-dom"
 import { Layout } from "@/components/layout"
 import { useAuth } from "@/stores/auth"
 import { createLazyComponent } from "@/components/routing"
+import { RoutinesList } from "@/pages/RotinasPage/components"
 
 // Páginas principais
 const LazyLoginPage = createLazyComponent(() => import('@/pages/LoginPage'))
@@ -55,6 +56,7 @@ export default function AppRoutes() {
 
                 {/* Rotas de Rotinas */}
                 <Route path="/rotinas" element={<LazyRotinasPage />} />
+                <Route path="/rotinas/refactor" element={<RoutinesList />} />
                 <Route path="/rotinas/nova" element={<LazyRotinasPage />} />
                 <Route path="/rotinas/:id" element={<LazyRotinasPage />} />
                 <Route path="/rotinas/:id/editar" element={<LazyRotinasPage />} />

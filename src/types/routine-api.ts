@@ -5,6 +5,7 @@
 /**
  * Request para criação de rotina
  * Baseado no CreateRoutineDto do backend
+ * @deprecated
  */
 export interface CreateRoutineRequest {
     /** ID da empresa */
@@ -33,6 +34,7 @@ export interface CreateRoutineRequest {
 
 /**
  * Request para atualização de rotina
+ * @deprecated
  * Todos os campos opcionais
  */
 export interface UpdateRoutineRequest {
@@ -60,6 +62,7 @@ export interface UpdateRoutineRequest {
 
 /**
  * Resposta da criação de rotina
+ * @deprecated
  */
 export interface CreateRoutineResponse {
     /** ID da rotina */
@@ -104,19 +107,43 @@ export interface CreateRoutineResponse {
 
 /**
  * Resposta da atualização de rotina
+ * @deprecated
  */
-export type UpdateRoutineResponse = CreateRoutineResponse
-
-/**
- * Resposta da listagem de rotinas
- * A API retorna diretamente um array via company endpoint
- */
-export type ListRoutinesResponse = CreateRoutineResponse[]
+export type UpdateRoutineResponse = CreateRoutineResponse;
 
 /**
  * Resposta de detalhes de uma rotina
+ * @deprecated
  */
 export interface GetRoutineResponse {
     message: string
     data: CreateRoutineResponse
 }
+
+/**
+ * Detalhes resumidos de uma rotina na listagem
+ */
+export interface RoutineListData {
+    id: string
+    description: string
+    agent?: {
+        id: string
+        name: string
+        type: string
+    }
+    objective: string
+    targets_count: number
+    services_count: number
+    closers_count: number
+    has_scheduling: boolean
+    active: boolean
+    created_at: string
+    updated_at: string
+}
+
+/**
+ * Resposta da listagem de rotinas
+ * A API retorna diretamente um array via company endpoint
+ */
+export type ListRoutinesResponse = RoutineListData[];
+
