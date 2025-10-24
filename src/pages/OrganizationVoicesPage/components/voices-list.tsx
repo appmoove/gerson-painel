@@ -117,7 +117,9 @@ export default function VoicesList() {
                     <div className="block items-center min-h-16">
                         {getVoiceGenderLabel({ gender: voice.gender, className: 'mt-2 mr-1' })}
                         {Object.entries(voice.characteristics).map(([key, value]) => (
-                            getCharacteristicBadge({ key, value, className: 'mt-2 mr-1' })
+                            <div key={`${voice.id}-${key}`} className="inline-block">
+                                {getCharacteristicBadge({ key, value, className: 'mt-2 mr-1' })}
+                            </div>
                         ))}
                     </div>
                     {/* Audio Preview */}
@@ -134,7 +136,11 @@ export default function VoicesList() {
             {isLoading ? (
                 [...Array(8)].map((_, index) => <Skeleton key={index} className="h-36 w-full" />)
             ) : (
-                data?.map((voice) => getVoiceCard(voice))
+                data?.map((voice) => (
+                    <div key={voice.id}>
+                        {getVoiceCard(voice)}
+                    </div>
+                ))
             )}
         </div>
     )
