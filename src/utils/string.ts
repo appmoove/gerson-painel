@@ -1,6 +1,7 @@
 import moment from "moment-timezone";
 
 export const stringLimit = (str: string, limit: number, end: string = "...") => {
+    if (!str) return "";
     if (str.length <= limit) {
         return str;
     }
