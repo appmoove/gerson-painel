@@ -34,7 +34,7 @@ export function Sidebar() {
     const navigate = useNavigate()
     const { theme, setTheme } = useTheme()
     const { user: currentUser, logout, setProfileModalOpen } = useAuth()
-    const { open, setOpen } = useSidebar()
+    const { open, toggleSidebar } = useSidebar()
     const [openGroups, setOpenGroups] = useState<string[]>([])
 
     // Determinar quais grupos devem estar abertos automaticamente baseado na rota atual
@@ -175,7 +175,7 @@ export function Sidebar() {
                                 "w-full justify-start gap-3 h-12 px-3 rounded-lg",
                                 "hover:bg-muted/50 focus-visible:ring-2 focus-visible:none"
                             )}
-                            onClick={() => setOpen(!open)}
+                            onClick={toggleSidebar}
                         >
                             {open && (
                                 <>

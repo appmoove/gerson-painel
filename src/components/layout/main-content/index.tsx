@@ -7,7 +7,10 @@ export function MainContent({ children }: { children: React.ReactNode }) {
 
     return (
         <motion.main
-            className={cn("flex-1 w-full transition-all duration-200", open ? "pl-64" : isMobile ? "pl-0" : "pl-16")}
+            className={cn(
+                "flex-1 w-full transition-all duration-200",
+                isMobile ? "pl-0" : open ? "pl-64" : "pl-16"
+            )}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}

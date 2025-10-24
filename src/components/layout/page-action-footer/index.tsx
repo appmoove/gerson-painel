@@ -45,7 +45,7 @@ export const PageActionFooter = ({
             animate={{ opacity: 1, y: 0 }}
             className={cn(
                 footerVariants({ variant, size }),
-                open ? "left-64" : isMobile ? "left-0" : "left-16"
+                isMobile ? "left-0" : open ? "left-64" : "left-16"
             )}
         >
             {/* Container que respeita o mesmo padding do PageContainer */}
