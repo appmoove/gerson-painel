@@ -191,7 +191,7 @@ export function RoutinesList() {
                 {/* Cards de métrica vão aqui depois */}
                 <MetricsCard
                     icon={CalendarClock}
-                    iconColor="text-blue-500"
+                    iconClassName="text-blue-500 bg-blue-500/20"
                     title="Total de Rotinas"
                     value={routines ? routines.length.toString() : '0'}
                     loading={isLoading}
@@ -199,7 +199,7 @@ export function RoutinesList() {
                 />
                 <MetricsCard
                     icon={CheckCircle}
-                    iconColor="text-green-500"
+                    iconClassName="text-green-500 bg-green-500/20"
                     title="Rotinas Ativas"
                     value={routines ? routines.filter(routine => routine.active).length.toString() : '0'}
                     loading={isLoading}
@@ -207,7 +207,7 @@ export function RoutinesList() {
                 />
                 <MetricsCard
                     icon={Users2}
-                    iconColor="text-purple-500"
+                    iconClassName="text-purple-500 bg-purple-500/20"
                     title="Total de Leads"
                     value={routines ? routines.filter(routine => routine.targets_count).length.toString() : '0'}
                     loading={isLoading}
@@ -215,7 +215,7 @@ export function RoutinesList() {
                 />
                 <MetricsCard
                     icon={UserStar}
-                    iconColor="text-orange-500"
+                    iconClassName="text-orange-500 bg-orange-500/20"
                     title="Total de Closers"
                     value={routines ? routines.filter(routine => routine.closers_count).length.toString() : '0'}
                     loading={isLoading}

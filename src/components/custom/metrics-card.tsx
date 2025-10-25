@@ -19,7 +19,7 @@ interface MetricsCardProps {
   /** Valor da variação percentual */
   percentageChange?: number;
   /** Cor do ícone */
-  iconColor?: React.HTMLAttributes<HTMLDivElement>['className'];
+  iconClassName?: React.HTMLAttributes<HTMLDivElement>['className'];
   /** Indicador de carregamento */
   loading?: boolean;
   /** Informações detalhadas para o tooltip */
@@ -34,7 +34,7 @@ export function MetricsCard({
   value,
   comparisonText,
   percentageChange,
-  iconColor = "text-muted-foreground",
+  iconClassName = "text-muted-foreground",
   loading = false,
   tooltipContent,
   className
@@ -49,7 +49,7 @@ export function MetricsCard({
           <div className="flex items-start justify-between gap-2">
             {/* Conteúdo principal: Ícone, título, valor e comparação */}
             <div className="flex items-start gap-2 flex-1 min-w-0">
-              <div className={cn("p-1.5 rounded-lg bg-muted/50 shrink-0", iconColor)}>
+              <div className={cn("p-1.5 rounded-lg bg-muted/50 shrink-0", iconClassName)}>
                 <Icon className="h-3.5 w-3.5" />
               </div>
               <div className="flex-1 min-w-0">

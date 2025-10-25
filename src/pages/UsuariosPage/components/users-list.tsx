@@ -134,7 +134,7 @@ export function UsersList() {
             <div className="grid gap-4 mb-4 md:grid-cols-2">
                 <MetricsCard
                     icon={Users}
-                    iconColor="text-blue-500"
+                    iconClassName="text-blue-500"
                     title="Total de Usuários"
                     value={users ? users.length.toString() : '0'}
                     loading={isLoading}
@@ -142,7 +142,7 @@ export function UsersList() {
                 />
                 <MetricsCard
                     icon={CheckCircle}
-                    iconColor="text-green-500"
+                    iconClassName="text-green-500"
                     title="Usuários Ativos"
                     value={users ? users.filter(user => user.active).length.toString() : '0'}
                     loading={isLoading}

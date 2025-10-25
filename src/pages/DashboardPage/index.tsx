@@ -403,7 +403,7 @@ export default function DashboardPage() {
                             value={metric.value}
                             percentageChange={metric.percentageChange}
                             comparisonText={metric.comparisonText}
-                            iconColor={metric.iconColor}
+                            iconClassName={metric.iconColor}
                             tooltipContent={metric.tooltipContent}
                         />
                     ))}
