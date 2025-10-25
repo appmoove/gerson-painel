@@ -3,15 +3,17 @@ import { Routes, Route, Outlet, Navigate } from "react-router-dom"
 import { Layout } from "@/components/layout"
 import { useAuth } from "@/stores/auth"
 import { createLazyComponent } from "@/components/routing"
-import { RoutinesList } from "@/pages/RotinasPage/components"
 
 // Páginas principais
 const LazyLoginPage = createLazyComponent(() => import('@/pages/LoginPage'))
 const LazyDashboardPage = createLazyComponent(() => import('@/pages/DashboardPage'))
 const LazyAgentesPage = createLazyComponent(() => import('@/pages/AgentesPage'))
-const LazyRotinasPage = createLazyComponent(() => import('@/pages/RotinasPage'))
 const LazyVozesOrganizacaoPage = createLazyComponent(() => import('@/pages/OrganizationVoicesPage/voices-list'))
 const LazyLeadsPage = createLazyComponent(() => import('@/pages/LeadsPage'))
+
+// Componentes de Rotinas
+const LazyRotinasPage = createLazyComponent(() => import('@/pages/RotinasPage'))
+const LazyRoutinesList = createLazyComponent(() => import('@/pages/RotinasPage/components/routine-list').then(module => ({ default: module.RoutinesList })))
 
 // Componentes de usuários
 const LazyUsersList = createLazyComponent(() => import('@/pages/UsuariosPage/components').then(module => ({ default: module.UsersList })))
@@ -55,8 +57,7 @@ export default function AppRoutes() {
                 <Route path="/agentes/:id/editar" element={<LazyAgentesPage />} />
 
                 {/* Rotas de Rotinas */}
-                <Route path="/rotinas" element={<LazyRotinasPage />} />
-                <Route path="/rotinas/refactor" element={<RoutinesList />} />
+                <Route path="/rotinas" element={<LazyRoutinesList />} />
                 <Route path="/rotinas/nova" element={<LazyRotinasPage />} />
                 <Route path="/rotinas/:id" element={<LazyRotinasPage />} />
                 <Route path="/rotinas/:id/editar" element={<LazyRotinasPage />} />

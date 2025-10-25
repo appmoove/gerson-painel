@@ -4,7 +4,7 @@ import { PageContainer } from "@/components/layout/page-container"
 import { Button } from "@/components/ui/button"
 import { Plus, Edit, Calendar, Loader2 } from "lucide-react"
 import { useRotinas } from "./hooks"
-import { RoutineListOld, RoutineForm, RoutineView } from "./components"
+import { RoutineForm, RoutineView } from "./components"
 
 // ===========================
 // RotinasPage Component
@@ -24,7 +24,6 @@ export default function RotinasPage() {
         goToEdit,
 
         // Data
-        rotinas,
         isLoading,
         refreshRotinas,
         currentRoutine
@@ -41,10 +40,6 @@ export default function RotinasPage() {
     // Gerar breadcrumbs dinamicamente baseado no modo
     const getBreadcrumbs = () => {
         const base = [{ label: "Dashboard", to: "/" }]
-
-        if (mode === 'list') {
-            return [...base, { label: "Rotinas" }]
-        }
 
         if (mode === 'create') {
             return [
@@ -77,11 +72,6 @@ export default function RotinasPage() {
     // Informações da página baseadas no modo
     const getPageInfo = () => {
         switch (mode) {
-            case 'list':
-                return {
-                    title: "Rotinas",
-                    subtitle: "Gerencie as rotinas automatizadas da sua empresa"
-                }
             case 'create':
                 return {
                     title: "Nova Rotina",
@@ -129,25 +119,6 @@ export default function RotinasPage() {
     }
 
     const pageInfo = getPageInfo()
-
-    // Renderização condicional baseada no modo
-    if (mode === 'list') {
-        return (
-            <PageContainer
-                title={pageInfo.title}
-                subtitle={pageInfo.subtitle}
-                breadcrumbs={getBreadcrumbs()}
-                extra={getPageExtra()}
-            >
-                <RoutineListOld
-                    rotinas={rotinas}
-                    isLoading={isLoading}
-                    onView={goToView}
-                    onEdit={(routine) => goToEdit(routine.id)}
-                />
-            </PageContainer>
-        )
-    }
 
     if (mode === 'create') {
         return (
