@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect, useCallback } from "react"
 import { useForm } from "react-hook-form"
@@ -145,7 +144,7 @@ export function useRotinasList() {
 
     const refreshRotinas = useCallback(() => {
         return fetchRotinas()
-    }, [fetchRotinas])
+    }, [])
 
     useEffect(() => {
         fetchRotinas()
@@ -225,7 +224,7 @@ export function useRoutineForm(routine?: RoutineDetails) {
                 active: routine.active ?? ROUTINE_FORM_DEFAULTS.active
             })
         }
-    }, [routine, form])
+    }, [routine])
 
     const onSubmit = useCallback((data: RoutineFormData) => {
         setIsSubmitting(true)
@@ -471,14 +470,14 @@ export function useRotinas() {
         if (navigation.mode === 'list') {
             rotinasList.refreshRotinas()
         }
-    }, [navigation.mode])
+    }, [navigation.mode, rotinasList])
 
     // Auto-refresh para view/edit quando ID muda
     useEffect(() => {
         if ((navigation.mode === 'view' || navigation.mode === 'edit') && navigation.routineId) {
             routineDetail.refetch()
         }
-    }, [navigation.mode, navigation.routineId])
+    }, [navigation.mode, navigation.routineId, routineDetail])
 
     return {
         // Navigation
