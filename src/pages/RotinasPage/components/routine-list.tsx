@@ -74,8 +74,8 @@ export function RoutinesList() {
         return (
             <Badge className={cn(
                 `bg-${color}-100 text-${color}-800 hover:bg-${color}-200`,
-                `dark:bg-${color}-900/50 dark:text-${color}-200 dark:border-${color}-700 dark:hover:bg-${color}-900/70`,
-                'transition-all duration-300'
+                `dark:bg-${color}-900/50 dark:text-${color}-200 dark:hover:bg-${color}-900/70`,
+                'transition-all duration-300 select-none'
             )}>
                 {label}
             </Badge>
@@ -94,17 +94,17 @@ export function RoutinesList() {
     const getCustomRoutineData = (routineData: RoutineListData) => (
         <div className="flex gap-1 text-sm">
             <BasicTooltip content="Quantidade de leads ou alvos associados à rotina">
-                <Badge className="bg-chart-1/10 text-chart-1 hover:bg-chart-1/20">
+                <Badge className="bg-chart-1/10 text-chart-1 hover:bg-chart-1/20 select-none">
                     <Users2 className="inline-block text-chart-1" /> {routineData.targets_count}
                 </Badge>
             </BasicTooltip>
             <BasicTooltip content="Quantidade de serviços e/ou produtos registrados na rotina">
-                <Badge className="bg-chart-2/10 text-chart-2 hover:bg-chart-2/20">
+                <Badge className="bg-chart-2/10 text-chart-2 hover:bg-chart-2/20 select-none">
                     <Package className="inline-block text-chart-2" /> {routineData.services_count}
                 </Badge>
             </BasicTooltip>
             <BasicTooltip content="Quantidade de closers associados à rotina">
-                <Badge className="bg-chart-3/10 text-chart-3 hover:bg-chart-3/20">
+                <Badge className="bg-chart-3/10 text-chart-3 hover:bg-chart-3/20 select-none">
                     <UserStar className="inline-block text-chart-3" /> {routineData.closers_count}
                 </Badge>
             </BasicTooltip>
