@@ -75,7 +75,7 @@ export function PageContainer({
                 {extra && <div className="mt-2 sm:mt-0">{extra}</div>}
             </div>
 
-            <Separator className="my-2" />
+            <Separator />
 
             {/* Conteúdo */}
             <div>{children}</div>
